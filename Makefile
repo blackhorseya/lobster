@@ -12,6 +12,10 @@ clean:
 lint:
 	@curl -XPOST 'https://goreportcard.com/checks' --data 'repo=github.com/blackhorseya/lobster'
 
+.PHONY: test-with-coverage
+test-with-coverage:
+	@sh $(shell pwd)/scripts/go.test.sh
+
 .PHONY: download-mod
 download-mod:
 	@go mod download
