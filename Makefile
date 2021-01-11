@@ -19,3 +19,10 @@ test-with-coverage:
 .PHONY: download-mod
 download-mod:
 	@go mod download
+
+.PHONY: build-image-lobster
+build-image-lobster:
+	@docker build -t $(APP_NAME):$(VERSION) \
+	--label "app.name=$(APP_NAME)" \
+	--label "app.version=$(VERSION)" \
+	-f ./build/$(APP_NAME)/Dockerfile .
