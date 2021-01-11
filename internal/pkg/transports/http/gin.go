@@ -1,15 +1,15 @@
 package http
 
 import (
+	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 // NewGinEngine serve caller to create a gin.Engine
-func NewGinEngine(init InitHandlers) *gin.Engine {
-	// todo: 2021-01-11|14:45|doggy|replace me
-	gin.SetMode(gin.DebugMode)
+func NewGinEngine(cfg *config.Config, init InitHandlers) *gin.Engine {
+	gin.SetMode(cfg.HTTP.Mode)
 
 	r := gin.New()
 
