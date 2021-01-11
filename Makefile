@@ -26,3 +26,10 @@ build-image-lobster:
 	--label "app.name=$(APP_NAME)" \
 	--label "app.version=$(VERSION)" \
 	-f ./build/$(APP_NAME)/Dockerfile .
+
+.PHONY: gen
+gen: gen-wire
+
+.PHONY: gen-wire
+gen-wire:
+	@wire gen ./...
