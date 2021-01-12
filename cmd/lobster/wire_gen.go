@@ -7,8 +7,8 @@ package main
 
 import (
 	"github.com/blackhorseya/lobster/internal/app"
-	"github.com/blackhorseya/lobster/internal/app/api"
-	"github.com/blackhorseya/lobster/internal/app/api/health"
+	"github.com/blackhorseya/lobster/internal/app/apis"
+	"github.com/blackhorseya/lobster/internal/app/apis/health"
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
 	"github.com/google/wire"
@@ -22,7 +22,7 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 		return nil, err
 	}
 	iHandler := health.NewImpl()
-	initHandlers := api.CreateInitHandlerFn(iHandler)
+	initHandlers := apis.CreateInitHandlerFn(iHandler)
 	engine := http.NewGinEngine(configConfig, initHandlers)
 	injector := app.NewInjector(engine, configConfig)
 	return injector, nil
@@ -30,4 +30,4 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 
 // wire.go:
 
-var providerSet = wire.NewSet(app.ProviderSet, config.ProviderSet, http.ProviderSet, api.ProviderSet)
+var providerSet = wire.NewSet(app.ProviderSet, config.ProviderSet, http.ProviderSet, apis.ProviderSet)

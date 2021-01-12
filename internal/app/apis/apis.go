@@ -1,9 +1,9 @@
-package api
+package apis
 
 import (
 	// import swagger docs
-	_ "github.com/blackhorseya/lobster/internal/app/api/docs"
-	"github.com/blackhorseya/lobster/internal/app/api/health"
+	_ "github.com/blackhorseya/lobster/internal/app/apis/docs"
+	"github.com/blackhorseya/lobster/internal/app/apis/health"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -18,10 +18,10 @@ func CreateInitHandlerFn(health health.IHandler) http.InitHandlers {
 		{
 			api.GET("readiness", health.Readiness)
 			api.GET("liveness", health.Liveness)
-		}
 
-		if mode := gin.Mode(); mode != gin.ReleaseMode {
-			r.GET("/api/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+			if mode := gin.Mode(); mode != gin.ReleaseMode {
+				api.GET("docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+			}
 		}
 	}
 }

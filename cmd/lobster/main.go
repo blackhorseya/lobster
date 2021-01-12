@@ -23,7 +23,7 @@ func init() {
 // @license.name GPL-3.0
 // @license.url https://spdx.org/licenses/GPL-3.0-only.html
 
-// @BasePath /api
+// @BasePath /apis
 func main() {
 	injector, err := CreateInjector(*path)
 	if err != nil {

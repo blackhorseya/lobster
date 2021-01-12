@@ -5,7 +5,7 @@ import (
 	"github.com/google/wire"
 )
 
-// IHandler declare api handler's function
+// IHandler declare apis handler's function
 type IHandler interface {
 	// Readiness to know when an application is ready to start accepting traffic
 	Readiness(c *gin.Context)
