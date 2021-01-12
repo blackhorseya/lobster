@@ -1,3 +1,27 @@
 language: go
+
+git:
+  submodules: false
+
+#before_install:
+#  - sed -i 's/git@github.com:/https:\/\/'"$GITHUB_USER"':'"$GITHUB_TOKEN"'@github.com\//' .gitmodules
+#  - git submodule update --init --recursive
+
+cache:
+  directories:
+    - "$HOME/.cache/go-build"
+    - "$HOME/gopath/pkg/mod"
+
 go:
-- '1.15'
+  - '1.15'
+
+env:
+  global:
+    - GO111MODULE=on
+
+script:
+  - make test-with-coverage
+  - make lint
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
