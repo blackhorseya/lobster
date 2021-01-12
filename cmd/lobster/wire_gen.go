@@ -8,6 +8,7 @@ package main
 import (
 	"github.com/blackhorseya/lobster/internal/app"
 	"github.com/blackhorseya/lobster/internal/app/api"
+	"github.com/blackhorseya/lobster/internal/app/api/health"
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
 	"github.com/google/wire"
@@ -20,7 +21,8 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	if err != nil {
 		return nil, err
 	}
-	initHandlers := api.CreateInitHandlerFn()
+	iHandler := health.NewImpl()
+	initHandlers := api.CreateInitHandlerFn(iHandler)
 	engine := http.NewGinEngine(configConfig, initHandlers)
 	injector := app.NewInjector(engine, configConfig)
 	return injector, nil
