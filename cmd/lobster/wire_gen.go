@@ -9,6 +9,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app"
 	"github.com/blackhorseya/lobster/internal/app/apis"
 	"github.com/blackhorseya/lobster/internal/app/apis/health"
+	"github.com/blackhorseya/lobster/internal/app/biz"
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
 	"github.com/google/wire"
@@ -30,4 +31,4 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 
 // wire.go:
 
-var providerSet = wire.NewSet(app.ProviderSet, config.ProviderSet, http.ProviderSet, apis.ProviderSet)
+var providerSet = wire.NewSet(app.ProviderSet, config.ProviderSet, http.ProviderSet, apis.ProviderSet, biz.ProviderSet)
