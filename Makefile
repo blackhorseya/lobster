@@ -29,8 +29,12 @@ build-image:
 	-f Dockerfile .
 
 .PHONY: gen
-gen: gen-wire
+gen: gen-wire gen-swagger
 
 .PHONY: gen-wire
 gen-wire:
 	@wire gen ./...
+
+.PHONY: gen-swagger
+gen-swagger:
+	@swag init -g cmd/$(APP_NAME)/main.go --parseInternal -o internal/app/api/docs

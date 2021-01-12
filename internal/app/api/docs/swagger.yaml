@@ -1,0 +1,52 @@
+basePath: /api
+info:
+  contact:
+    email: blackhorseya@gmail.com
+    name: Sean Cheng
+    url: https://blog.seancheng.space
+  description: Lobster API
+  license:
+    name: GPL-3.0
+    url: https://spdx.org/licenses/GPL-3.0-only.html
+  title: Lobster API
+  version: 0.0.1
+paths:
+  /liveness:
+    get:
+      consumes:
+      - application/json
+      description: to know when to restart an application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Liveness
+      tags:
+      - Health
+  /readiness:
+    get:
+      consumes:
+      - application/json
+      description: Show application was ready to start accepting traffic
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Readiness
+      tags:
+      - Health
+swagger: "2.0"
