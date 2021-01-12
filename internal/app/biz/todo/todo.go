@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"github.com/blackhorseya/lobster/internal/app/biz/todo/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
 	"github.com/google/wire"
@@ -31,4 +32,4 @@ type IBiz interface {
 }
 
 // ProviderSet is a provider set for wire
-var ProviderSet = wire.NewSet()
+var ProviderSet = wire.NewSet(repo.ProviderSet)
