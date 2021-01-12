@@ -1,0 +1,14 @@
+app:
+  name: "lobster"
+
+http:
+  port: 8080
+  mode: "debug"
+
+db:
+  debug: true
+  url: "mongodb://okr-app:changeme@localhost:27018/okr-db/?connect=direct&authSource=okr-db"
+
+log:
+  format: text
+  level: debug
