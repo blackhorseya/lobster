@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/wire"
+	"github.com/spf13/viper"
 )
 
 // Config declare configuration for application
@@ -17,7 +18,19 @@ type Config struct {
 
 // NewConfig serve caller to create a Config with config file path
 func NewConfig(path string) (*Config, error) {
-	return nil, nil
+	viper.AddConfigPath(".")
+	viper.SetConfigFile(path)
+
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, err
+	}
+
+	cfg := new(Config)
+	if err := viper.Unmarshal(cfg); err != nil {
+		return nil, err
+	}
+
+	return cfg, nil
 }
 
 func (c *Config) String() string {
