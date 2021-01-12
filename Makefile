@@ -60,4 +60,4 @@ gen-wire:
 
 .PHONY: gen-swagger
 gen-swagger:
-	@swag init -g cmd/$(APP_NAME)/main.go --parseInternal -o internal/app/api/docs
+	@swag init -g cmd/$(APP_NAME)/main.go --parseInternal -o internal/app/apis/docs
