@@ -28,6 +28,29 @@ build-image:
 	--build-arg APP_NAME=$(APP_NAME) \
 	-f Dockerfile .
 
+.PHONY: list-images
+list-images:
+	@docker images --filter=label=app.name=$(APP_NAME)
+
+.PHONY: prune-images
+prune-images:
+	@docker rmi -f `docker images --filter=label=app.name=$(APP_NAME) -q`
+
+.PHONY: tag-image
+tag-image:
+	@docker tag $(APP_NAME):$(VERSION) gcr.io/$(PROJECT_ID)/$(APP_NAME):$(VERSION)
+
+.PHONY: push-image
+push-image:
+	@docker push gcr.io/$(PROJECT_ID)/$(APP_NAME):$(VERSION)
+
+.PHONY: deploy
+deploy:
+	@helm --namespace $(NS) \
+	upgrade --install $(APP_NAME) ./deployments/$(APP_NAME) \
+	--values ./deployments/configs/$(DEPLOY_TO)/$(APP_NAME).yaml \
+	--set image.tag=$(VERSION)
+
 .PHONY: gen
 gen: gen-wire gen-swagger
 
