@@ -7,6 +7,7 @@ import (
 	"github.com/google/wire"
 )
 
+// CreateInitHandlerFn serve caller to create init handler
 func CreateInitHandlerFn(health health.IHandler) http.InitHandlers {
 	return func(r *gin.Engine) {
 		api := r.Group("/api")
