@@ -4,6 +4,7 @@ import (
 	// import swagger docs
 	_ "github.com/blackhorseya/lobster/internal/app/apis/docs"
 	"github.com/blackhorseya/lobster/internal/app/apis/health"
+	"github.com/blackhorseya/lobster/internal/app/apis/todo"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -12,7 +13,7 @@ import (
 )
 
 // CreateInitHandlerFn serve caller to create init handler
-func CreateInitHandlerFn(health health.IHandler) http.InitHandlers {
+func CreateInitHandlerFn(health health.IHandler, todoHandler todo.IHandler) http.InitHandlers {
 	return func(r *gin.Engine) {
 		api := r.Group("/api")
 		{
@@ -22,6 +23,18 @@ func CreateInitHandlerFn(health health.IHandler) http.InitHandlers {
 			if mode := gin.Mode(); mode != gin.ReleaseMode {
 				api.GET("docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 			}
+
+			v1 := api.Group("v1")
+			{
+				t := v1.Group("todo")
+				{
+					t.GET("", todoHandler.List)
+					t.GET(":id", todoHandler.GetByID)
+					t.POST("", todoHandler.Create)
+					t.PUT(":id", todoHandler.Update)
+					t.DELETE(":id", todoHandler.Delete)
+				}
+			}
 		}
 	}
 }
@@ -29,5 +42,6 @@ func CreateInitHandlerFn(health health.IHandler) http.InitHandlers {
 // ProviderSet is a provider set for wire
 var ProviderSet = wire.NewSet(
 	health.ProviderSet,
+	todo.ProviderSet,
 	CreateInitHandlerFn,
 )
