@@ -186,3 +186,58 @@ func (s *bizSuite) Test_impl_List() {
 		})
 	}
 }
+
+func (s *bizSuite) Test_impl_Count() {
+	type args struct {
+		mock func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    int
+		wantErr bool
+	}{
+		{
+			name: "count then 0 error",
+			args: args{mock: func() {
+				s.mock.On("Count", mock.Anything).Return(0, errors.New("err")).Once()
+			}},
+			want:    0,
+			wantErr: true,
+		},
+		{
+			name: "count then 0 not found",
+			args: args{mock: func() {
+				s.mock.On("Count", mock.Anything).Return(0, nil).Once()
+			}},
+			want:    0,
+			wantErr: true,
+		},
+		{
+			name: "count then 10 nil",
+			args: args{mock: func() {
+				s.mock.On("Count", mock.Anything).Return(10, nil).Once()
+			}},
+			want:    10,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			got, err := s.biz.Count(contextx.Background())
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Count() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("Count() got = %v, want %v", got, tt.want)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}

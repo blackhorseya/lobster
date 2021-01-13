@@ -65,8 +65,17 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error)
 }
 
 func (i *impl) Count(ctx contextx.Contextx) (int, error) {
-	// todo: 2021-01-13|07:36|doggy|implement me
-	panic("implement me")
+	ret, err := i.repo.Count(ctx)
+	if err != nil {
+		ctx.WithField("err", err).Errorf("count all tasks is failure")
+		return 0, er.ErrTaskNotExists
+	}
+	if ret == 0 {
+		ctx.Errorf("count all tasks is not found")
+		return 0, er.ErrTaskNotExists
+	}
+
+	return ret, nil
 }
 
 func (i *impl) Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error) {
