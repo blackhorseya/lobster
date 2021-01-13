@@ -4,6 +4,9 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/biz/todo/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 )
 
 type impl struct {
@@ -16,8 +19,22 @@ func NewImpl(repo repo.IRepo) IBiz {
 }
 
 func (i *impl) GetByID(ctx contextx.Contextx, id string) (*todo.Task, error) {
-	// todo: 2021-01-13|07:36|doggy|implement me
-	panic("implement me")
+	if _, err := uuid.Parse(id); err != nil {
+		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Errorf("parse id is failure")
+		return nil, er.ErrInvalidID
+	}
+
+	ret, err := i.repo.QueryByID(ctx, id)
+	if err != nil {
+		ctx.WithField("err", err).Errorf("query task by id is failure")
+		return nil, er.ErrTaskNotExists
+	}
+	if ret == nil {
+		ctx.WithField("id", id).Errorf("query task by id return empty")
+		return nil, er.ErrTaskNotExists
+	}
+
+	return ret, nil
 }
 
 func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error) {

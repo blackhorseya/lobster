@@ -102,6 +102,29 @@ func (_m *IRepo) List(ctx contextx.Contextx, offset int, limit int) ([]*todo.Tas
 	return r0, r1
 }
 
+// QueryByID provides a mock function with given fields: ctx, id
+func (_m *IRepo) QueryByID(ctx contextx.Contextx, id string) (*todo.Task, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 *todo.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *todo.Task); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*todo.Task)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Update provides a mock function with given fields: ctx, updated
 func (_m *IRepo) Update(ctx contextx.Contextx, updated *todo.Task) (*todo.Task, error) {
 	ret := _m.Called(ctx, updated)

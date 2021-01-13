@@ -18,3 +18,12 @@ var (
 	// ErrContentType means content type error
 	ErrContentType = fmt.Errorf("content type error")
 )
+
+var (
+	// ErrInvalidID means given id is invalid
+	ErrInvalidID = fmt.Errorf("invalid id")
+
+	// ErrTaskNotExists means the task not exists
+	ErrTaskNotExists = fmt.Errorf("task not exists")
+)
+

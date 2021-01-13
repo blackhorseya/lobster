@@ -8,6 +8,9 @@ import (
 
 // IRepo declare todo repo service function
 type IRepo interface {
+	// QueryByID serve caller to query a task by id from database
+	QueryByID(ctx contextx.Contextx, id string) (*todo.Task, error)
+
 	// Create serve caller to create a task to database
 	Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error)
 
