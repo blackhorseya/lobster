@@ -14,13 +14,13 @@ type IBiz struct {
 	mock.Mock
 }
 
-// ChangeTitle provides a mock function with given fields: ctx, title
-func (_m *IBiz) ChangeTitle(ctx contextx.Contextx, title string) (*todo.Task, error) {
-	ret := _m.Called(ctx, title)
+// ChangeTitle provides a mock function with given fields: ctx, id, title
+func (_m *IBiz) ChangeTitle(ctx contextx.Contextx, id string, title string) (*todo.Task, error) {
+	ret := _m.Called(ctx, id, title)
 
 	var r0 *todo.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *todo.Task); ok {
-		r0 = rf(ctx, title)
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, string) *todo.Task); ok {
+		r0 = rf(ctx, id, title)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*todo.Task)
@@ -28,8 +28,8 @@ func (_m *IBiz) ChangeTitle(ctx contextx.Contextx, title string) (*todo.Task, er
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, string) error); ok {
-		r1 = rf(ctx, title)
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, string, string) error); ok {
+		r1 = rf(ctx, id, title)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -141,13 +141,13 @@ func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*todo.Task, e
 	return r0, r1
 }
 
-// UpdateStatus provides a mock function with given fields: ctx, completed
-func (_m *IBiz) UpdateStatus(ctx contextx.Contextx, completed bool) (*todo.Task, error) {
-	ret := _m.Called(ctx, completed)
+// UpdateStatus provides a mock function with given fields: ctx, id, completed
+func (_m *IBiz) UpdateStatus(ctx contextx.Contextx, id bool, completed bool) (*todo.Task, error) {
+	ret := _m.Called(ctx, id, completed)
 
 	var r0 *todo.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, bool) *todo.Task); ok {
-		r0 = rf(ctx, completed)
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, bool, bool) *todo.Task); ok {
+		r0 = rf(ctx, id, completed)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*todo.Task)
@@ -155,8 +155,8 @@ func (_m *IBiz) UpdateStatus(ctx contextx.Contextx, completed bool) (*todo.Task,
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, bool) error); ok {
-		r1 = rf(ctx, completed)
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, bool, bool) error); ok {
+		r1 = rf(ctx, id, completed)
 	} else {
 		r1 = ret.Error(1)
 	}

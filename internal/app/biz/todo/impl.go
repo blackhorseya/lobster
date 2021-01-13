@@ -101,13 +101,39 @@ func (i *impl) Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error
 	return ret, nil
 }
 
-func (i *impl) ChangeTitle(ctx contextx.Contextx, title string) (*todo.Task, error) {
-	// todo: 2021-01-13|07:36|doggy|implement me
-	panic("implement me")
+func (i *impl) ChangeTitle(ctx contextx.Contextx, id, title string) (*todo.Task, error) {
+	if _, err := uuid.Parse(id); err != nil {
+		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrInvalidID)
+		return nil, er.ErrInvalidID
+	}
+
+	if len(title) == 0 {
+		ctx.WithField("title", title).Error(er.ErrEmptyTitle)
+		return nil, er.ErrEmptyTitle
+	}
+
+	exist, err := i.repo.QueryByID(ctx, id)
+	if err != nil {
+		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrTaskNotExists)
+		return nil, er.ErrTaskNotExists
+	}
+	if exist == nil {
+		ctx.WithField("id", id).Error(er.ErrTaskNotExists)
+		return nil, er.ErrTaskNotExists
+	}
+
+	exist.Title = title
+
+	ret, err := i.repo.Update(ctx, exist)
+	if err != nil {
+		ctx.WithField("err", err).Error(er.ErrChangeTitle)
+		return nil, er.ErrChangeTitle
+	}
+
+	return ret, nil
 }
 
-func (i *impl) UpdateStatus(ctx contextx.Contextx, completed bool) (*todo.Task, error) {
-	// todo: 2021-01-13|07:36|doggy|implement me
+func (i *impl) UpdateStatus(ctx contextx.Contextx, id, completed bool) (*todo.Task, error) {
 	panic("implement me")
 }
 
