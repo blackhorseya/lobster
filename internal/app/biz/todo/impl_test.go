@@ -241,3 +241,59 @@ func (s *bizSuite) Test_impl_Count() {
 		})
 	}
 }
+
+func (s *bizSuite) Test_impl_Create() {
+	type args struct {
+		task *todo.Task
+		mock func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *todo.Task
+		wantErr bool
+	}{
+		{
+			name:    "missing title then nil error",
+			args:    args{task: &todo.Task{Title: ""}},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "task then nil error",
+			args: args{task: &todo.Task{Title: "task1"}, mock: func() {
+				s.mock.On("Create", mock.Anything, mock.Anything).Return(
+					nil, errors.New("err")).Once()
+			}},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "task then task nil",
+			args: args{task: &todo.Task{Title: "task1"}, mock: func() {
+				s.mock.On("Create", mock.Anything, mock.Anything).Return(
+					task1, nil).Once()
+			}},
+			want:    task1,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			got, err := s.biz.Create(contextx.Background(), tt.args.task)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Create() got = %v, want %v", got, tt.want)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}

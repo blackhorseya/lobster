@@ -31,4 +31,10 @@ var (
 
 	// ErrInvalidSize means given size is invalid which MUST be greater than 0
 	ErrInvalidSize = fmt.Errorf("size MUST be greater than 0")
+
+	// ErrEmptyTitle means give title of task is empty value
+	ErrEmptyTitle = fmt.Errorf("title must be NOT empty")
+
+	// ErrCreateTask means create a task is failure
+	ErrCreateTask = fmt.Errorf("create a task is failure")
 )

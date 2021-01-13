@@ -1,6 +1,8 @@
 package todo
 
 import (
+	"time"
+
 	"github.com/blackhorseya/lobster/internal/app/biz/todo/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
@@ -79,8 +81,24 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 }
 
 func (i *impl) Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error) {
-	// todo: 2021-01-13|07:36|doggy|implement me
-	panic("implement me")
+	if len(task.Title) == 0 {
+		ctx.WithField("title", task.Title).Errorf(er.ErrEmptyTitle.Error())
+		return nil, er.ErrEmptyTitle
+	}
+
+	task.ID = uuid.New().String()
+	task.CreateAt = time.Now().UnixNano()
+
+	ret, err := i.repo.Create(ctx, task)
+	if err != nil {
+		ctx.WithFields(logrus.Fields{
+			"err":     err,
+			"created": task,
+		}).Errorf(er.ErrCreateTask.Error())
+		return nil, er.ErrCreateTask
+	}
+
+	return ret, nil
 }
 
 func (i *impl) ChangeTitle(ctx contextx.Contextx, title string) (*todo.Task, error) {
