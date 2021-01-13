@@ -7,7 +7,7 @@ http:
 
 db:
   debug: true
-  url: "mongodb://okr-app:changeme@localhost:27018/okr-db/?connect=direct&authSource=okr-db"
+  url: "mongodb://lobster-app:changeme@localhost:27019/lobster-db/?connect=direct&authSource=lobster-db"
 
 log:
   format: text
