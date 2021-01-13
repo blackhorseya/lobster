@@ -160,6 +160,20 @@ func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, completed bool) (*
 }
 
 func (i *impl) Delete(ctx contextx.Contextx, id string) error {
-	// todo: 2021-01-13|07:36|doggy|implement me
-	panic("implement me")
+	if _, err := uuid.Parse(id); err != nil {
+		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrInvalidID)
+		return er.ErrInvalidID
+	}
+
+	ret, err := i.repo.Delete(ctx, id)
+	if err != nil {
+		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrTaskNotExists)
+		return er.ErrTaskNotExists
+	}
+	if ret == 0 {
+		ctx.WithField("id", id).Error(er.ErrTaskNotExists)
+		return er.ErrTaskNotExists
+	}
+
+	return nil
 }
