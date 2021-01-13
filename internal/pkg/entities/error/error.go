@@ -38,6 +38,6 @@ var (
 	// ErrCreateTask means create a task is failure
 	ErrCreateTask = fmt.Errorf("create a task is failure")
 
-	// ErrChangeTitle means change a task's title is failure
-	ErrChangeTitle = fmt.Errorf("change a task's title is failure")
+	// ErrUpdateTask means update a task is failure
+	ErrUpdateTask = fmt.Errorf("update a task is failure")
 )

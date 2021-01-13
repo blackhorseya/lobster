@@ -142,11 +142,11 @@ func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*todo.Task, e
 }
 
 // UpdateStatus provides a mock function with given fields: ctx, id, completed
-func (_m *IBiz) UpdateStatus(ctx contextx.Contextx, id bool, completed bool) (*todo.Task, error) {
+func (_m *IBiz) UpdateStatus(ctx contextx.Contextx, id string, completed bool) (*todo.Task, error) {
 	ret := _m.Called(ctx, id, completed)
 
 	var r0 *todo.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, bool, bool) *todo.Task); ok {
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, bool) *todo.Task); ok {
 		r0 = rf(ctx, id, completed)
 	} else {
 		if ret.Get(0) != nil {
@@ -155,7 +155,7 @@ func (_m *IBiz) UpdateStatus(ctx contextx.Contextx, id bool, completed bool) (*t
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, bool, bool) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, string, bool) error); ok {
 		r1 = rf(ctx, id, completed)
 	} else {
 		r1 = ret.Error(1)

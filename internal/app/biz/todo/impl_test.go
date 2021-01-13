@@ -31,6 +31,13 @@ var (
 		Completed: false,
 		CreateAt:  time1,
 	}
+
+	updated2 = &todo.Task{
+		ID:        uuid1,
+		Title:     "task1",
+		Completed: true,
+		CreateAt:  time1,
+	}
 )
 
 type bizSuite struct {
@@ -379,6 +386,79 @@ func (s *bizSuite) Test_impl_ChangeTitle() {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ChangeTitle() got = %v, want %v", got, tt.want)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizSuite) Test_impl_UpdateStatus() {
+	type args struct {
+		id        string
+		completed bool
+		mock      func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *todo.Task
+		wantErr bool
+	}{
+		{
+			name:    "id false then nil error",
+			args:    args{id: "id"},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid false then query error",
+			args: args{id: uuid1, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, errors.New("err")).Once()
+			}},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid false then query not found",
+			args: args{id: uuid1, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, nil).Once()
+			}},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid true then update error",
+			args: args{id: uuid1, completed: true, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated2).Return(nil, errors.New("err")).Once()
+			}},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid true then update nil",
+			args: args{id: uuid1, completed: true, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated2).Return(updated2, nil).Once()
+			}},
+			want:    updated2,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			got, err := s.biz.UpdateStatus(contextx.Background(), tt.args.id, tt.args.completed)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UpdateStatus() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("UpdateStatus() got = %v, want %v", got, tt.want)
 			}
 
 			s.TearDownTest()

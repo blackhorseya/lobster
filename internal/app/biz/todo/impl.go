@@ -126,15 +126,37 @@ func (i *impl) ChangeTitle(ctx contextx.Contextx, id, title string) (*todo.Task,
 
 	ret, err := i.repo.Update(ctx, exist)
 	if err != nil {
-		ctx.WithField("err", err).Error(er.ErrChangeTitle)
-		return nil, er.ErrChangeTitle
+		ctx.WithField("err", err).Error(er.ErrUpdateTask)
+		return nil, er.ErrUpdateTask
 	}
 
 	return ret, nil
 }
 
-func (i *impl) UpdateStatus(ctx contextx.Contextx, id, completed bool) (*todo.Task, error) {
-	panic("implement me")
+func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, completed bool) (*todo.Task, error) {
+	if _, err := uuid.Parse(id); err != nil {
+		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrInvalidID)
+		return nil, er.ErrInvalidID
+	}
+
+	exist, err := i.repo.QueryByID(ctx, id)
+	if err != nil {
+		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrTaskNotExists)
+		return nil, er.ErrTaskNotExists
+	}
+	if exist == nil {
+		ctx.WithField("id", id).Error(er.ErrTaskNotExists)
+		return nil, er.ErrTaskNotExists
+	}
+
+	exist.Completed = completed
+
+	ret, err := i.repo.Update(ctx, exist)
+	if err != nil {
+		return nil, err
+	}
+
+	return ret, nil
 }
 
 func (i *impl) Delete(ctx contextx.Contextx, id string) error {

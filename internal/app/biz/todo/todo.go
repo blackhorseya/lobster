@@ -25,7 +25,7 @@ type IBiz interface {
 	ChangeTitle(ctx contextx.Contextx, id, title string) (*todo.Task, error)
 
 	// UpdateStatus serve user to update completed of task
-	UpdateStatus(ctx contextx.Contextx, id, completed bool) (*todo.Task, error)
+	UpdateStatus(ctx contextx.Contextx, id string, completed bool) (*todo.Task, error)
 
 	// Delete serve user to delete a task by id
 	Delete(ctx contextx.Contextx, id string) error
