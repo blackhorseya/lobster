@@ -25,5 +25,10 @@ var (
 
 	// ErrTaskNotExists means the task not exists
 	ErrTaskNotExists = fmt.Errorf("task not exists")
-)
 
+	// ErrInvalidPage means given page is invalid which MUST be greater than 0
+	ErrInvalidPage = fmt.Errorf("page MUST be greater than 0")
+
+	// ErrInvalidSize means given size is invalid which MUST be greater than 0
+	ErrInvalidSize = fmt.Errorf("size MUST be greater than 0")
+)

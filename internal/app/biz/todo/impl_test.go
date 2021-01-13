@@ -112,3 +112,77 @@ func (s *bizSuite) Test_impl_GetByID() {
 		})
 	}
 }
+
+func (s *bizSuite) Test_impl_List() {
+	type args struct {
+		page int
+		size int
+		mock func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []*todo.Task
+		wantErr bool
+	}{
+		{
+			name:    "-1 10 then nil error",
+			args:    args{page: -1, size: 10},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name:    "10 -1 then nil error",
+			args:    args{page: 10, size: -1},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "1 1 then nil error",
+			args: args{page: 1, size: 1, mock: func() {
+				s.mock.On("List", mock.Anything, 0, 1).Return(
+					nil, errors.New("err")).Once()
+			}},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "1 1 then nil not found",
+			args: args{page: 1, size: 1, mock: func() {
+				s.mock.On("List", mock.Anything, 0, 1).Return(
+					nil, nil).Once()
+			}},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "1 1 then tasks nil",
+			args: args{page: 1, size: 1, mock: func() {
+				s.mock.On("List", mock.Anything, 0, 1).Return(
+					[]*todo.Task{task1}, nil).Once()
+			}},
+			want: []*todo.Task{
+				task1,
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			got, err := s.biz.List(contextx.Background(), tt.args.page, tt.args.size)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("List() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("List() got = %v, want %v", got, tt.want)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}

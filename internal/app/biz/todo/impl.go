@@ -38,8 +38,30 @@ func (i *impl) GetByID(ctx contextx.Contextx, id string) (*todo.Task, error) {
 }
 
 func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error) {
-	// todo: 2021-01-13|07:36|doggy|implement me
-	panic("implement me")
+	if page <= 0 {
+		ctx.WithField("page", page).Errorf("page is invalid")
+		return nil, er.ErrInvalidPage
+	}
+
+	if size <= 0 {
+		ctx.WithField("size", size).Errorf("size is invalid")
+		return nil, er.ErrInvalidSize
+	}
+
+	ret, err := i.repo.List(ctx, (page-1)*size, size)
+	if err != nil {
+		ctx.WithField("err", err).Errorf("list all tasks is failure")
+		return nil, er.ErrTaskNotExists
+	}
+	if len(ret) == 0 {
+		ctx.WithFields(logrus.Fields{
+			"page": page,
+			"size": size,
+		}).Errorf("list all tasks is not found")
+		return nil, er.ErrTaskNotExists
+	}
+
+	return ret, nil
 }
 
 func (i *impl) Count(ctx contextx.Contextx) (int, error) {
