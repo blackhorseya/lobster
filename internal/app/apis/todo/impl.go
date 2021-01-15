@@ -151,6 +151,7 @@ func (i *impl) Update(c *gin.Context) {
 		return
 	}
 
+	// todo: 2021-01-15|10:37|doggy|implement me
 	panic("implement me")
 }
 
@@ -180,6 +181,4 @@ func (i *impl) Delete(c *gin.Context) {
 		c.JSON(http.StatusNoContent, nil)
 		return
 	}
-
-	panic("implement me")
 }
