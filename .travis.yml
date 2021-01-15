@@ -19,9 +19,38 @@ env:
   global:
     - GO111MODULE=on
 
-script:
-  - make test-with-coverage
-  - make lint
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+stages:
+  - Tests
+  - name: Deploy
+    if: tag =~ ^v
+
+jobs:
+  include:
+    - stage: Tests
+      name: Unit Test
+      script:
+        - make test-with-coverage
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+    - name: Integration Test
+      script:
+        - echo "execute integration test..."
+    - name: Lint
+      script:
+        - make lint
+    - stage: Deploy
+      services:
+        - docker
+      install:
+        - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+        - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+        - echo $kubeconfig | base64 --decode > ${HOME}/kubeconfig.yaml && export KUBECONFIG=${HOME}/kubeconfig.yaml
+        - echo $GCLOUD_SA_KEY | base64 --decode > ${HOME}/key.json && export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/key.json
+        - echo $docker_password | base64 --decode | docker login -u _json_key --password-stdin https://gcr.io
+        - export version=$(echo $TRAVIS_TAG | cut -c 2-)
+      script:
+        - make build-image version=$version
+        - make tag-image version=$version
+        - make push-image version=$version
+        - make deploy-with-helm ns=side deploy_to=prod version=$version
