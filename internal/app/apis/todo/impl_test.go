@@ -35,6 +35,13 @@ var (
 		Title:     "create task1",
 		Completed: true,
 	}
+
+	updated1 = &entities.Task{
+		ID:        uuid1,
+		Title:     "updated task1",
+		Completed: false,
+		CreateAt:  time1,
+	}
 )
 
 type handlerSuite struct {
@@ -271,6 +278,130 @@ func (s *handlerSuite) Test_impl_Create() {
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
 				s.T().Errorf("Create() got = %v, wantBody = %v", gotBody, tt.wantBody)
 			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *handlerSuite) Test_impl_Update() {
+	s.r.PUT("/api/v1/tasks/:id", s.handler.Update)
+
+	type args struct {
+		id      string
+		updated *entities.Task
+		mock    func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+		wantBody *entities.Task
+	}{
+		{
+			name:     "id title then 400 error",
+			args:     args{id: "id", updated: &entities.Task{Title: "updated"}},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name:     "uuid empty title then 400 error",
+			args:     args{id: uuid1, updated: &entities.Task{Title: ""}},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name: "uuid task then 200 error",
+			args: args{id: uuid1, updated: &entities.Task{Title: "updated"}, mock: func() {
+				s.mock.On("Update", mock.Anything, &entities.Task{Title: "updated"}).Return(
+					nil, errors.New("error")).Once()
+			}},
+			wantCode: 200,
+			wantBody: nil,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/tasks/%v", tt.args.id)
+			data, _ := json.Marshal(tt.args.updated)
+			req := httptest.NewRequest(http.MethodPut, uri, bytes.NewBuffer(data))
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer func() {
+				_ = got.Body.Close()
+			}()
+
+			body, _ := ioutil.ReadAll(got.Body)
+			var gotBody *entities.Task
+			if err := json.Unmarshal(body, &gotBody); err != nil {
+				s.Errorf(err, "unmarshal response body is failure")
+			}
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Update() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
+				s.T().Errorf("Update() got = %v, wantBody = %v", gotBody, tt.wantBody)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *handlerSuite) Test_impl_Delete() {
+	s.r.DELETE("/api/v1/tasks/:id", s.handler.Delete)
+
+	type args struct {
+		id   string
+		mock func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+	}{
+		{
+			name:     "id then 400 error",
+			args:     args{id: "id"},
+			wantCode: 400,
+		},
+		{
+			name: "uuid then 200 error",
+			args: args{id: uuid1, mock: func() {
+				s.mock.On("Delete", mock.Anything, uuid1).Return(errors.New("error")).Once()
+			}},
+			wantCode: 200,
+		},
+		{
+			name: "uuid then 204 nil",
+			args: args{id: uuid1, mock: func() {
+				s.mock.On("Delete", mock.Anything, uuid1).Return(nil).Once()
+			}},
+			wantCode: 204,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/tasks/%v", tt.args.id)
+			req := httptest.NewRequest(http.MethodDelete, uri, nil)
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer func() {
+				_ = got.Body.Close()
+			}()
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Delete() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 
 			s.TearDownTest()
 		})

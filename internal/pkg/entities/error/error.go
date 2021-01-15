@@ -49,4 +49,7 @@ var (
 
 	// ErrListTasks means list all tasks is failure
 	ErrListTasks = fmt.Errorf("list all tasks is failure")
+
+	// ErrDeleteTask means delete a task is failure
+	ErrDeleteTask = fmt.Errorf("delete a task is failure")
 )

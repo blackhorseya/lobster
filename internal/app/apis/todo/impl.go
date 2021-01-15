@@ -123,11 +123,63 @@ func (i *impl) Create(c *gin.Context) {
 }
 
 func (i *impl) Update(c *gin.Context) {
-	// todo: 2021-01-13|23:17|doggy|implement me
+	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
+	if !ok {
+		logrus.Error(er.ErrCTX)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrCTX.Error()})
+		return
+	}
+	logger := ctx.WithField("func", "task list")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		return
+	}
+
+	var task *entities.Task
+	if err := c.ShouldBindJSON(&task); err != nil {
+		logger.WithField("error", err).Error(er.ErrCreateTask)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
+		return
+	}
+
+	if len(task.Title) == 0 {
+		logger.WithField("task", task).Error(er.ErrEmptyTitle)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
+		return
+	}
+
 	panic("implement me")
 }
 
 func (i *impl) Delete(c *gin.Context) {
-	// todo: 2021-01-13|23:17|doggy|implement me
+	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
+	if !ok {
+		logrus.Error(er.ErrCTX)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": er.ErrCTX.Error(),
+		})
+		return
+	}
+	logger := ctx.WithField("func", "task list")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		return
+	}
+
+	if err := i.biz.Delete(ctx, req.ID); err != nil {
+		logger.WithFields(logrus.Fields{"error": err, "id": req.ID}).Error(er.ErrDeleteTask)
+		c.JSON(http.StatusOK, gin.H{"error": er.ErrDeleteTask})
+		return
+	} else {
+		c.JSON(http.StatusNoContent, nil)
+		return
+	}
+
 	panic("implement me")
 }
