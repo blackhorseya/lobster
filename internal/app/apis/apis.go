@@ -26,13 +26,13 @@ func CreateInitHandlerFn(health health.IHandler, todoHandler todo.IHandler) http
 
 			v1 := api.Group("v1")
 			{
-				t := v1.Group("todo")
+				tasks := v1.Group("tasks")
 				{
-					t.GET("", todoHandler.List)
-					t.GET(":id", todoHandler.GetByID)
-					t.POST("", todoHandler.Create)
-					t.PUT(":id", todoHandler.Update)
-					t.DELETE(":id", todoHandler.Delete)
+					tasks.GET("", todoHandler.List)
+					tasks.GET(":id", todoHandler.GetByID)
+					tasks.POST("", todoHandler.Create)
+					tasks.PUT(":id", todoHandler.Update)
+					tasks.DELETE(":id", todoHandler.Delete)
 				}
 			}
 		}

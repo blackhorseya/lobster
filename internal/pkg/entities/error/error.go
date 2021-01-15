@@ -3,6 +3,9 @@ package error
 import "fmt"
 
 var (
+	// ErrCTX means given http request not found contextx
+	ErrCTX = fmt.Errorf("transfer contextx failure")
+
 	// ErrInvalidURL means given url is invalid
 	ErrInvalidURL = fmt.Errorf("invalid url")
 
@@ -40,4 +43,10 @@ var (
 
 	// ErrUpdateTask means update a task is failure
 	ErrUpdateTask = fmt.Errorf("update a task is failure")
+
+	// ErrGetTaskByID means get task by id is failure
+	ErrGetTaskByID = fmt.Errorf("get task by id is failure")
+
+	// ErrListTasks means list all tasks is failure
+	ErrListTasks = fmt.Errorf("list all tasks is failure")
 )
