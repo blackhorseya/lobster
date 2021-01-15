@@ -101,59 +101,32 @@ func (i *impl) Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error
 	return ret, nil
 }
 
-func (i *impl) ChangeTitle(ctx contextx.Contextx, id, title string) (*todo.Task, error) {
-	if _, err := uuid.Parse(id); err != nil {
-		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrInvalidID)
-		return nil, er.ErrInvalidID
+func (i *impl) Update(ctx contextx.Contextx, updated *todo.Task) (*todo.Task, error) {
+	if _, err := uuid.Parse(updated.ID); err != nil {
+		ctx.WithFields(logrus.Fields{"err": err, "id": updated.ID}).Error(er.ErrInvalidID)
+		return nil, err
 	}
 
-	if len(title) == 0 {
-		ctx.WithField("title", title).Error(er.ErrEmptyTitle)
+	if len(updated.Title) == 0 {
+		ctx.WithFields(logrus.Fields{"title": updated.Title}).Error(er.ErrEmptyTitle)
 		return nil, er.ErrEmptyTitle
 	}
 
-	exist, err := i.repo.QueryByID(ctx, id)
+	exist, err := i.repo.QueryByID(ctx, updated.ID)
 	if err != nil {
-		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrTaskNotExists)
-		return nil, er.ErrTaskNotExists
-	}
-	if exist == nil {
-		ctx.WithField("id", id).Error(er.ErrTaskNotExists)
-		return nil, er.ErrTaskNotExists
-	}
-
-	exist.Title = title
-
-	ret, err := i.repo.Update(ctx, exist)
-	if err != nil {
-		ctx.WithField("err", err).Error(er.ErrUpdateTask)
-		return nil, er.ErrUpdateTask
-	}
-
-	return ret, nil
-}
-
-func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, completed bool) (*todo.Task, error) {
-	if _, err := uuid.Parse(id); err != nil {
-		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrInvalidID)
-		return nil, er.ErrInvalidID
-	}
-
-	exist, err := i.repo.QueryByID(ctx, id)
-	if err != nil {
-		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrTaskNotExists)
-		return nil, er.ErrTaskNotExists
-	}
-	if exist == nil {
-		ctx.WithField("id", id).Error(er.ErrTaskNotExists)
-		return nil, er.ErrTaskNotExists
-	}
-
-	exist.Completed = completed
-
-	ret, err := i.repo.Update(ctx, exist)
-	if err != nil {
+		ctx.WithField("err", err).Error(er.ErrGetTaskByID)
 		return nil, err
+	}
+	if exist == nil {
+		ctx.WithField("updated", updated).Error(er.ErrTaskNotExists)
+		return nil, er.ErrTaskNotExists
+	}
+
+	updated.CreateAt = exist.CreateAt
+	ret, err := i.repo.Update(ctx, updated)
+	if err != nil {
+		ctx.WithFields(logrus.Fields{"err": err}).Error(er.ErrUpdateTask)
+		return nil, er.ErrUpdateTask
 	}
 
 	return ret, nil

@@ -21,11 +21,8 @@ type IBiz interface {
 	// Create serve user to create a task
 	Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error)
 
-	// ChangeTitle serve user to change title of task with title
-	ChangeTitle(ctx contextx.Contextx, id, title string) (*todo.Task, error)
-
-	// UpdateStatus serve user to update completed of task
-	UpdateStatus(ctx contextx.Contextx, id string, completed bool) (*todo.Task, error)
+	// Update serve user to update a task
+	Update(ctx contextx.Contextx, updated *todo.Task) (*todo.Task, error)
 
 	// Delete serve user to delete a task by id
 	Delete(ctx contextx.Contextx, id string) error
