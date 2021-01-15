@@ -53,4 +53,4 @@ jobs:
         - make build-image version=$version
         - make tag-image version=$version
         - make push-image version=$version
-        - make deploy-with-helm ns=side deploy_to=prod version=$version
+        - make deploy ns=side deploy_to=prod version=$version
