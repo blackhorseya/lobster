@@ -53,14 +53,15 @@ func (i *impl) GetByID(c *gin.Context) {
 		return
 	}
 
-	if ret, err := i.biz.GetByID(ctx, req.ID); err != nil {
+	ret, err := i.biz.GetByID(ctx, req.ID)
+	if err != nil {
 		logger.WithField("err", err).Error(er.ErrGetTaskByID)
 		c.JSON(http.StatusOK, gin.H{"error": err})
 		return
-	} else {
-		c.JSON(http.StatusOK, ret)
-		return
 	}
+
+	c.JSON(http.StatusOK, ret)
+	return
 }
 
 // @Summary List all tasks
@@ -99,14 +100,15 @@ func (i *impl) List(c *gin.Context) {
 		return
 	}
 
-	if ret, err := i.biz.List(ctx, page, size); err != nil {
+	ret, err := i.biz.List(ctx, page, size)
+	if err != nil {
 		logger.WithField("error", err).Error(er.ErrListTasks)
 		c.JSON(http.StatusOK, gin.H{"error": er.ErrListTasks})
 		return
-	} else {
-		c.JSON(http.StatusOK, ret)
-		return
 	}
+
+	c.JSON(http.StatusOK, ret)
+	return
 }
 
 // @Summary Create a task
@@ -144,14 +146,15 @@ func (i *impl) Create(c *gin.Context) {
 		return
 	}
 
-	if ret, err := i.biz.Create(ctx, task); err != nil {
+	ret, err := i.biz.Create(ctx, task)
+	if err != nil {
 		logger.WithFields(logrus.Fields{"error": err, "task": task}).Error(er.ErrCreateTask)
 		c.JSON(http.StatusOK, gin.H{"error": er.ErrCreateTask})
 		return
-	} else {
-		c.JSON(http.StatusCreated, ret)
-		return
 	}
+
+	c.JSON(http.StatusCreated, ret)
+	return
 }
 
 // @Summary Update a task by id
@@ -194,14 +197,15 @@ func (i *impl) Update(c *gin.Context) {
 	}
 
 	task.ID = req.ID
-	if ret, err := i.biz.Update(ctx, task); err != nil {
+	ret, err := i.biz.Update(ctx, task)
+	if err != nil {
 		logger.WithFields(logrus.Fields{"error": err, "updated": task}).Error(er.ErrUpdateTask)
 		c.JSON(http.StatusOK, gin.H{"error": er.ErrUpdateTask})
 		return
-	} else {
-		c.JSON(http.StatusOK, ret)
-		return
 	}
+
+	c.JSON(http.StatusOK, ret)
+	return
 }
 
 // @Summary Delete a task by id
