@@ -25,6 +25,16 @@ type reqID struct {
 	ID string `uri:"id" binding:"required,uuid"`
 }
 
+// @Summary Get a task by id
+// @Description Get a task by id
+// @Tags Tasks
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of task"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/tasks/{id} [get]
 func (i *impl) GetByID(c *gin.Context) {
 	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
 	if !ok {
@@ -53,6 +63,17 @@ func (i *impl) GetByID(c *gin.Context) {
 	}
 }
 
+// @Summary List all tasks
+// @Description List all tasks
+// @Tags Tasks
+// @Accept application/json
+// @Produce application/json
+// @Param page query integer false "page" default(1)
+// @Param size query integer false "size of page" default(10)
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/tasks [get]
 func (i *impl) List(c *gin.Context) {
 	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
 	if !ok {
@@ -88,6 +109,17 @@ func (i *impl) List(c *gin.Context) {
 	}
 }
 
+// @Summary Create a task
+// @Description Create a task
+// @Tags Tasks
+// @Accept application/json
+// @Produce application/json
+// @Param created body todo.Task true "created task"
+// @Success 200 {object} string
+// @Success 201 {object} string
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/tasks [post]
 func (i *impl) Create(c *gin.Context) {
 	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
 	if !ok {
@@ -117,11 +149,21 @@ func (i *impl) Create(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"error": er.ErrCreateTask})
 		return
 	} else {
-		c.JSON(http.StatusOK, ret)
+		c.JSON(http.StatusCreated, ret)
 		return
 	}
 }
 
+// @Summary Update a task by id
+// @Description Update a task by id
+// @Tags Tasks
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of task"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/tasks/{id} [put]
 func (i *impl) Update(c *gin.Context) {
 	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
 	if !ok {
@@ -155,6 +197,17 @@ func (i *impl) Update(c *gin.Context) {
 	panic("implement me")
 }
 
+// @Summary Delete a task by id
+// @Description Delete a task by id
+// @Tags Tasks
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of task"
+// @Success 200 {object} string
+// @Success 204 {object} string
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/tasks/{id} [delete]
 func (i *impl) Delete(c *gin.Context) {
 	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
 	if !ok {

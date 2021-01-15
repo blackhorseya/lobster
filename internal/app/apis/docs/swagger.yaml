@@ -1,4 +1,20 @@
 basePath: /apis
+definitions:
+  todo.Task:
+    properties:
+      completed:
+        description: Completed describe the completed of task
+        type: boolean
+      create_at:
+        description: CreateAt describe the task create milliseconds
+        type: integer
+      id:
+        description: ID describe the unique identify code of task
+        type: string
+      title:
+        description: Title describe the title of task
+        type: string
+    type: object
 info:
   contact:
     email: blackhorseya@gmail.com
@@ -49,4 +65,160 @@ paths:
       summary: Readiness
       tags:
       - Health
+  /v1/tasks:
+    get:
+      consumes:
+      - application/json
+      description: List all tasks
+      parameters:
+      - default: 1
+        description: page
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: size of page
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: List all tasks
+      tags:
+      - Tasks
+    post:
+      consumes:
+      - application/json
+      description: Create a task
+      parameters:
+      - description: created task
+        in: body
+        name: created
+        required: true
+        schema:
+          $ref: '#/definitions/todo.Task'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a task
+      tags:
+      - Tasks
+  /v1/tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a task by id
+      parameters:
+      - description: ID of task
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete a task by id
+      tags:
+      - Tasks
+    get:
+      consumes:
+      - application/json
+      description: Get a task by id
+      parameters:
+      - description: ID of task
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get a task by id
+      tags:
+      - Tasks
+    put:
+      consumes:
+      - application/json
+      description: Update a task by id
+      parameters:
+      - description: ID of task
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update a task by id
+      tags:
+      - Tasks
 swagger: "2.0"

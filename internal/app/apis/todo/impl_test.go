@@ -243,11 +243,11 @@ func (s *handlerSuite) Test_impl_Create() {
 			wantBody: nil,
 		},
 		{
-			name: "task then 200 nil",
+			name: "task then 201 nil",
 			args: args{task: created1, mock: func() {
 				s.mock.On("Create", mock.Anything, created1).Return(task1, nil).Once()
 			}},
-			wantCode: 200,
+			wantCode: 201,
 			wantBody: task1,
 		},
 	}
