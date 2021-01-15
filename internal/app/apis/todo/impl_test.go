@@ -310,6 +310,22 @@ func (s *handlerSuite) Test_impl_Update() {
 			wantCode: 400,
 			wantBody: nil,
 		},
+		{
+			name: "updated then 200 error",
+			args: args{id: uuid1, updated: updated1, mock: func() {
+				s.mock.On("Update", mock.Anything, updated1).Return(nil, errors.New("error")).Once()
+			}},
+			wantCode: 200,
+			wantBody: nil,
+		},
+		{
+			name: "updated then 200 task",
+			args: args{id: uuid1, updated: updated1, mock: func() {
+				s.mock.On("Update", mock.Anything, updated1).Return(updated1, nil).Once()
+			}},
+			wantCode: 200,
+			wantBody: updated1,
+		},
 	}
 	for _, tt := range tests {
 		s.T().Run(tt.name, func(t *testing.T) {

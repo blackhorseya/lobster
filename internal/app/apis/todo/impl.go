@@ -193,8 +193,15 @@ func (i *impl) Update(c *gin.Context) {
 		return
 	}
 
-	// todo: 2021-01-15|10:37|doggy|implement me
-	panic("implement me")
+	task.ID = req.ID
+	if ret, err := i.biz.Update(ctx, task); err != nil {
+		logger.WithFields(logrus.Fields{"error": err, "updated": task}).Error(er.ErrUpdateTask)
+		c.JSON(http.StatusOK, gin.H{"error": er.ErrUpdateTask})
+		return
+	} else {
+		c.JSON(http.StatusOK, ret)
+		return
+	}
 }
 
 // @Summary Delete a task by id
