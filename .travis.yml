@@ -50,7 +50,7 @@ jobs:
         - echo $docker_password | base64 --decode | docker login -u _json_key --password-stdin https://gcr.io
         - export version=$(echo $TRAVIS_TAG | cut -c 2-)
       script:
-        - make build-image version=$version
-        - make tag-image version=$version
-        - make push-image version=$version
-        - make deploy ns=side DEPLOY_TO=prod VERSION=$version
+        - make build-image VERSION=$version
+        - make tag-image VERSION=$version
+        - make push-image VERSION=$version
+        - make deploy NS=side DEPLOY_TO=prod VERSION=$version
