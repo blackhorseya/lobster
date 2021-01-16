@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -11,6 +12,8 @@ import (
 
 var (
 	cfgFile string
+
+	cfg *config.Config
 
 	rootCmd = &cobra.Command{
 		Use: "lobster",
@@ -68,5 +71,9 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+
+	if err := viper.Unmarshal(&cfg); err != nil {
+		panic(err)
 	}
 }
