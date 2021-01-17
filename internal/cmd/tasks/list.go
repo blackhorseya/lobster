@@ -9,7 +9,7 @@ import (
 )
 
 var listCmd = &cobra.Command{
-	Use: "list",
+	Use:   "list",
 	Short: "List all tasks",
 	Run: func(cmd *cobra.Command, args []string) {
 		page, _ := cmd.Flags().GetInt("page")

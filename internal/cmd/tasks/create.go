@@ -8,16 +8,28 @@ import (
 	"net/http"
 
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
 	"github.com/spf13/cobra"
 )
 
 var createCmd = &cobra.Command{
-	Use: "create",
-	Short: "Create a task",
+	Use:     "create",
+	Short:   "Create a task",
+	Long: "lobster tasks create TITLE [flags]",
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) < 1 {
+			return er.ErrEmptyTitle
+		}
+
+		if len(args[0]) == 0 {
+			return er.ErrEmptyTitle
+		}
+
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		title, _ := cmd.Flags().GetString("title")
 		uri := fmt.Sprintf("%v/v1/tasks", cfg.API.EndPoint)
-		data, _ := json.Marshal(&todo.Task{Title: title})
+		data, _ := json.Marshal(&todo.Task{Title: args[0]})
 		req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 		if err != nil {
 			fmt.Println(err)
@@ -46,6 +58,4 @@ var createCmd = &cobra.Command{
 
 func init() {
 	Cmd.AddCommand(createCmd)
-
-	createCmd.Flags().String("title", "", "title of task")
 }

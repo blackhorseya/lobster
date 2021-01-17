@@ -1,25 +1,26 @@
 package tasks
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
+	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
 var getCmd = &cobra.Command{
-	Use: "get",
-	Short: "Get task by ID",
+	Use:     "get",
+	Short:   "Get task by ID",
+	Long: "lobster tasks get ID [flags]",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
-			return errors.New("missing ID of task")
+			return er.ErrInvalidID
 		}
 
 		if _, err := uuid.Parse(args[0]); err != nil {
-			return err
+			return er.ErrInvalidID
 		}
 
 		return nil
