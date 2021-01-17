@@ -1,24 +1,32 @@
 package tasks
 
 import (
-	"bytes"
-	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
-var createCmd = &cobra.Command{
-	Use: "create",
-	Short: "Create a task",
+var getCmd = &cobra.Command{
+	Use: "get",
+	Short: "Get task by ID",
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) < 1 {
+			return errors.New("missing ID of task")
+		}
+
+		if _, err := uuid.Parse(args[0]); err != nil {
+			return err
+		}
+
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		title, _ := cmd.Flags().GetString("title")
-		uri := fmt.Sprintf("%v/v1/tasks", cfg.API.EndPoint)
-		data, _ := json.Marshal(&todo.Task{Title: title})
-		req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
+		uri := fmt.Sprintf("%v/v1/tasks/%v", cfg.API.EndPoint, args[0])
+		req, err := http.NewRequest(http.MethodGet, uri, nil)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -45,7 +53,5 @@ var createCmd = &cobra.Command{
 }
 
 func init() {
-	Cmd.AddCommand(createCmd)
-
-	createCmd.Flags().String("title", "", "title of task")
+	Cmd.AddCommand(getCmd)
 }

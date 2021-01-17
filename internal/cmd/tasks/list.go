@@ -43,6 +43,8 @@ var listCmd = &cobra.Command{
 }
 
 func init() {
+	Cmd.AddCommand(listCmd)
+
 	listCmd.Flags().Int("page", 1, "list tasks which page")
 	listCmd.Flags().Int("size", 10, "list tasks which size")
 }
