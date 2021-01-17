@@ -8,6 +8,9 @@ type Objective struct {
 	// Title describe the title of objective
 	Title string `json:"title" db:"title"`
 
+	// KeyResults describe key results of objective
+	KeyResults []*KeyResult `json:"key_results" db:"key_results"`
+
 	// StartAt describe the objective start time milliseconds
 	StartAt int64 `json:"start_at" db:"start_at"`
 
