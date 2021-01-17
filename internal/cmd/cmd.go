@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/blackhorseya/lobster/internal/cmd/config"
+	"github.com/blackhorseya/lobster/internal/cmd/tasks"
 	C "github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/spf13/cobra"
 )
@@ -42,6 +43,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.AddCommand(config.Cmd)
+	rootCmd.AddCommand(tasks.Cmd)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.lobster.yaml)")
 }

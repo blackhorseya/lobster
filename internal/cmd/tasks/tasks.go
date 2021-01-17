@@ -1,4 +1,4 @@
-package config
+package tasks
 
 import (
 	"fmt"
@@ -15,13 +15,14 @@ var cfg *config.Config
 
 // Cmd is root command
 var Cmd = &cobra.Command{
-	Use: "config",
+	Use: "tasks",
 }
 
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	Cmd.AddCommand(viewCmd)
+	Cmd.AddCommand(listCmd)
+	Cmd.AddCommand(createCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.
