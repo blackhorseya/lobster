@@ -12,6 +12,9 @@ type IBiz interface {
 	// Create serve user to create a objective
 	Create(ctx contextx.Contextx, obj *okr.Objective) (*okr.Objective, error)
 
+	// GetByID serve user to get a objective by id
+	GetByID(ctx contextx.Contextx, id string) (*okr.Objective, error)
+
 	// List serve user to list all objectives
 	List(ctx contextx.Contextx, page, size int) ([]*okr.Objective, error)
 

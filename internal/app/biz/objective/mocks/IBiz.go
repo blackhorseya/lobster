@@ -72,6 +72,29 @@ func (_m *IBiz) Delete(ctx contextx.Contextx, id string) error {
 	return r0
 }
 
+// GetByID provides a mock function with given fields: ctx, id
+func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*okr.Objective, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 *okr.Objective
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *okr.Objective); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*okr.Objective)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // List provides a mock function with given fields: ctx, page, size
 func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*okr.Objective, error) {
 	ret := _m.Called(ctx, page, size)
