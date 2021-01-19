@@ -3,6 +3,7 @@ package repo
 import (
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/google/wire"
 )
 
 // IRepo declare okr repo service function
@@ -25,3 +26,6 @@ type IRepo interface {
 	// Delete serve caller to delete a objective by id from database
 	Delete(ctx contextx.Contextx, id string) (int, error)
 }
+
+// ProviderSet is a provider set for wire
+var ProviderSet = wire.NewSet(NewImpl)

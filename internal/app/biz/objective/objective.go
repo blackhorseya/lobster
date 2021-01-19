@@ -1,8 +1,10 @@
 package objective
 
 import (
+	"github.com/blackhorseya/lobster/internal/app/biz/objective/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/google/wire"
 )
 
 // IBiz declare objective biz service function
@@ -22,3 +24,6 @@ type IBiz interface {
 	// Delete serve user to delete a objective by id
 	Delete(ctx contextx.Contextx, id string) error
 }
+
+// ProviderSet is a provider set for wire
+var ProviderSet = wire.NewSet(NewImpl, repo.ProviderSet)
