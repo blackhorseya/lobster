@@ -53,3 +53,39 @@ var (
 	// ErrDeleteTask means delete a task is failure
 	ErrDeleteTask = fmt.Errorf("delete a task is failure")
 )
+
+var (
+	// ErrCreateObjective means create a objective is failure
+	ErrCreateObjective = fmt.Errorf("create a objective is failure")
+
+	// ErrListObjectives means list all objectives is failure
+	ErrListObjectives = fmt.Errorf("list all objectives is failure")
+
+	// ErrObjectiveNotExists means objective not exists
+	ErrObjectiveNotExists = fmt.Errorf("objective not exists")
+
+	// ErrCountObjective means count all objectives is failure
+	ErrCountObjective = fmt.Errorf("count objective is failure")
+
+	// ErrUpdateOjb means update a objective is failure
+	ErrUpdateObj = fmt.Errorf("update a objective is failure")
+
+	// ErrGetObjByID means get objective by id is failure
+	ErrGetObjByID = fmt.Errorf("get objective by id is failure")
+
+	// ErrDeleteObj means delete a objective by id is failure
+	ErrDeleteObj = fmt.Errorf("delete a objective by id is failure")
+)
+
+var (
+	// ErrDBConnect means db connect is failure
+	ErrDBConnect = fmt.Errorf("db connect is failure")
+)
+
+var (
+	// ErrReadiness means readiness is failure
+	ErrReadiness = fmt.Errorf("readiness is failure")
+
+	// ErrLiveness means liveness is failure
+	ErrLiveness = fmt.Errorf("livenss is failure")
+)

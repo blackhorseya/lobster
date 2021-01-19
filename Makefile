@@ -49,6 +49,10 @@ install-mongo:
 	@helm --namespace $(NS) upgrade --install $(APP_NAME)-db bitnami/mongodb \
 	--values ./deployments/configs/$(DEPLOY_TO)/mongo.yaml
 
+.PHONY: install-cli
+install-cli:
+	@go build -o ./bin/lobster ./cmd/cli
+
 .PHONY: deploy
 deploy:
 	@helm --namespace $(NS) \

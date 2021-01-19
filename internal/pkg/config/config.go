@@ -14,6 +14,7 @@ type Config struct {
 	HTTP *HTTP `json:"http" yaml:"http"`
 	DB   *DB   `json:"db" yaml:"db"`
 	Log  *Log  `json:"log" yaml:"log"`
+	API  *API  `json:"api" yaml:"api"`
 }
 
 // NewConfig serve caller to create a Config with config file path
@@ -34,7 +35,7 @@ func NewConfig(path string) (*Config, error) {
 }
 
 func (c *Config) String() string {
-	ret, _ := json.Marshal(c)
+	ret, _ := json.MarshalIndent(c, "", "  ")
 	return string(ret)
 }
 
@@ -65,6 +66,11 @@ type DB struct {
 type Log struct {
 	Format string `json:"format" yaml:"format"`
 	Level  string `json:"level" yaml:"level"`
+}
+
+// API declare endpoint configuration
+type API struct {
+	EndPoint string `json:"endPoint" yaml:"endPoint"`
 }
 
 // ProviderSet is a provider set for wire

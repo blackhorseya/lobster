@@ -1,4 +1,4 @@
-basePath: /apis
+basePath: /api
 definitions:
   todo.Task:
     properties:

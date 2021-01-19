@@ -8,11 +8,13 @@ package main
 import (
 	"github.com/blackhorseya/lobster/internal/app"
 	"github.com/blackhorseya/lobster/internal/app/apis"
-	"github.com/blackhorseya/lobster/internal/app/apis/health"
+	health2 "github.com/blackhorseya/lobster/internal/app/apis/health"
 	todo2 "github.com/blackhorseya/lobster/internal/app/apis/todo"
 	"github.com/blackhorseya/lobster/internal/app/biz"
+	"github.com/blackhorseya/lobster/internal/app/biz/health"
+	"github.com/blackhorseya/lobster/internal/app/biz/health/repo"
 	"github.com/blackhorseya/lobster/internal/app/biz/todo"
-	"github.com/blackhorseya/lobster/internal/app/biz/todo/repo"
+	repo2 "github.com/blackhorseya/lobster/internal/app/biz/todo/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/databases"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
@@ -26,14 +28,16 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	if err != nil {
 		return nil, err
 	}
-	iHandler := health.NewImpl()
 	client, err := databases.NewMongoDB(configConfig)
 	if err != nil {
 		return nil, err
 	}
 	iRepo := repo.NewImpl(client)
-	iBiz := todo.NewImpl(iRepo)
-	todoIHandler := todo2.NewImpl(iBiz)
+	iBiz := health.NewImpl(iRepo)
+	iHandler := health2.NewImpl(iBiz)
+	repoIRepo := repo2.NewImpl(client)
+	todoIBiz := todo.NewImpl(repoIRepo)
+	todoIHandler := todo2.NewImpl(todoIBiz)
 	initHandlers := apis.CreateInitHandlerFn(iHandler, todoIHandler)
 	engine := http.NewGinEngine(configConfig, initHandlers)
 	injector := app.NewInjector(engine, configConfig)

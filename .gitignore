@@ -6,6 +6,9 @@
 *.retry
 
 ### Go ###
+# Build
+bin
+
 # Code coverage
 coverage.txt
 
