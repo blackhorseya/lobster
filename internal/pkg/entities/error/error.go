@@ -81,3 +81,11 @@ var (
 	// ErrDBConnect means db connect is failure
 	ErrDBConnect = fmt.Errorf("db connect is failure")
 )
+
+var (
+	// ErrReadiness means readiness is failure
+	ErrReadiness = fmt.Errorf("readiness is failure")
+
+	// ErrLiveness means liveness is failure
+	ErrLiveness = fmt.Errorf("livenss is failure")
+)

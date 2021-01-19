@@ -3,15 +3,20 @@ package health
 import (
 	"net/http"
 
+	"github.com/blackhorseya/lobster/internal/app/biz/health"
+	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 type impl struct {
+	biz health.IBiz
 }
 
 // NewImpl serve caller to create an IHandler
-func NewImpl() IHandler {
-	return &impl{}
+func NewImpl(biz health.IBiz) IHandler {
+	return &impl{biz: biz}
 }
 
 // @Summary Readiness
@@ -23,7 +28,23 @@ func NewImpl() IHandler {
 // @Failure 500 {object} string
 // @Router /readiness [get]
 func (i *impl) Readiness(c *gin.Context) {
-	// todo: 2021-01-12|10:12|doggy|implement me
+	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
+	if !ok {
+		logrus.Error(er.ErrCTX)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": er.ErrCTX.Error(),
+		})
+		return
+	}
+	logger := ctx.WithField("func", "task getByID")
+
+	err := i.biz.Readiness(ctx)
+	if err != nil {
+		logger.WithField("err", err).Error(er.ErrReadiness)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrReadiness.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"msg": "ok"})
 }
 
@@ -36,6 +57,22 @@ func (i *impl) Readiness(c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /liveness [get]
 func (i *impl) Liveness(c *gin.Context) {
-	// todo: 2021-01-12|10:12|doggy|implement me
+	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
+	if !ok {
+		logrus.Error(er.ErrCTX)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": er.ErrCTX.Error(),
+		})
+		return
+	}
+	logger := ctx.WithField("func", "task getByID")
+
+	err := i.biz.Liveness(ctx)
+	if err != nil {
+		logger.WithField("err", err).Error(er.ErrReadiness)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrReadiness.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"msg": "ok"})
 }
