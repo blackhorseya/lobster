@@ -364,7 +364,7 @@ type swaggerInfo struct {
 var SwaggerInfo = swaggerInfo{
 	Version:     "0.0.1",
 	Host:        "",
-	BasePath:    "/apis",
+	BasePath:    "/api",
 	Schemes:     []string{},
 	Title:       "Lobster API",
 	Description: "Lobster API",
