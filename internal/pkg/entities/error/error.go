@@ -76,3 +76,8 @@ var (
 	// ErrDeleteObj means delete a objective by id is failure
 	ErrDeleteObj = fmt.Errorf("delete a objective by id is failure")
 )
+
+var (
+	// ErrDBConnect means db connect is failure
+	ErrDBConnect = fmt.Errorf("db connect is failure")
+)
