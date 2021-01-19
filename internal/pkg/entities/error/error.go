@@ -53,3 +53,14 @@ var (
 	// ErrDeleteTask means delete a task is failure
 	ErrDeleteTask = fmt.Errorf("delete a task is failure")
 )
+
+var (
+	// ErrCreateObjective means create a objective is failure
+	ErrCreateObjective = fmt.Errorf("create a objective is failure")
+
+	// ErrListObjectives means list all objectives is failure
+	ErrListObjectives = fmt.Errorf("list all objectives is failure")
+
+	// ErrObjectiveNotExists means objective not exists
+	ErrObjectiveNotExists = fmt.Errorf("objective not exists")
+)
