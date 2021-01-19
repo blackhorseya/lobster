@@ -9,10 +9,13 @@ import (
 	"github.com/blackhorseya/lobster/internal/app"
 	"github.com/blackhorseya/lobster/internal/app/apis"
 	health2 "github.com/blackhorseya/lobster/internal/app/apis/health"
+	objective2 "github.com/blackhorseya/lobster/internal/app/apis/objective"
 	todo2 "github.com/blackhorseya/lobster/internal/app/apis/todo"
 	"github.com/blackhorseya/lobster/internal/app/biz"
 	"github.com/blackhorseya/lobster/internal/app/biz/health"
 	"github.com/blackhorseya/lobster/internal/app/biz/health/repo"
+	"github.com/blackhorseya/lobster/internal/app/biz/objective"
+	repo3 "github.com/blackhorseya/lobster/internal/app/biz/objective/repo"
 	"github.com/blackhorseya/lobster/internal/app/biz/todo"
 	repo2 "github.com/blackhorseya/lobster/internal/app/biz/todo/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/config"
@@ -38,7 +41,10 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	repoIRepo := repo2.NewImpl(client)
 	todoIBiz := todo.NewImpl(repoIRepo)
 	todoIHandler := todo2.NewImpl(todoIBiz)
-	initHandlers := apis.CreateInitHandlerFn(iHandler, todoIHandler)
+	iRepo2 := repo3.NewImpl(client)
+	objectiveIBiz := objective.NewImpl(iRepo2)
+	objectiveIHandler := objective2.NewImpl(objectiveIBiz)
+	initHandlers := apis.CreateInitHandlerFn(iHandler, todoIHandler, objectiveIHandler)
 	engine := http.NewGinEngine(configConfig, initHandlers)
 	injector := app.NewInjector(engine, configConfig)
 	return injector, nil

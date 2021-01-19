@@ -4,6 +4,7 @@ import (
 	// import swagger docs
 	_ "github.com/blackhorseya/lobster/internal/app/apis/docs"
 	"github.com/blackhorseya/lobster/internal/app/apis/health"
+	"github.com/blackhorseya/lobster/internal/app/apis/objective"
 	"github.com/blackhorseya/lobster/internal/app/apis/todo"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
 	"github.com/gin-gonic/gin"
@@ -13,7 +14,7 @@ import (
 )
 
 // CreateInitHandlerFn serve caller to create init handler
-func CreateInitHandlerFn(health health.IHandler, todoHandler todo.IHandler) http.InitHandlers {
+func CreateInitHandlerFn(health health.IHandler, todoHandler todo.IHandler, objHandler objective.IHandler) http.InitHandlers {
 	return func(r *gin.Engine) {
 		api := r.Group("/api")
 		{
@@ -34,6 +35,15 @@ func CreateInitHandlerFn(health health.IHandler, todoHandler todo.IHandler) http
 					tasks.PUT(":id", todoHandler.Update)
 					tasks.DELETE(":id", todoHandler.Delete)
 				}
+
+				objs := v1.Group("objectives")
+				{
+					objs.GET("", objHandler.List)
+					objs.GET(":id", objHandler.GetByID)
+					objs.POST("", objHandler.Create)
+					objs.PUT(":id", objHandler.Update)
+					objs.DELETE(":id", objHandler.Delete)
+				}
 			}
 		}
 	}
@@ -43,5 +53,6 @@ func CreateInitHandlerFn(health health.IHandler, todoHandler todo.IHandler) http
 var ProviderSet = wire.NewSet(
 	health.ProviderSet,
 	todo.ProviderSet,
+	objective.ProviderSet,
 	CreateInitHandlerFn,
 )
