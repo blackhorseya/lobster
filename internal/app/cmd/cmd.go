@@ -31,6 +31,7 @@ Lobster is a tool which integration todo list, OKRs, sprint board, pomodoro and 
 	}
 )
 
+// Execute serve caller to execute root command
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

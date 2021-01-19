@@ -67,7 +67,7 @@ var (
 	// ErrCountObjective means count all objectives is failure
 	ErrCountObjective = fmt.Errorf("count objective is failure")
 
-	// ErrUpdateOjb means update a objective is failure
+	// ErrUpdateObj means update a objective is failure
 	ErrUpdateObj = fmt.Errorf("update a objective is failure")
 
 	// ErrGetObjByID means get objective by id is failure

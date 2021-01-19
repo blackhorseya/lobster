@@ -11,9 +11,9 @@ import (
 )
 
 var getCmd = &cobra.Command{
-	Use:     "get",
-	Short:   "Get task by ID",
-	Long: "lobster tasks get ID [flags]",
+	Use:   "get",
+	Short: "Get task by ID",
+	Long:  "lobster tasks get ID [flags]",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			return er.ErrInvalidID

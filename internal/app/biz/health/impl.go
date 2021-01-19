@@ -16,28 +16,28 @@ func NewImpl(repo repo.IRepo) IBiz {
 }
 
 func (i *impl) Readiness(ctx contextx.Contextx) error {
-	if ok, err := i.repo.Ping(ctx); err != nil {
+	ok, err := i.repo.Ping(ctx)
+	if err != nil {
 		ctx.WithField("err", err).Error(er.ErrDBConnect)
 		return er.ErrDBConnect
-	} else {
-		if !ok {
-			ctx.WithField("ok", ok).Error(er.ErrDBConnect)
-			return er.ErrDBConnect
-		}
+	}
+	if !ok {
+		ctx.WithField("ok", ok).Error(er.ErrDBConnect)
+		return er.ErrDBConnect
 	}
 
 	return nil
 }
 
 func (i *impl) Liveness(ctx contextx.Contextx) error {
-	if ok, err := i.repo.Ping(ctx); err != nil {
+	ok, err := i.repo.Ping(ctx)
+	if err != nil {
 		ctx.WithField("err", err).Error(er.ErrDBConnect)
 		return er.ErrDBConnect
-	} else {
-		if !ok {
-			ctx.WithField("ok", ok).Error(er.ErrDBConnect)
-			return er.ErrDBConnect
-		}
+	}
+	if !ok {
+		ctx.WithField("ok", ok).Error(er.ErrDBConnect)
+		return er.ErrDBConnect
 	}
 
 	return nil

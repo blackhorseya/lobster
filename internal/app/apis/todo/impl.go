@@ -241,8 +241,7 @@ func (i *impl) Delete(c *gin.Context) {
 		logger.WithFields(logrus.Fields{"error": err, "id": req.ID}).Error(er.ErrDeleteTask)
 		c.JSON(http.StatusOK, gin.H{"error": er.ErrDeleteTask})
 		return
-	} else {
-		c.JSON(http.StatusNoContent, nil)
-		return
 	}
+
+	c.JSON(http.StatusNoContent, nil)
 }

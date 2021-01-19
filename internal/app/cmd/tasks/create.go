@@ -13,9 +13,9 @@ import (
 )
 
 var createCmd = &cobra.Command{
-	Use:     "create",
-	Short:   "Create a task",
-	Long: "lobster tasks create TITLE [flags]",
+	Use:   "create",
+	Short: "Create a task",
+	Long:  "lobster tasks create TITLE [flags]",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			return er.ErrEmptyTitle
