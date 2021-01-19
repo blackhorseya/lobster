@@ -90,6 +90,253 @@ var doc = `{
                 }
             }
         },
+        "/v1/objectives": {
+            "get": {
+                "description": "List all objectives",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Objectives"
+                ],
+                "summary": "List all objectives",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "size of page",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/okr.Objective"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a objective",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Objectives"
+                ],
+                "summary": "Create a objective",
+                "parameters": [
+                    {
+                        "description": "created objective",
+                        "name": "created",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/okr.Objective"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/okr.Objective"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/objectives/{id}": {
+            "get": {
+                "description": "Get a objective by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Objectives"
+                ],
+                "summary": "Get a objective by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of objective",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/okr.Objective"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a objective by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Objectives"
+                ],
+                "summary": "Update a objective by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of objective",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "created objective",
+                        "name": "created",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/okr.Objective"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/okr.Objective"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Get a objective by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Objectives"
+                ],
+                "summary": "Get a objective by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of objective",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/tasks": {
             "get": {
                 "description": "List all tasks",
@@ -327,6 +574,63 @@ var doc = `{
         }
     },
     "definitions": {
+        "okr.KeyResult": {
+            "type": "object",
+            "properties": {
+                "actual": {
+                    "description": "Actual describe the actual of key result",
+                    "type": "integer"
+                },
+                "create_at": {
+                    "description": "CreateAt describe the key result create milliseconds",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "ID describe the unique identify code of key result",
+                    "type": "string"
+                },
+                "target": {
+                    "description": "Target describe the target of key result",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "Title describe the title of key result",
+                    "type": "string"
+                }
+            }
+        },
+        "okr.Objective": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "description": "CreateAt describe the objective create milliseconds",
+                    "type": "integer"
+                },
+                "end_at": {
+                    "description": "EndAt describe the objective end time milliseconds",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "ID describe the unique identify code of objective",
+                    "type": "string"
+                },
+                "key_results": {
+                    "description": "KeyResults describe key results of objective",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/okr.KeyResult"
+                    }
+                },
+                "start_at": {
+                    "description": "StartAt describe the objective start time milliseconds",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "Title describe the title of objective",
+                    "type": "string"
+                }
+            }
+        },
         "todo.Task": {
             "type": "object",
             "properties": {

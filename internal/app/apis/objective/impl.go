@@ -25,6 +25,17 @@ type reqID struct {
 	ID string `uri:"id" binding:"required,uuid"`
 }
 
+// @Summary Get a objective by id
+// @Description Get a objective by id
+// @Tags Objectives
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of objective"
+// @Success 200 {object} okr.Objective
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /v1/objectives/{id} [get]
 func (i *impl) GetByID(c *gin.Context) {
 	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
 	if !ok {
@@ -49,10 +60,27 @@ func (i *impl) GetByID(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"error": er.ErrGetObjByID})
 		return
 	}
+	if ret == nil {
+		logger.WithFields(logrus.Fields{"id": req.ID}).Error(er.ErrObjectiveNotExists)
+		c.JSON(http.StatusNotFound, gin.H{"error": er.ErrObjectiveNotExists})
+		return
+	}
 
 	c.JSON(http.StatusOK, ret)
 }
 
+// @Summary List all objectives
+// @Description List all objectives
+// @Tags Objectives
+// @Accept application/json
+// @Produce application/json
+// @Param page query integer false "page" default(1)
+// @Param size query integer false "size of page" default(10)
+// @Success 200 {array} okr.Objective
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /v1/objectives [get]
 func (i *impl) List(c *gin.Context) {
 	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
 	if !ok {
@@ -93,6 +121,16 @@ func (i *impl) List(c *gin.Context) {
 	c.JSON(http.StatusOK, ret)
 }
 
+// @Summary Create a objective
+// @Description Create a objective
+// @Tags Objectives
+// @Accept application/json
+// @Produce application/json
+// @Param created body okr.Objective true "created objective"
+// @Success 201 {object} okr.Objective
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/objectives [post]
 func (i *impl) Create(c *gin.Context) {
 	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
 	if !ok {
@@ -127,6 +165,17 @@ func (i *impl) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, ret)
 }
 
+// @Summary Update a objective by id
+// @Description Update a objective by id
+// @Tags Objectives
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of objective"
+// @Param created body okr.Objective true "created objective"
+// @Success 200 {object} okr.Objective
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/objectives/{id} [put]
 func (i *impl) Update(c *gin.Context) {
 	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
 	if !ok {
@@ -168,6 +217,16 @@ func (i *impl) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, ret)
 }
 
+// @Summary Get a objective by id
+// @Description Get a objective by id
+// @Tags Objectives
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of objective"
+// @Success 204 {object} string
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/objectives/{id} [delete]
 func (i *impl) Delete(c *gin.Context) {
 	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
 	if !ok {
