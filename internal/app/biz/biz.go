@@ -3,6 +3,7 @@ package biz
 import (
 	"github.com/blackhorseya/lobster/internal/app/biz/health"
 	"github.com/blackhorseya/lobster/internal/app/biz/objective"
+	"github.com/blackhorseya/lobster/internal/app/biz/result"
 	"github.com/blackhorseya/lobster/internal/app/biz/todo"
 	"github.com/google/wire"
 )
@@ -12,4 +13,5 @@ var ProviderSet = wire.NewSet(
 	health.ProviderSet,
 	todo.ProviderSet,
 	objective.ProviderSet,
+	result.ProviderSet,
 )
