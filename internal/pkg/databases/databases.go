@@ -1,10 +1,12 @@
 package databases
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -28,5 +30,20 @@ func NewMongoDB(cfg *config.Config) (*mongo.Client, error) {
 	return client, nil
 }
 
+// NewMongoDB init mariadb client
+func NewMariaDB(cfg *config.Config) (*sql.DB, error) {
+	db, err := sql.Open("mysql", cfg.DB.URL)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
+
+	return db, nil
+}
+
 // ProviderSet is a provider set for wire
-var ProviderSet = wire.NewSet(NewMongoDB)
+var ProviderSet = wire.NewSet(NewMariaDB)
