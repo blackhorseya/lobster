@@ -45,8 +45,7 @@ jobs:
       install:
         - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
         - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
-        - echo $kubeconfig | base64 --decode > ${HOME}/kubeconfig.yaml && export KUBECONFIG=${HOME}/kubeconfig.yaml
-        - echo $GCLOUD_SA_KEY | base64 --decode > ${HOME}/key.json && export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/key.json
+        - echo $KUBECONFIG | base64 --decode > ${HOME}/kubeconfig.yaml && export KUBECONFIG=${HOME}/kubeconfig.yaml
         - echo $docker_password | base64 --decode | docker login -u _json_key --password-stdin https://gcr.io
         - export version=$(echo $TRAVIS_TAG | cut -c 2-)
       script:
