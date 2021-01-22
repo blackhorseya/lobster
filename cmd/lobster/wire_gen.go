@@ -31,13 +31,17 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	if err != nil {
 		return nil, err
 	}
+	db, err := databases.NewMariaDB(configConfig)
+	if err != nil {
+		return nil, err
+	}
+	iRepo := repo.NewImpl(db)
+	iBiz := health.NewImpl(iRepo)
+	iHandler := health2.NewImpl(iBiz)
 	client, err := databases.NewMongoDB(configConfig)
 	if err != nil {
 		return nil, err
 	}
-	iRepo := repo.NewImpl(client)
-	iBiz := health.NewImpl(iRepo)
-	iHandler := health2.NewImpl(iBiz)
 	repoIRepo := repo2.NewImpl(client)
 	todoIBiz := todo.NewImpl(repoIRepo)
 	todoIHandler := todo2.NewImpl(todoIBiz)

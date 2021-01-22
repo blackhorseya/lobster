@@ -32,11 +32,10 @@ func NewMongoDB(cfg *config.Config) (*mongo.Client, error) {
 
 // NewMongoDB init mariadb client
 func NewMariaDB(cfg *config.Config) (*sql.DB, error) {
-	db, err := sql.Open("mysql", cfg.DB.URL)
+	db, err := sql.Open("mysql", cfg.DB.Mariadb)
 	if err != nil {
 		return nil, err
 	}
-	defer db.Close()
 
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
@@ -46,4 +45,4 @@ func NewMariaDB(cfg *config.Config) (*sql.DB, error) {
 }
 
 // ProviderSet is a provider set for wire
-var ProviderSet = wire.NewSet(NewMariaDB)
+var ProviderSet = wire.NewSet(NewMariaDB, NewMongoDB)
