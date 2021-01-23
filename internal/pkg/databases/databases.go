@@ -1,13 +1,13 @@
 package databases
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
+	"github.com/jmoiron/sqlx"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -31,8 +31,8 @@ func NewMongoDB(cfg *config.Config) (*mongo.Client, error) {
 }
 
 // NewMongoDB init mariadb client
-func NewMariaDB(cfg *config.Config) (*sql.DB, error) {
-	db, err := sql.Open("mysql", cfg.DB.Mariadb)
+func NewMariaDB(cfg *config.Config) (*sqlx.DB, error) {
+	db, err := sqlx.Open("mysql", cfg.DB.Mariadb)
 	if err != nil {
 		return nil, err
 	}

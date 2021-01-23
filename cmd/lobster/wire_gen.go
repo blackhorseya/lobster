@@ -38,13 +38,13 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	iRepo := repo.NewImpl(db)
 	iBiz := health.NewImpl(iRepo)
 	iHandler := health2.NewImpl(iBiz)
+	repoIRepo := repo2.NewImpl(db)
+	todoIBiz := todo.NewImpl(repoIRepo)
+	todoIHandler := todo2.NewImpl(todoIBiz)
 	client, err := databases.NewMongoDB(configConfig)
 	if err != nil {
 		return nil, err
 	}
-	repoIRepo := repo2.NewImpl(client)
-	todoIBiz := todo.NewImpl(repoIRepo)
-	todoIHandler := todo2.NewImpl(todoIBiz)
 	iRepo2 := repo3.NewImpl(client)
 	objectiveIBiz := objective.NewImpl(iRepo2)
 	objectiveIHandler := objective2.NewImpl(objectiveIBiz)

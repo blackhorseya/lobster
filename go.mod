@@ -15,6 +15,7 @@ require (
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/google/uuid v1.1.4
 	github.com/google/wire v0.4.0
+	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/klauspost/compress v1.11.6 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect

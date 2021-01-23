@@ -1,18 +1,18 @@
 package repo
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	"github.com/jmoiron/sqlx"
 )
 
 type impl struct {
-	rw *sql.DB
+	rw *sqlx.DB
 }
 
 // NewImpl serve caller to create an IRepo
-func NewImpl(db *sql.DB) IRepo {
+func NewImpl(db *sqlx.DB) IRepo {
 	return &impl{rw: db}
 }
 
