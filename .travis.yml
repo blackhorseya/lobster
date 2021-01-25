@@ -19,7 +19,6 @@ env:
   global:
     - GO111MODULE=on
 
-
 stages:
   - Tests
   - name: Deploy
