@@ -5,26 +5,24 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/jmoiron/sqlx"
 )
 
 type impl struct {
-	mongo *mongo.Client
+	rw *sqlx.DB
 }
 
 // NewImpl serve caller to create an IRepo
-func NewImpl(mongo *mongo.Client) IRepo {
-	return &impl{mongo: mongo}
+func NewImpl(rw *sqlx.DB) IRepo {
+	return &impl{rw: rw}
 }
 
 func (i *impl) Create(ctx contextx.Contextx, created *okr.Objective) (*okr.Objective, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	coll := i.mongo.Database("lobster-db").Collection("objectives")
-	_, err := coll.InsertOne(timeout, created)
+	cmd := `INSERT INTO objectives (id, title, start_at, end_at, create_at) VALUES (:id, :title, :start_at, :end_at, :create_at)`
+	_, err := i.rw.NamedExecContext(timeout, cmd, created)
 	if err != nil {
 		return nil, err
 	}
@@ -36,43 +34,25 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*okr.Objective, erro
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	coll := i.mongo.Database("lobster-db").Collection("objectives")
-	res := coll.FindOne(timeout, bson.D{{"id", id}})
-	if res.Err() != nil {
-		return nil, res.Err()
-	}
-
-	var ret *okr.Objective
-	if err := res.Decode(&ret); err != nil {
+	var ret okr.Objective
+	cmd := "SELECT id, title, start_at, end_at, create_at FROM objectives WHERE id = ?"
+	err := i.rw.GetContext(timeout, &ret, cmd, id)
+	if err != nil {
 		return nil, err
 	}
 
-	return ret, nil
+	return &ret, nil
 }
 
 func (i *impl) List(ctx contextx.Contextx, offset, limit int) ([]*okr.Objective, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	coll := i.mongo.Database("lobster-db").Collection("objectives")
-	cur, err := coll.Find(timeout, bson.D{}, options.Find().SetSkip(int64(offset)).SetLimit(int64(limit)))
+	var ret []*okr.Objective
+	cmd := "SELECT id, title, start_at, end_at, create_at FROM objectives LIMIT ? OFFSET ?"
+	err := i.rw.SelectContext(timeout, &ret, cmd, limit, offset)
 	if err != nil {
 		return nil, err
-	}
-	defer cur.Close(timeout)
-
-	var ret []*okr.Objective
-	for cur.Next(timeout) {
-		var ele *okr.Objective
-		if err := cur.Decode(&ele); err != nil {
-			return nil, err
-		}
-
-		ret = append(ret, ele)
-	}
-
-	if cur.Err() != nil {
-		return nil, cur.Err()
 	}
 
 	return ret, nil
@@ -82,21 +62,23 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	coll := i.mongo.Database("lobster-db").Collection("objectives")
-	ret, err := coll.CountDocuments(timeout, bson.D{})
+	var ret int
+	cmd := "SELECT COUNT(*) FROM objectives"
+	row := i.rw.QueryRowxContext(timeout, cmd)
+	err := row.Scan(&ret)
 	if err != nil {
 		return 0, err
 	}
 
-	return int(ret), nil
+	return ret, nil
 }
 
 func (i *impl) Update(ctx contextx.Contextx, updated *okr.Objective) (*okr.Objective, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	coll := i.mongo.Database("lobster-db").Collection("objectives")
-	_, err := coll.UpdateOne(timeout, bson.D{{"id", updated.ID}}, bson.D{{"$set", updated}})
+	cmd := "UPDATE objectives SET title=:title, start_at=:start_at, end_at=:end_at WHERE id = :id"
+	_, err := i.rw.NamedExecContext(timeout, cmd, updated)
 	if err != nil {
 		return nil, err
 	}
@@ -108,11 +90,8 @@ func (i *impl) Delete(ctx contextx.Contextx, id string) (int, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	coll := i.mongo.Database("lobster-db").Collection("objectives")
-	_, err := coll.DeleteOne(timeout, bson.D{{"id", id}})
-	if err != nil {
-		return 0, err
-	}
+	cmd := "DELETE FROM objectives WHERE id = ?"
+	_ = i.rw.QueryRowxContext(timeout, cmd, id)
 
 	return 1, nil
 }

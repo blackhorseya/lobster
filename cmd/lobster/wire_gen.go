@@ -41,11 +41,7 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	repoIRepo := repo2.NewImpl(db)
 	todoIBiz := todo.NewImpl(repoIRepo)
 	todoIHandler := todo2.NewImpl(todoIBiz)
-	client, err := databases.NewMongoDB(configConfig)
-	if err != nil {
-		return nil, err
-	}
-	iRepo2 := repo3.NewImpl(client)
+	iRepo2 := repo3.NewImpl(db)
 	objectiveIBiz := objective.NewImpl(iRepo2)
 	objectiveIHandler := objective2.NewImpl(objectiveIBiz)
 	initHandlers := apis.CreateInitHandlerFn(iHandler, todoIHandler, objectiveIHandler)
