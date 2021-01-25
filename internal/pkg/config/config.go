@@ -58,7 +58,6 @@ func (h *HTTP) GetAddress() string {
 
 // DB declare database configuration
 type DB struct {
-	Mariadb string `json:"mariadb" yaml:"mariadb"`
 	URL   string `json:"url" yaml:"url"`
 	Debug bool   `json:"debug" yaml:"debug"`
 }

@@ -7,8 +7,7 @@ http:
 
 db:
   debug: true
-  mariadb: "lobster:changeme@tcp(localhost:3306)/lobster?charset=utf8"
-  url: "mongodb://lobster-app:changeme@localhost:27019/lobster-db/?connect=direct&authSource=lobster-db"
+  url: "lobster:changeme@tcp(localhost:3306)/lobster?charset=utf8"
 
 log:
   format: text
