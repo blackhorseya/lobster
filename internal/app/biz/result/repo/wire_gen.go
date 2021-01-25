@@ -18,11 +18,11 @@ func CreateRepo(path string) (IRepo, error) {
 	if err != nil {
 		return nil, err
 	}
-	client, err := databases.NewMongoDB(configConfig)
+	db, err := databases.NewMariaDB(configConfig)
 	if err != nil {
 		return nil, err
 	}
-	iRepo := NewImpl(client)
+	iRepo := NewImpl(db)
 	return iRepo, nil
 }
 

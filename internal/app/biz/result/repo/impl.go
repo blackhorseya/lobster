@@ -1,13 +1,14 @@
 package repo
 
-import "go.mongodb.org/mongo-driver/mongo"
+import (
+	"github.com/jmoiron/sqlx"
+)
 
 type impl struct {
-	mongo *mongo.Client
+	rw *sqlx.DB
 }
 
 // NewImpl serve caller to create an IRepo
-func NewImpl(mongo *mongo.Client) IRepo {
-	return &impl{mongo: mongo}
-
+func NewImpl(rw *sqlx.DB) IRepo {
+	return &impl{rw: rw}
 }

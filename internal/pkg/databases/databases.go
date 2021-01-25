@@ -45,4 +45,4 @@ func NewMariaDB(cfg *config.Config) (*sqlx.DB, error) {
 }
 
 // ProviderSet is a provider set for wire
-var ProviderSet = wire.NewSet(NewMariaDB, NewMongoDB)
+var ProviderSet = wire.NewSet(NewMariaDB)
