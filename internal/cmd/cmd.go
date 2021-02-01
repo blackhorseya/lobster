@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/blackhorseya/lobster/internal/app/cmd/config"
-	"github.com/blackhorseya/lobster/internal/app/cmd/tasks"
+	"github.com/blackhorseya/lobster/internal/cmd/config"
+	"github.com/blackhorseya/lobster/internal/cmd/tasks"
 	C "github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/spf13/cobra"
 )
