@@ -16,6 +16,7 @@ var cfg *config.Config
 // Cmd is root command
 var Cmd = &cobra.Command{
 	Use: "config",
+	Short: "View and edit Lobster configuration",
 }
 
 func init() {
