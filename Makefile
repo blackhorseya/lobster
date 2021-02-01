@@ -51,7 +51,7 @@ install-db:
 
 .PHONY: install-cli
 install-cli:
-	@go build -o ./bin/lobster ./cmd/cli
+	@go install ./cmd/lobster
 
 .PHONY: deploy
 deploy:
