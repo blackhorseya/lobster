@@ -11,10 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	format = "%-36s\t%-20s\t%-6v\t%-9v"
-)
-
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all tasks",

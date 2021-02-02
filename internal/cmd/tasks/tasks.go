@@ -10,14 +10,21 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
-var cfg *config.Config
+const (
+	format = "%-36s\t%-20s\t%-6v\t%-9v"
+)
 
-// Cmd is root command
-var Cmd = &cobra.Command{
-	Use: "tasks",
-	Short: "Task management",
-}
+var (
+	cfgFile string
+
+	cfg *config.Config
+
+	// Cmd is root command
+	Cmd = &cobra.Command{
+		Use:   "tasks",
+		Short: "Task management",
+	}
+)
 
 func init() {
 	cobra.OnInitialize(initConfig)
