@@ -46,7 +46,7 @@ var listCmd = &cobra.Command{
 			return
 		}
 
-		ret := []string{fmt.Sprintf(format, "ID", "Title", "Status", "Create At")}
+		ret := []string{header}
 		for _, t := range tasks {
 			ret = append(ret, t.ToLineByFormat(format))
 		}

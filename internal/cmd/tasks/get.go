@@ -59,7 +59,7 @@ var getCmd = &cobra.Command{
 			return
 		}
 
-		ret := []string{fmt.Sprintf(format, "ID", "Title", "Status", "Create At")}
+		ret := []string{header}
 		ret = append(ret, task.ToLineByFormat(format))
 
 		fmt.Println(strings.Join(ret, "\n"))

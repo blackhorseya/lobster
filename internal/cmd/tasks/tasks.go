@@ -15,6 +15,10 @@ const (
 )
 
 var (
+	header = fmt.Sprintf(format, "ID", "Title", "Status", "Create At")
+)
+
+var (
 	cfgFile string
 
 	cfg *config.Config
