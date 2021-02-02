@@ -21,8 +21,6 @@ var Cmd = &cobra.Command{
 
 func init() {
 	cobra.OnInitialize(initConfig)
-
-	Cmd.AddCommand(viewCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.

@@ -8,8 +8,12 @@ import (
 
 var viewCmd = &cobra.Command{
 	Use:   "view",
-	Short: "Show configuration",
+	Short: "View configuration",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(cfg.String())
 	},
+}
+
+func init() {
+	Cmd.AddCommand(viewCmd)
 }
