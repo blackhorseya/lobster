@@ -2,7 +2,6 @@ package tasks
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
@@ -40,17 +39,11 @@ var deleteCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
-		defer func() {
-			_ = resp.Body.Close()
-		}()
+		defer resp.Body.Close()
 
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println(err)
-			return
+		if resp.StatusCode == http.StatusNoContent {
+			fmt.Printf("Delete task ID: %v is success\n", args[0])
 		}
-
-		fmt.Println(string(body))
 	},
 }
 
