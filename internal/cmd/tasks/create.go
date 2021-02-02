@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
@@ -52,7 +53,17 @@ var createCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Println(string(body))
+		var task *todo.Task
+		err = json.Unmarshal(body, &task)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		ret := []string{header}
+		ret = append(ret, task.ToLineByFormat(format))
+
+		fmt.Println(strings.Join(ret, "\n"))
 	},
 }
 
