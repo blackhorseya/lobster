@@ -1,11 +1,18 @@
 package tasks
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
+	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
 	"github.com/spf13/cobra"
+)
+
+const (
+	format = "%-36s\t%-20s\t%-6v\t%-9v"
 )
 
 var listCmd = &cobra.Command{
@@ -28,9 +35,7 @@ var listCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
-		defer func() {
-			_ = resp.Body.Close()
-		}()
+		defer resp.Body.Close()
 
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
@@ -38,7 +43,19 @@ var listCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Println(string(body))
+		var tasks []*todo.Task
+		err = json.Unmarshal(body, &tasks)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		ret := []string{fmt.Sprintf(format, "ID", "Title", "Status", "Create At")}
+		for _, t := range tasks {
+			ret = append(ret, t.ToLineByFormat(format))
+		}
+
+		fmt.Println(strings.Join(ret, "\n"))
 	},
 }
 
