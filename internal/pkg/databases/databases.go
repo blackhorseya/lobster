@@ -5,6 +5,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	// import mysql driver
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
 	"github.com/jmoiron/sqlx"
@@ -30,7 +31,7 @@ func NewMongoDB(cfg *config.Config) (*mongo.Client, error) {
 	return client, nil
 }
 
-// NewMongoDB init mariadb client
+// NewMariaDB init mariadb client
 func NewMariaDB(cfg *config.Config) (*sqlx.DB, error) {
 	db, err := sqlx.Open("mysql", cfg.DB.URL)
 	if err != nil {

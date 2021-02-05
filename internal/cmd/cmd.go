@@ -36,7 +36,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.lobster.yaml)")
 }
 
-// NewInjector serve caller to create an injector
+// NewCommand serve caller to create n cobra command
 func NewCommand() *cobra.Command {
 	return rootCmd
 }

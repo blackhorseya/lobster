@@ -20,6 +20,7 @@ type Task struct {
 	CreateAt int64 `json:"create_at" db:"create_at"`
 }
 
+// ToLineByFormat serve caller to print a line by format
 func (t *Task) ToLineByFormat(format string) string {
-	return fmt.Sprintf(format, t.ID, t.Title, t.Completed, time.Unix(t.CreateAt/1000000000, t.CreateAt%100000000))
+	return fmt.Sprintf(format, t.ID, t.Title, t.Completed, time.Unix(t.CreateAt/1e9, t.CreateAt%1e9))
 }
