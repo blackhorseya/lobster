@@ -6,7 +6,6 @@
 package main
 
 import (
-	"github.com/blackhorseya/lobster/internal/app"
 	"github.com/blackhorseya/lobster/internal/app/apis"
 	health2 "github.com/blackhorseya/lobster/internal/app/apis/health"
 	objective2 "github.com/blackhorseya/lobster/internal/app/apis/objective"
@@ -18,6 +17,7 @@ import (
 	repo3 "github.com/blackhorseya/lobster/internal/app/biz/objective/repo"
 	"github.com/blackhorseya/lobster/internal/app/biz/todo"
 	repo2 "github.com/blackhorseya/lobster/internal/app/biz/todo/repo"
+	"github.com/blackhorseya/lobster/internal/pkg/app"
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/databases"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
