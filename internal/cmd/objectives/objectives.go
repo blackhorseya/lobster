@@ -11,11 +11,11 @@ import (
 )
 
 const (
-	format = "%-36s\t%-20s\t%-6v\t%-9v"
+	format = "%-36s\t%-20s\t%-9v"
 )
 
 var (
-	header = fmt.Sprintf(format, "ID", "Title", "Status", "Create At")
+	header = fmt.Sprintf(format, "ID", "Title", "Create At")
 )
 
 var (
