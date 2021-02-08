@@ -1,5 +1,11 @@
 package okr
 
+import (
+	"fmt"
+	"time"
+
+)
+
 // Objective declare an objective basic information
 type Objective struct {
 	// ID describe the unique identify code of objective
@@ -19,6 +25,10 @@ type Objective struct {
 
 	// CreateAt describe the objective create milliseconds
 	CreateAt int64 `json:"create_at" db:"create_at"`
+}
+
+func (o *Objective) ToLineByFormat(format string) string {
+	return fmt.Sprintf(format, o.ID, o.Title, time.Unix(o.CreateAt/1e9, o.CreateAt%1e9))
 }
 
 // KeyResult declare a key result basic information
