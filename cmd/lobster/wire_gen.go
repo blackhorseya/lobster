@@ -7,9 +7,9 @@ package main
 
 import (
 	"github.com/blackhorseya/lobster/internal/apis"
-	health2 "github.com/blackhorseya/lobster/internal/apis/health"
-	objective2 "github.com/blackhorseya/lobster/internal/apis/objective"
-	todo2 "github.com/blackhorseya/lobster/internal/apis/todo"
+	health2 "github.com/blackhorseya/lobster/internal/apis/restful/health"
+	objective2 "github.com/blackhorseya/lobster/internal/apis/restful/objective"
+	todo2 "github.com/blackhorseya/lobster/internal/apis/restful/todo"
 	"github.com/blackhorseya/lobster/internal/biz"
 	"github.com/blackhorseya/lobster/internal/biz/health"
 	"github.com/blackhorseya/lobster/internal/biz/health/repo"

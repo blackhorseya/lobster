@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/blackhorseya/lobster/internal/cmd/config"
-	"github.com/blackhorseya/lobster/internal/cmd/objectives"
-	"github.com/blackhorseya/lobster/internal/cmd/tasks"
+	"github.com/blackhorseya/lobster/internal/apis/cmd/config"
+	"github.com/blackhorseya/lobster/internal/apis/cmd/objectives"
+	"github.com/blackhorseya/lobster/internal/apis/cmd/tasks"
 	"github.com/google/wire"
 	"github.com/spf13/cobra"
 )

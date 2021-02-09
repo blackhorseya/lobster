@@ -3,11 +3,11 @@ package main
 import (
 	"os"
 
-	"github.com/blackhorseya/lobster/internal/cmd"
+	cmd2 "github.com/blackhorseya/lobster/internal/apis/cmd"
 )
 
 func main() {
-	if err := cmd.NewCommand().Execute(); err != nil {
+	if err := cmd2.NewCommand().Execute(); err != nil {
 		os.Exit(1)
 	}
 }

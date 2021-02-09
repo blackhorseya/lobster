@@ -2,10 +2,10 @@ package apis
 
 import (
 	// import swagger docs
-	_ "github.com/blackhorseya/lobster/internal/apis/docs"
-	"github.com/blackhorseya/lobster/internal/apis/health"
-	"github.com/blackhorseya/lobster/internal/apis/objective"
-	"github.com/blackhorseya/lobster/internal/apis/todo"
+	_ "github.com/blackhorseya/lobster/internal/apis/restful/docs"
+	"github.com/blackhorseya/lobster/internal/apis/restful/health"
+	"github.com/blackhorseya/lobster/internal/apis/restful/objective"
+	"github.com/blackhorseya/lobster/internal/apis/restful/todo"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
