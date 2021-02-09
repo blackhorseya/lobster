@@ -3,7 +3,6 @@ package okr
 import (
 	"fmt"
 	"time"
-
 )
 
 // Objective declare an objective basic information
@@ -40,10 +39,10 @@ type KeyResult struct {
 	Title string `json:"title" db:"title"`
 
 	// Target describe the target of key result
-	Target int64 `json:"target" db:"target"`
+	Target int `json:"target" db:"target"`
 
 	// Actual describe the actual of key result
-	Actual int64 `json:"actual" db:"actual"`
+	Actual int `json:"actual" db:"actual"`
 
 	// CreateAt describe the key result create milliseconds
 	CreateAt int64 `json:"create_at" db:"create_at"`
