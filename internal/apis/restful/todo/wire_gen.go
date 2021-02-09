@@ -6,13 +6,13 @@
 package todo
 
 import (
-	"github.com/blackhorseya/lobster/internal/biz/todo"
+	"github.com/blackhorseya/lobster/internal/biz/task"
 	"github.com/google/wire"
 )
 
 // Injectors from wire.go:
 
-func CreateIHandler(biz todo.IBiz) (IHandler, error) {
+func CreateIHandler(biz task.IBiz) (IHandler, error) {
 	iHandler := NewImpl(biz)
 	return iHandler, nil
 }

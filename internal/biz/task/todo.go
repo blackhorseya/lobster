@@ -1,7 +1,7 @@
-package todo
+package task
 
 import (
-	"github.com/blackhorseya/lobster/internal/biz/todo/repo"
+	"github.com/blackhorseya/lobster/internal/biz/task/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
 	"github.com/google/wire"

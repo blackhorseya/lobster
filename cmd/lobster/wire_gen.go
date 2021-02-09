@@ -9,14 +9,14 @@ import (
 	"github.com/blackhorseya/lobster/internal/apis"
 	health2 "github.com/blackhorseya/lobster/internal/apis/restful/health"
 	objective2 "github.com/blackhorseya/lobster/internal/apis/restful/objective"
-	todo2 "github.com/blackhorseya/lobster/internal/apis/restful/todo"
+	"github.com/blackhorseya/lobster/internal/apis/restful/todo"
 	"github.com/blackhorseya/lobster/internal/biz"
 	"github.com/blackhorseya/lobster/internal/biz/health"
 	"github.com/blackhorseya/lobster/internal/biz/health/repo"
 	"github.com/blackhorseya/lobster/internal/biz/objective"
 	repo3 "github.com/blackhorseya/lobster/internal/biz/objective/repo"
-	"github.com/blackhorseya/lobster/internal/biz/todo"
-	repo2 "github.com/blackhorseya/lobster/internal/biz/todo/repo"
+	"github.com/blackhorseya/lobster/internal/biz/task"
+	repo2 "github.com/blackhorseya/lobster/internal/biz/task/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/app"
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/databases"
@@ -39,8 +39,8 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	iBiz := health.NewImpl(iRepo)
 	iHandler := health2.NewImpl(iBiz)
 	repoIRepo := repo2.NewImpl(db)
-	todoIBiz := todo.NewImpl(repoIRepo)
-	todoIHandler := todo2.NewImpl(todoIBiz)
+	taskIBiz := task.NewImpl(repoIRepo)
+	todoIHandler := todo.NewImpl(taskIBiz)
 	iRepo2 := repo3.NewImpl(db)
 	objectiveIBiz := objective.NewImpl(iRepo2)
 	objectiveIHandler := objective2.NewImpl(objectiveIBiz)
