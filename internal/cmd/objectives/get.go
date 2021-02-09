@@ -12,10 +12,10 @@ import (
 )
 
 var getCmd = &cobra.Command{
-	Use:   "get",
+	Use:   "get ID",
 	Short: "Get objective by ID",
 	Long:  "lobster objectives get ID [flags]",
-	Args:  cobra.ExactValidArgs(1),
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		uri := fmt.Sprintf("%v/v1/objectives/%v", cfg.API.EndPoint, args[0])
 		req, err := http.NewRequest(http.MethodGet, uri, nil)

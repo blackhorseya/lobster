@@ -13,9 +13,8 @@ import (
 )
 
 var createCmd = &cobra.Command{
-	Use:   "create",
+	Use:   "create TITLE",
 	Short: "Create a objective",
-	Long:  "lobster objectives create TITLE [flags]",
 	Args:  cobra.ExactValidArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		uri := fmt.Sprintf("%v/v1/objectives", cfg.API.EndPoint)
