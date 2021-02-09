@@ -11,7 +11,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/blackhorseya/lobster/internal/biz/todo/mocks"
+	"github.com/blackhorseya/lobster/internal/biz/task/mocks"
 	entities "github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-gonic/gin"

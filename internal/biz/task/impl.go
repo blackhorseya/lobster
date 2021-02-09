@@ -1,9 +1,9 @@
-package todo
+package task
 
 import (
 	"time"
 
-	"github.com/blackhorseya/lobster/internal/biz/todo/repo"
+	"github.com/blackhorseya/lobster/internal/biz/task/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"

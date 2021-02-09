@@ -1,4 +1,4 @@
-package todo
+package task
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/blackhorseya/lobster/internal/biz/todo/repo/mocks"
+	"github.com/blackhorseya/lobster/internal/biz/task/repo/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
 	"github.com/stretchr/testify/mock"
