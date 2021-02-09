@@ -9,7 +9,7 @@ RUN go mod download
 
 COPY cmd ./cmd
 COPY internal ./internal
-RUN go build -o app ./cmd/app
+RUN go build -o app ./cmd/${APP_NAME}
 
 FROM alpine:3 AS final
 
