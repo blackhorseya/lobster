@@ -2,10 +2,10 @@ package apis
 
 import (
 	// import swagger docs
-	_ "github.com/blackhorseya/lobster/internal/apis/docs"
-	"github.com/blackhorseya/lobster/internal/apis/health"
-	"github.com/blackhorseya/lobster/internal/apis/objective"
-	"github.com/blackhorseya/lobster/internal/apis/todo"
+	_ "github.com/blackhorseya/lobster/internal/apis/restful/docs"
+	"github.com/blackhorseya/lobster/internal/apis/restful/health"
+	"github.com/blackhorseya/lobster/internal/apis/restful/objective"
+	"github.com/blackhorseya/lobster/internal/apis/restful/task"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -14,7 +14,7 @@ import (
 )
 
 // CreateInitHandlerFn serve caller to create init handler
-func CreateInitHandlerFn(health health.IHandler, todoHandler todo.IHandler, objHandler objective.IHandler) http.InitHandlers {
+func CreateInitHandlerFn(health health.IHandler, todoHandler task.IHandler, objHandler objective.IHandler) http.InitHandlers {
 	return func(r *gin.Engine) {
 		api := r.Group("/api")
 		{
@@ -52,7 +52,7 @@ func CreateInitHandlerFn(health health.IHandler, todoHandler todo.IHandler, objH
 // ProviderSet is a provider set for wire
 var ProviderSet = wire.NewSet(
 	health.ProviderSet,
-	todo.ProviderSet,
+	task.ProviderSet,
 	objective.ProviderSet,
 	CreateInitHandlerFn,
 )

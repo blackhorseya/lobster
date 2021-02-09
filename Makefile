@@ -51,7 +51,7 @@ install-db:
 
 .PHONY: install-cli
 install-cli:
-	@go install ./cmd/lobster
+	@go install ./cmd/cli/lobster.go
 
 .PHONY: deploy
 deploy:
@@ -69,4 +69,4 @@ gen-wire:
 
 .PHONY: gen-swagger
 gen-swagger:
-	@swag init -g cmd/$(APP_NAME)/main.go --parseInternal -o internal/app/apis/docs
+	@swag init -g cmd/$(APP_NAME)/main.go --parseInternal -o internal/apis/restful/docs
