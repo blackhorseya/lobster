@@ -3,7 +3,7 @@
 //go:generate wire
 //+build !wireinject
 
-package todo
+package task
 
 import (
 	"github.com/blackhorseya/lobster/internal/biz/task"

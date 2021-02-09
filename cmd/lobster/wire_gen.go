@@ -9,7 +9,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/apis"
 	health2 "github.com/blackhorseya/lobster/internal/apis/restful/health"
 	objective2 "github.com/blackhorseya/lobster/internal/apis/restful/objective"
-	"github.com/blackhorseya/lobster/internal/apis/restful/todo"
+	task2 "github.com/blackhorseya/lobster/internal/apis/restful/task"
 	"github.com/blackhorseya/lobster/internal/biz"
 	"github.com/blackhorseya/lobster/internal/biz/health"
 	"github.com/blackhorseya/lobster/internal/biz/health/repo"
@@ -40,11 +40,11 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	iHandler := health2.NewImpl(iBiz)
 	repoIRepo := repo2.NewImpl(db)
 	taskIBiz := task.NewImpl(repoIRepo)
-	todoIHandler := todo.NewImpl(taskIBiz)
+	taskIHandler := task2.NewImpl(taskIBiz)
 	iRepo2 := repo3.NewImpl(db)
 	objectiveIBiz := objective.NewImpl(iRepo2)
 	objectiveIHandler := objective2.NewImpl(objectiveIBiz)
-	initHandlers := apis.CreateInitHandlerFn(iHandler, todoIHandler, objectiveIHandler)
+	initHandlers := apis.CreateInitHandlerFn(iHandler, taskIHandler, objectiveIHandler)
 	engine := http.NewGinEngine(configConfig, initHandlers)
 	injector := app.NewInjector(engine, configConfig)
 	return injector, nil
