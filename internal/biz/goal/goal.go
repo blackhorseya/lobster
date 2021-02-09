@@ -1,7 +1,7 @@
-package objective
+package goal
 
 import (
-	"github.com/blackhorseya/lobster/internal/biz/objective/repo"
+	"github.com/blackhorseya/lobster/internal/biz/goal/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	"github.com/google/wire"

@@ -1,6 +1,6 @@
-package result
+package kr
 
-import "github.com/blackhorseya/lobster/internal/biz/result/repo"
+import "github.com/blackhorseya/lobster/internal/biz/kr/repo"
 
 type impl struct {
 	repo repo.IRepo

@@ -6,13 +6,13 @@
 package objective
 
 import (
-	"github.com/blackhorseya/lobster/internal/biz/objective"
+	"github.com/blackhorseya/lobster/internal/biz/goal"
 	"github.com/google/wire"
 )
 
 // Injectors from wire.go:
 
-func CreateIHandler(biz objective.IBiz) (IHandler, error) {
+func CreateIHandler(biz goal.IBiz) (IHandler, error) {
 	iHandler := NewImpl(biz)
 	return iHandler, nil
 }

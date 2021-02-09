@@ -1,4 +1,4 @@
-package objective
+package goal
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/blackhorseya/lobster/internal/biz/objective/repo/mocks"
+	"github.com/blackhorseya/lobster/internal/biz/goal/repo/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	"github.com/stretchr/testify/mock"

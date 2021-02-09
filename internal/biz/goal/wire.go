@@ -1,9 +1,9 @@
 // +build wireinject
 
-package objective
+package goal
 
 import (
-	"github.com/blackhorseya/lobster/internal/biz/objective/repo"
+	"github.com/blackhorseya/lobster/internal/biz/goal/repo"
 	"github.com/google/wire"
 )
 

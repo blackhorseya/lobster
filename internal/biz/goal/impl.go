@@ -1,9 +1,9 @@
-package objective
+package goal
 
 import (
 	"time"
 
-	"github.com/blackhorseya/lobster/internal/biz/objective/repo"
+	"github.com/blackhorseya/lobster/internal/biz/goal/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"

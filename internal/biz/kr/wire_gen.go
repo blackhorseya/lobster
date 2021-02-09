@@ -3,10 +3,10 @@
 //go:generate wire
 //+build !wireinject
 
-package result
+package kr
 
 import (
-	"github.com/blackhorseya/lobster/internal/biz/result/repo"
+	"github.com/blackhorseya/lobster/internal/biz/kr/repo"
 	"github.com/google/wire"
 )
 
