@@ -17,6 +17,9 @@ type IRepo interface {
 	// Delete means delete a key result
 	Delete(ctx contextx.Contextx, id string) (err error)
 
+	// Create means create a key result for objective
+	Create(ctx contextx.Contextx, created *okr.KeyResult) (kr *okr.KeyResult, err error)
+
 	// todo: 2021-01-25|10:07|doggy|implement me
 }
 

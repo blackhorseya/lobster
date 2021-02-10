@@ -20,6 +20,7 @@ var (
 
 	kr1 = &okr.KeyResult{
 		ID:       krID,
+		GoalID:   goalID,
 		Title:    "kr1",
 		CreateAt: time1,
 	}
@@ -44,8 +45,7 @@ func TestRepoSuite(t *testing.T) {
 
 func (s *repoSuite) Test_impl_QueryKRByID() {
 	type args struct {
-		goalID string
-		krID   string
+		id string
 	}
 	tests := []struct {
 		name    string
@@ -54,21 +54,52 @@ func (s *repoSuite) Test_impl_QueryKRByID() {
 		wantErr bool
 	}{
 		{
-			name:    "goalID krID then kr nil",
-			args:    args{goalID: goalID, krID: krID},
+			name:    "goalID id then kr nil",
+			args:    args{id: krID},
 			want:    kr1,
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		s.T().Run(tt.name, func(t *testing.T) {
-			got, err := s.repo.QueryKRByID(contextx.Background(), tt.args.goalID, tt.args.krID)
+			got, err := s.repo.QueryByID(contextx.Background(), tt.args.id)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("QueryKRByID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("QueryByID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("QueryKRByID() got = %v, want %v", got, tt.want)
+				t.Errorf("QueryByID() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func (s *repoSuite) Test_impl_Create() {
+	type args struct {
+		created *okr.KeyResult
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantKr  *okr.KeyResult
+		wantErr bool
+	}{
+		{
+			name:    "created then kr nil",
+			args:    args{created: kr1},
+			wantKr:  kr1,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			gotKr, err := s.repo.Create(contextx.Background(), tt.args.created)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotKr, tt.wantKr) {
+				t.Errorf("Create() gotKr = %v, want %v", gotKr, tt.wantKr)
 			}
 		})
 	}
