@@ -18,10 +18,12 @@ func NewImpl(rw *sqlx.DB) IRepo {
 }
 
 func (i *impl) QueryList(ctx contextx.Contextx, offset, limit int) (krs []*okr.KeyResult, err error) {
+	// todo: 2021-02-10|09:28|doggy|implement me
 	panic("implement me")
 }
 
 func (i *impl) Delete(ctx contextx.Contextx, id string) (err error) {
+	// todo: 2021-02-10|09:28|doggy|implement me
 	panic("implement me")
 }
 
