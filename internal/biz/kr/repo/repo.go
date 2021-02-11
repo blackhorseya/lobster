@@ -20,7 +20,8 @@ type IRepo interface {
 	// Create means create a key result for objective
 	Create(ctx contextx.Contextx, created *okr.KeyResult) (kr *okr.KeyResult, err error)
 
-	// todo: 2021-01-25|10:07|doggy|implement me
+	// Update means update a key result
+	Update(ctx contextx.Contextx, updated *okr.KeyResult) (kr *okr.KeyResult, err error)
 }
 
 // ProviderSet is a provider set for wire

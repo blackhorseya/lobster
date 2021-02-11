@@ -14,6 +14,29 @@ type IRepo struct {
 	mock.Mock
 }
 
+// Create provides a mock function with given fields: ctx, created
+func (_m *IRepo) Create(ctx contextx.Contextx, created *okr.KeyResult) (*okr.KeyResult, error) {
+	ret := _m.Called(ctx, created)
+
+	var r0 *okr.KeyResult
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *okr.KeyResult) *okr.KeyResult); ok {
+		r0 = rf(ctx, created)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*okr.KeyResult)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *okr.KeyResult) error); ok {
+		r1 = rf(ctx, created)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Delete provides a mock function with given fields: ctx, id
 func (_m *IRepo) Delete(ctx contextx.Contextx, id string) error {
 	ret := _m.Called(ctx, id)
@@ -67,6 +90,29 @@ func (_m *IRepo) QueryList(ctx contextx.Contextx, offset int, limit int) ([]*okr
 	var r1 error
 	if rf, ok := ret.Get(1).(func(contextx.Contextx, int, int) error); ok {
 		r1 = rf(ctx, offset, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Update provides a mock function with given fields: ctx, updated
+func (_m *IRepo) Update(ctx contextx.Contextx, updated *okr.KeyResult) (*okr.KeyResult, error) {
+	ret := _m.Called(ctx, updated)
+
+	var r0 *okr.KeyResult
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *okr.KeyResult) *okr.KeyResult); ok {
+		r0 = rf(ctx, updated)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*okr.KeyResult)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *okr.KeyResult) error); ok {
+		r1 = rf(ctx, updated)
 	} else {
 		r1 = ret.Error(1)
 	}
