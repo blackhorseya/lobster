@@ -7,8 +7,8 @@ package main
 
 import (
 	"github.com/blackhorseya/lobster/internal/apis"
+	goal2 "github.com/blackhorseya/lobster/internal/apis/restful/goal"
 	health2 "github.com/blackhorseya/lobster/internal/apis/restful/health"
-	"github.com/blackhorseya/lobster/internal/apis/restful/objective"
 	task2 "github.com/blackhorseya/lobster/internal/apis/restful/task"
 	"github.com/blackhorseya/lobster/internal/biz"
 	"github.com/blackhorseya/lobster/internal/biz/goal"
@@ -43,8 +43,8 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	taskIHandler := task2.NewImpl(taskIBiz)
 	iRepo2 := repo3.NewImpl(db)
 	goalIBiz := goal.NewImpl(iRepo2)
-	objectiveIHandler := objective.NewImpl(goalIBiz)
-	initHandlers := apis.CreateInitHandlerFn(iHandler, taskIHandler, objectiveIHandler)
+	goalIHandler := goal2.NewImpl(goalIBiz)
+	initHandlers := apis.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler)
 	engine := http.NewGinEngine(configConfig, initHandlers)
 	injector := app.NewInjector(engine, configConfig)
 	return injector, nil

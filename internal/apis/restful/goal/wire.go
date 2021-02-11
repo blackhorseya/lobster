@@ -1,6 +1,6 @@
 // +build wireinject
 
-package objective
+package goal
 
 import (
 	"github.com/blackhorseya/lobster/internal/biz/goal"
