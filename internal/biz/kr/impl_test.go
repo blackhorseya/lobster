@@ -24,6 +24,13 @@ var (
 		Title:    "kr1",
 		CreateAt: time1,
 	}
+
+	updated1 = &okr.KeyResult{
+		ID:       krID,
+		GoalID:   goalID,
+		Title:    "updated kr1",
+		CreateAt: time1,
+	}
 )
 
 type bizSuite struct {
@@ -105,6 +112,264 @@ func (s *bizSuite) Test_impl_GetByID() {
 			}
 			if !reflect.DeepEqual(gotKr, tt.wantKr) {
 				t.Errorf("GetByID() gotKr = %v, want %v", gotKr, tt.wantKr)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizSuite) Test_impl_List() {
+	type args struct {
+		page int
+		size int
+		mock func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantKrs []*okr.KeyResult
+		wantErr bool
+	}{
+		{
+			name:    "-1 10 then nil error",
+			args:    args{page: -1, size: 10},
+			wantKrs: nil,
+			wantErr: true,
+		},
+		{
+			name:    "10 -1 then nil error",
+			args:    args{page: 10, size: -1},
+			wantKrs: nil,
+			wantErr: true,
+		},
+		{
+			name: "1 1 then nil error",
+			args: args{page: 1, size: 1, mock: func() {
+				s.mock.On("QueryList", mock.Anything, 0, 1).Return(nil, errors.New("error")).Once()
+			}},
+			wantKrs: nil,
+			wantErr: true,
+		},
+		{
+			name: "1 1 then not found error",
+			args: args{page: 1, size: 1, mock: func() {
+				s.mock.On("QueryList", mock.Anything, 0, 1).Return(nil, nil).Once()
+			}},
+			wantKrs: nil,
+			wantErr: true,
+		},
+		{
+			name: "1 1 then krs nil",
+			args: args{page: 1, size: 1, mock: func() {
+				s.mock.On("QueryList", mock.Anything, 0, 1).Return([]*okr.KeyResult{kr1}, nil).Once()
+			}},
+			wantKrs: []*okr.KeyResult{kr1},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotKrs, err := s.biz.List(contextx.Background(), tt.args.page, tt.args.size)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("List() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotKrs, tt.wantKrs) {
+				t.Errorf("List() gotKrs = %v, want %v", gotKrs, tt.wantKrs)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizSuite) Test_impl_Delete() {
+	type args struct {
+		id   string
+		mock func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name:    "id then error",
+			args:    args{id: "id"},
+			wantErr: true,
+		},
+		{
+			name: "uuid then error",
+			args: args{id: krID, mock: func() {
+				s.mock.On("Delete", mock.Anything, krID).Return(errors.New("error")).Once()
+			}},
+			wantErr: true,
+		},
+		{
+			name: "uuid then nil",
+			args: args{id: krID, mock: func() {
+				s.mock.On("Delete", mock.Anything, krID).Return(nil).Once()
+			}},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			if err := s.biz.Delete(contextx.Background(), tt.args.id); (err != nil) != tt.wantErr {
+				t.Errorf("Delete() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizSuite) Test_impl_Update() {
+	type args struct {
+		updated *okr.KeyResult
+		mock    func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantKr  *okr.KeyResult
+		wantErr bool
+	}{
+		{
+			name:    "id title then nil error",
+			args:    args{updated: &okr.KeyResult{ID: "id", GoalID: goalID, Title: "title"}},
+			wantKr:  nil,
+			wantErr: true,
+		},
+		{
+			name:    "uuid missing title then nil error",
+			args:    args{updated: &okr.KeyResult{ID: krID, GoalID: goalID, Title: ""}},
+			wantKr:  nil,
+			wantErr: true,
+		},
+		{
+			name:    "goal id then nil error",
+			args:    args{updated: &okr.KeyResult{ID: krID, GoalID: "id", Title: "title"}},
+			wantKr:  nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid then query error",
+			args: args{updated: updated1, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, krID).Return(nil, errors.New("error")).Once()
+			}},
+			wantKr:  nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid then query not found error",
+			args: args{updated: updated1, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, krID).Return(nil, nil).Once()
+			}},
+			wantKr:  nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid then update error",
+			args: args{updated: updated1, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, krID).Return(kr1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated1).Return(nil, errors.New("error")).Once()
+			}},
+			wantKr:  nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid then updated1 nil",
+			args: args{updated: updated1, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, krID).Return(kr1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated1).Return(updated1, nil).Once()
+			}},
+			wantKr:  updated1,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotKr, err := s.biz.Update(contextx.Background(), tt.args.updated)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Update() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotKr, tt.wantKr) {
+				t.Errorf("Update() gotKr = %v, want %v", gotKr, tt.wantKr)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizSuite) Test_impl_LinkToGoal() {
+	type args struct {
+		created *okr.KeyResult
+		mock    func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantKr  *okr.KeyResult
+		wantErr bool
+	}{
+		{
+			name:    "missing title then nil error",
+			args:    args{created: &okr.KeyResult{ID: krID, GoalID: goalID, Title: ""}},
+			wantKr:  nil,
+			wantErr: true,
+		},
+		{
+			name:    "goal id not uuid then nil error",
+			args:    args{created: &okr.KeyResult{ID: krID, GoalID: "id", Title: "title"}},
+			wantKr:  nil,
+			wantErr: true,
+		},
+		{
+			name: "create then nil error",
+			args: args{created: kr1, mock: func() {
+				s.mock.On("Create", mock.Anything, kr1).Return(nil, errors.New("error")).Once()
+			}},
+			wantKr:  nil,
+			wantErr: true,
+		},
+		{
+			name: "create then kr nil",
+			args: args{created: kr1, mock: func() {
+				s.mock.On("Create", mock.Anything, kr1).Return(kr1, nil).Once()
+			}},
+			wantKr:  kr1,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotKr, err := s.biz.LinkToGoal(contextx.Background(), tt.args.created)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LinkToGoal() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotKr, tt.wantKr) {
+				t.Errorf("LinkToGoal() gotKr = %v, want %v", gotKr, tt.wantKr)
 			}
 
 			s.TearDownTest()

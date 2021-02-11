@@ -55,6 +55,26 @@ var (
 )
 
 var (
+	// ErrGetKRByID means get a key result by id is failure
+	ErrGetKRByID = fmt.Errorf("get a key result by id is failure")
+
+	// ErrKRNotExists means key result not exists
+	ErrKRNotExists = fmt.Errorf("key result not exists")
+
+	// ErrListKeyResult means list all key results is failure
+	ErrListKeyResult = fmt.Errorf("list all key results is failure")
+
+	// ErrDeleteKeyResult means delete a key result is failure
+	ErrDeleteKeyResult = fmt.Errorf("delete a key result is failure")
+
+	// ErrUpdateKeyResult means update a key result is failure
+	ErrUpdateKeyResult = fmt.Errorf("update a key result is failure")
+
+	// ErrCreateKR means create a key result is failure
+	ErrCreateKR = fmt.Errorf("create a key result is failure")
+)
+
+var (
 	// ErrCreateObjective means create a objective is failure
 	ErrCreateObjective = fmt.Errorf("create a objective is failure")
 
