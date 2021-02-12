@@ -90,7 +90,7 @@ var doc = `{
                 }
             }
         },
-        "/v1/objectives": {
+        "/v1/goals": {
             "get": {
                 "description": "List all objectives",
                 "consumes": [
@@ -100,7 +100,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Objectives"
+                    "Goals"
                 ],
                 "summary": "List all objectives",
                 "parameters": [
@@ -158,7 +158,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Objectives"
+                    "Goals"
                 ],
                 "summary": "Create a objective",
                 "parameters": [
@@ -194,7 +194,7 @@ var doc = `{
                 }
             }
         },
-        "/v1/objectives/{id}": {
+        "/v1/goals/{id}": {
             "get": {
                 "description": "Get a objective by id",
                 "consumes": [
@@ -204,7 +204,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Objectives"
+                    "Goals"
                 ],
                 "summary": "Get a objective by id",
                 "parameters": [
@@ -252,7 +252,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Objectives"
+                    "Goals"
                 ],
                 "summary": "Update a objective by id",
                 "parameters": [
@@ -303,7 +303,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Objectives"
+                    "Goals"
                 ],
                 "summary": "Get a objective by id",
                 "parameters": [

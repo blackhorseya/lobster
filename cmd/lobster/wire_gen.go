@@ -6,7 +6,7 @@
 package main
 
 import (
-	"github.com/blackhorseya/lobster/internal/apis"
+	"github.com/blackhorseya/lobster/internal/apis/restful"
 	goal2 "github.com/blackhorseya/lobster/internal/apis/restful/goal"
 	health2 "github.com/blackhorseya/lobster/internal/apis/restful/health"
 	kr2 "github.com/blackhorseya/lobster/internal/apis/restful/kr"
@@ -50,7 +50,7 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	iRepo3 := repo4.NewImpl(db)
 	krIBiz := kr.NewImpl(iRepo3)
 	krIHandler := kr2.NewImpl(krIBiz)
-	initHandlers := apis.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, krIHandler)
+	initHandlers := restful.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, krIHandler)
 	engine := http.NewGinEngine(configConfig, initHandlers)
 	injector := app.NewInjector(engine, configConfig)
 	return injector, nil
@@ -58,4 +58,4 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 
 // wire.go:
 
-var providerSet = wire.NewSet(app.ProviderSet, config.ProviderSet, http.ProviderSet, databases.ProviderSet, apis.ProviderSet, biz.ProviderSet)
+var providerSet = wire.NewSet(app.ProviderSet, config.ProviderSet, http.ProviderSet, databases.ProviderSet, restful.ProviderSet, biz.ProviderSet)

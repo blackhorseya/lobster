@@ -3,7 +3,7 @@
 package main
 
 import (
-	"github.com/blackhorseya/lobster/internal/apis"
+	"github.com/blackhorseya/lobster/internal/apis/restful"
 	"github.com/blackhorseya/lobster/internal/biz"
 	"github.com/blackhorseya/lobster/internal/pkg/app"
 	"github.com/blackhorseya/lobster/internal/pkg/config"
@@ -17,7 +17,7 @@ var providerSet = wire.NewSet(
 	config.ProviderSet,
 	http.ProviderSet,
 	databases.ProviderSet,
-	apis.ProviderSet,
+	restful.ProviderSet,
 	biz.ProviderSet,
 )
 

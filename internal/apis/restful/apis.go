@@ -1,4 +1,4 @@
-package apis
+package restful
 
 import (
 	// import swagger docs

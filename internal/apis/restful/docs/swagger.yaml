@@ -109,7 +109,7 @@ paths:
       summary: Readiness
       tags:
       - Health
-  /v1/objectives:
+  /v1/goals:
     get:
       consumes:
       - application/json
@@ -148,7 +148,7 @@ paths:
             type: string
       summary: List all objectives
       tags:
-      - Objectives
+      - Goals
     post:
       consumes:
       - application/json
@@ -177,8 +177,8 @@ paths:
             type: string
       summary: Create a objective
       tags:
-      - Objectives
-  /v1/objectives/{id}:
+      - Goals
+  /v1/goals/{id}:
     delete:
       consumes:
       - application/json
@@ -206,7 +206,7 @@ paths:
             type: string
       summary: Get a objective by id
       tags:
-      - Objectives
+      - Goals
     get:
       consumes:
       - application/json
@@ -238,7 +238,7 @@ paths:
             type: string
       summary: Get a objective by id
       tags:
-      - Objectives
+      - Goals
     put:
       consumes:
       - application/json
@@ -272,7 +272,7 @@ paths:
             type: string
       summary: Update a objective by id
       tags:
-      - Objectives
+      - Goals
   /v1/tasks:
     get:
       consumes:
