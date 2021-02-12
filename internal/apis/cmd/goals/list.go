@@ -18,7 +18,7 @@ var listCmd = &cobra.Command{
 		page, _ := cmd.Flags().GetInt("page")
 		size, _ := cmd.Flags().GetInt("size")
 
-		uri := fmt.Sprintf("%v/v1/objectives?page=%v&size=%v", cfg.API.EndPoint, page, size)
+		uri := fmt.Sprintf("%v/v1/goals?page=%v&size=%v", cfg.API.EndPoint, page, size)
 		req, err := http.NewRequest(http.MethodGet, uri, nil)
 		if err != nil {
 			fmt.Println(err)

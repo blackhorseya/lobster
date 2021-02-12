@@ -290,7 +290,7 @@ func (s *bizSuite) Test_impl_Update() {
 		{
 			name: "uuid then updated1 nil",
 			args: args{updated: updated1, mock: func() {
-				s.mock.On("QueryByID", mock.Anything, krID).Return(kr1, nil).Once()
+				s.mock.On("QueryByID", mock.Anything, updated1.ID).Return(kr1, nil).Once()
 				s.mock.On("Update", mock.Anything, updated1).Return(updated1, nil).Once()
 			}},
 			wantKr:  updated1,
