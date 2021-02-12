@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
+	"os"
 
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -39,19 +40,20 @@ var listCmd = &cobra.Command{
 			return
 		}
 
-		var objs []*okr.Objective
-		err = json.Unmarshal(body, &objs)
+		var goals []*okr.Objective
+		err = json.Unmarshal(body, &goals)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		ret := []string{header}
-		for _, obj := range objs {
-			ret = append(ret, obj.ToLineByFormat(format))
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+		table.SetHeader(header)
+		for _, g := range goals {
+			table.Append(g.ToLine())
 		}
-
-		fmt.Println(strings.Join(ret, "\n"))
+		table.Render()
 	},
 }
 

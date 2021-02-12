@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
+	"os"
 
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -46,9 +47,11 @@ var createCmd = &cobra.Command{
 			return
 		}
 
-		ret := []string{header, obj.ToLineByFormat(format)}
-
-		fmt.Println(strings.Join(ret, "\n"))
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+		table.SetHeader(header)
+		table.Append(obj.ToLine())
+		table.Render()
 	},
 }
 

@@ -1,8 +1,11 @@
 package okr
 
 import (
-	"fmt"
 	"time"
+)
+
+const (
+	timeFormat = "2006-01-02 15:04:05"
 )
 
 // Objective declare an objective basic information
@@ -26,8 +29,15 @@ type Objective struct {
 	CreateAt int64 `json:"create_at" db:"create_at"`
 }
 
-func (o *Objective) ToLineByFormat(format string) string {
-	return fmt.Sprintf(format, o.ID, o.Title, time.Unix(o.CreateAt/1e9, o.CreateAt%1e9))
+// ToLine serve caller to print a string slice
+func (o *Objective) ToLine() []string {
+	return []string{
+		o.ID,
+		o.Title,
+		time.Unix(o.StartAt/1e9, o.StartAt%1e9).Format(timeFormat),
+		time.Unix(o.EndAt/1e9, o.EndAt%1e9).Format(timeFormat),
+		time.Unix(o.CreateAt/1e9, o.CreateAt%1e9).Format(timeFormat),
+	}
 }
 
 // KeyResult declare a key result basic information
