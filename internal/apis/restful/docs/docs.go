@@ -585,6 +585,10 @@ var doc = `{
                     "description": "CreateAt describe the key result create milliseconds",
                     "type": "integer"
                 },
+                "goal_id": {
+                    "description": "GoalID describe the parent goal's id",
+                    "type": "string"
+                },
                 "id": {
                     "description": "ID describe the unique identify code of key result",
                     "type": "string"

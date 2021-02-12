@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/blackhorseya/lobster/internal/apis/cmd/config"
-	"github.com/blackhorseya/lobster/internal/apis/cmd/objectives"
+	"github.com/blackhorseya/lobster/internal/apis/cmd/goals"
 	"github.com/blackhorseya/lobster/internal/apis/cmd/tasks"
 	"github.com/google/wire"
 	"github.com/spf13/cobra"
@@ -34,7 +34,7 @@ func init() {
 	rootCmd.AddCommand(completionCmd)
 	rootCmd.AddCommand(config.Cmd)
 	rootCmd.AddCommand(tasks.Cmd)
-	rootCmd.AddCommand(objectives.Cmd)
+	rootCmd.AddCommand(goals.Cmd)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.lobster.yaml)")
 }

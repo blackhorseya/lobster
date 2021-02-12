@@ -1,4 +1,4 @@
-package objectives
+package goals
 
 import (
 	"encoding/json"

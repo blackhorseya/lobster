@@ -21,7 +21,7 @@ func (i *impl) Create(ctx contextx.Contextx, created *okr.Objective) (*okr.Objec
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	cmd := `INSERT INTO objectives (id, title, start_at, end_at, create_at) VALUES (:id, :title, :start_at, :end_at, :create_at)`
+	cmd := `INSERT INTO goals (id, title, start_at, end_at, create_at) VALUES (:id, :title, :start_at, :end_at, :create_at)`
 	_, err := i.rw.NamedExecContext(timeout, cmd, created)
 	if err != nil {
 		return nil, err
@@ -35,7 +35,7 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*okr.Objective, erro
 	defer cancel()
 
 	var ret okr.Objective
-	cmd := "SELECT id, title, start_at, end_at, create_at FROM objectives WHERE id = ?"
+	cmd := "SELECT id, title, start_at, end_at, create_at FROM goals WHERE id = ?"
 	err := i.rw.GetContext(timeout, &ret, cmd, id)
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func (i *impl) List(ctx contextx.Contextx, offset, limit int) ([]*okr.Objective,
 	defer cancel()
 
 	var ret []*okr.Objective
-	cmd := "SELECT id, title, start_at, end_at, create_at FROM objectives LIMIT ? OFFSET ?"
+	cmd := "SELECT id, title, start_at, end_at, create_at FROM goals LIMIT ? OFFSET ?"
 	err := i.rw.SelectContext(timeout, &ret, cmd, limit, offset)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 	defer cancel()
 
 	var ret int
-	cmd := "SELECT COUNT(*) FROM objectives"
+	cmd := "SELECT COUNT(*) FROM goals"
 	row := i.rw.QueryRowxContext(timeout, cmd)
 	err := row.Scan(&ret)
 	if err != nil {
@@ -77,7 +77,7 @@ func (i *impl) Update(ctx contextx.Contextx, updated *okr.Objective) (*okr.Objec
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	cmd := "UPDATE objectives SET title=:title, start_at=:start_at, end_at=:end_at WHERE id = :id"
+	cmd := "UPDATE goals SET title=:title, start_at=:start_at, end_at=:end_at WHERE id = :id"
 	_, err := i.rw.NamedExecContext(timeout, cmd, updated)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func (i *impl) Delete(ctx contextx.Contextx, id string) (int, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	cmd := "DELETE FROM objectives WHERE id = ?"
+	cmd := "DELETE FROM goals WHERE id = ?"
 	_ = i.rw.QueryRowxContext(timeout, cmd, id)
 
 	return 1, nil

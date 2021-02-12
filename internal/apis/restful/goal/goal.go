@@ -1,4 +1,4 @@
-package objective
+package goal
 
 import (
 	"github.com/gin-gonic/gin"

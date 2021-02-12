@@ -1,4 +1,4 @@
-package objectives
+package goals
 
 import (
 	"fmt"
@@ -25,8 +25,8 @@ var (
 
 	// Cmd is root command
 	Cmd = &cobra.Command{
-		Use:   "objectives",
-		Short: "Objective management",
+		Use:   "goals",
+		Short: "Goals management",
 	}
 )
 

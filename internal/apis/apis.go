@@ -3,8 +3,9 @@ package apis
 import (
 	// import swagger docs
 	_ "github.com/blackhorseya/lobster/internal/apis/restful/docs"
+	"github.com/blackhorseya/lobster/internal/apis/restful/goal"
 	"github.com/blackhorseya/lobster/internal/apis/restful/health"
-	"github.com/blackhorseya/lobster/internal/apis/restful/objective"
+	"github.com/blackhorseya/lobster/internal/apis/restful/kr"
 	"github.com/blackhorseya/lobster/internal/apis/restful/task"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
 	"github.com/gin-gonic/gin"
@@ -14,9 +15,9 @@ import (
 )
 
 // CreateInitHandlerFn serve caller to create init handler
-func CreateInitHandlerFn(health health.IHandler, todoHandler task.IHandler, objHandler objective.IHandler) http.InitHandlers {
+func CreateInitHandlerFn(health health.IHandler, taskH task.IHandler, goalH goal.IHandler, krH kr.IHandler) http.InitHandlers {
 	return func(r *gin.Engine) {
-		api := r.Group("/api")
+		api := r.Group("api")
 		{
 			api.GET("readiness", health.Readiness)
 			api.GET("liveness", health.Liveness)
@@ -29,20 +30,29 @@ func CreateInitHandlerFn(health health.IHandler, todoHandler task.IHandler, objH
 			{
 				tasks := v1.Group("tasks")
 				{
-					tasks.GET("", todoHandler.List)
-					tasks.GET(":id", todoHandler.GetByID)
-					tasks.POST("", todoHandler.Create)
-					tasks.PUT(":id", todoHandler.Update)
-					tasks.DELETE(":id", todoHandler.Delete)
+					tasks.GET("", taskH.List)
+					tasks.GET(":id", taskH.GetByID)
+					tasks.POST("", taskH.Create)
+					tasks.PUT(":id", taskH.Update)
+					tasks.DELETE(":id", taskH.Delete)
 				}
 
-				objs := v1.Group("objectives")
+				goals := v1.Group("goals")
 				{
-					objs.GET("", objHandler.List)
-					objs.GET(":id", objHandler.GetByID)
-					objs.POST("", objHandler.Create)
-					objs.PUT(":id", objHandler.Update)
-					objs.DELETE(":id", objHandler.Delete)
+					goals.GET("", goalH.List)
+					goals.GET(":id", goalH.GetByID)
+					goals.POST("", goalH.Create)
+					goals.PUT(":id", goalH.Update)
+					goals.DELETE(":id", goalH.Delete)
+				}
+
+				krs := v1.Group("krs")
+				{
+					krs.GET("", krH.List)
+					krs.GET(":id", krH.GetByID)
+					krs.POST("", krH.Create)
+					krs.PUT(":id", krH.Update)
+					krs.DELETE(":id", krH.Delete)
 				}
 			}
 		}
@@ -53,6 +63,7 @@ func CreateInitHandlerFn(health health.IHandler, todoHandler task.IHandler, objH
 var ProviderSet = wire.NewSet(
 	health.ProviderSet,
 	task.ProviderSet,
-	objective.ProviderSet,
+	goal.ProviderSet,
+	kr.ProviderSet,
 	CreateInitHandlerFn,
 )
