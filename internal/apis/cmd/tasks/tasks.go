@@ -10,12 +10,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	format = "%-36s\t%-20s\t%-6v\t%-9v"
-)
-
 var (
-	header = fmt.Sprintf(format, "ID", "Title", "Status", "Create At")
+	header = []string{"ID", "Title", "Status", "Create At"}
 )
 
 var (

@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
+	"os"
 
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -46,12 +47,13 @@ var listCmd = &cobra.Command{
 			return
 		}
 
-		ret := []string{header}
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+		table.SetHeader(header)
 		for _, t := range tasks {
-			ret = append(ret, t.ToLineByFormat(format))
+			table.Append(t.ToLine())
 		}
-
-		fmt.Println(strings.Join(ret, "\n"))
+		table.Render()
 	},
 }
 

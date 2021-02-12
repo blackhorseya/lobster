@@ -1,8 +1,12 @@
 package todo
 
 import (
-	"fmt"
+	"strconv"
 	"time"
+)
+
+const (
+	timeFormat = "2006-01-02 15:04:05"
 )
 
 // Task declare a task basic information
@@ -20,7 +24,7 @@ type Task struct {
 	CreateAt int64 `json:"create_at" db:"create_at"`
 }
 
-// ToLineByFormat serve caller to print a line by format
-func (t *Task) ToLineByFormat(format string) string {
-	return fmt.Sprintf(format, t.ID, t.Title, t.Completed, time.Unix(t.CreateAt/1e9, t.CreateAt%1e9))
+// ToLine serve caller to print a string slice
+func (t *Task) ToLine() []string {
+	return []string{t.ID, t.Title, strconv.FormatBool(t.Completed), time.Unix(t.CreateAt/1e9, t.CreateAt%1e9).Format(timeFormat)}
 }
