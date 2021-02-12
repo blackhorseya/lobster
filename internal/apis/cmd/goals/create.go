@@ -17,7 +17,7 @@ var createCmd = &cobra.Command{
 	Short: "Create a objective",
 	Args:  cobra.ExactValidArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		uri := fmt.Sprintf("%v/v1/objectives", cfg.API.EndPoint)
+		uri := fmt.Sprintf("%v/v1/goals", cfg.API.EndPoint)
 		data, _ := json.Marshal(&okr.Objective{Title: args[0]})
 		req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 		if err != nil {

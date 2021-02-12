@@ -17,7 +17,7 @@ var getCmd = &cobra.Command{
 	Long:  "lobster objectives get ID [flags]",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		uri := fmt.Sprintf("%v/v1/objectives/%v", cfg.API.EndPoint, args[0])
+		uri := fmt.Sprintf("%v/v1/goals/%v", cfg.API.EndPoint, args[0])
 		req, err := http.NewRequest(http.MethodGet, uri, nil)
 		if err != nil {
 			fmt.Println(err)
