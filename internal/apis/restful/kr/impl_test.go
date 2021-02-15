@@ -144,3 +144,85 @@ func (s *handlerSuite) Test_impl_GetByID() {
 		})
 	}
 }
+
+func (s *handlerSuite) Test_impl_List() {
+	s.r.GET("/api/v1/krs", s.handler.List)
+
+	type args struct {
+		page string
+		size string
+		mock func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+		wantBody []*okr.KeyResult
+	}{
+		{
+			name:     "a 10 then 400 error",
+			args:     args{page: "a", size: "10"},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name:     "10 b then 400 error",
+			args:     args{page: "10", size: "b"},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name: "1 1 then 500 error",
+			args: args{page: "1", size: "1", mock: func() {
+				s.mock.On("List", mock.Anything, 1, 1).Return(nil, errors.New("error")).Once()
+			}},
+			wantCode: 500,
+			wantBody: nil,
+		},
+		{
+			name: "1 1 then 404 error",
+			args: args{page: "1", size: "1", mock: func() {
+				s.mock.On("List", mock.Anything, 1, 1).Return(nil, nil).Once()
+			}},
+			wantCode: 404,
+			wantBody: nil,
+		},
+		{
+			name: "1 1 then 200 nil",
+			args: args{page: "1", size: "1", mock: func() {
+				s.mock.On("List", mock.Anything, 1, 1).Return([]*okr.KeyResult{kr1}, nil).Once()
+			}},
+			wantCode: 200,
+			wantBody: []*okr.KeyResult{kr1},
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/krs?page=%v&size=%v", tt.args.page, tt.args.size)
+			req := httptest.NewRequest(http.MethodGet, uri, nil)
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			var gotBody []*okr.KeyResult
+			body, _ := ioutil.ReadAll(got.Body)
+			err := json.Unmarshal(body, &gotBody)
+			if err != nil {
+				s.Errorf(err, "unmarshal response body is failure")
+			}
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "List() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
+				s.T().Errorf("List() got = %v, wantBody = %v", gotBody, tt.wantBody)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}

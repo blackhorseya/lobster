@@ -273,6 +273,46 @@ paths:
       summary: Update a objective by id
       tags:
       - Goals
+  /v1/krs:
+    get:
+      consumes:
+      - application/json
+      description: List all key results
+      parameters:
+      - default: 1
+        description: page
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: size of page
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/okr.KeyResult'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: List all key results
+      tags:
+      - KeyResults
   /v1/krs/{id}:
     get:
       consumes:
