@@ -1,0 +1,146 @@
+package kr
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
+	"reflect"
+	"testing"
+
+	"github.com/blackhorseya/lobster/internal/biz/kr/mocks"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/suite"
+)
+
+var (
+	krID   = "d76f4f51-f141-41ba-ba57-c4749319586b"
+	goalID = "0829ee06-1f04-43d9-8565-812e1826f805"
+
+	time1 = int64(1611059529208050000)
+
+	kr1 = &okr.KeyResult{
+		ID:       krID,
+		GoalID:   goalID,
+		Title:    "kr1",
+		CreateAt: time1,
+	}
+
+	updated1 = &okr.KeyResult{
+		ID:       krID,
+		GoalID:   goalID,
+		Title:    "updated kr1",
+		CreateAt: time1,
+	}
+)
+
+type handlerSuite struct {
+	suite.Suite
+	r       *gin.Engine
+	mock    *mocks.IBiz
+	handler IHandler
+}
+
+func (s *handlerSuite) SetupTest() {
+	gin.SetMode(gin.TestMode)
+
+	s.r = gin.New()
+	s.r.Use(middlewares.ContextMiddleware())
+	s.r.Use(middlewares.LoggerMiddleware())
+
+	s.mock = new(mocks.IBiz)
+	handler, err := CreateIHandler(s.mock)
+	if err != nil {
+		panic(err)
+	}
+
+	s.handler = handler
+}
+
+func (s *handlerSuite) TearDownTest() {
+	s.mock.AssertExpectations(s.T())
+}
+
+func TestHandlerSuite(t *testing.T) {
+	suite.Run(t, new(handlerSuite))
+}
+
+func (s *handlerSuite) Test_impl_GetByID() {
+	s.r.GET("/api/v1/krs/:id", s.handler.GetByID)
+
+	type args struct {
+		id   string
+		mock func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+		wantBody *okr.KeyResult
+	}{
+		{
+			name:     "id then 400 error",
+			args:     args{id: "id"},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name: "uuid then 500 error",
+			args: args{id: krID, mock: func() {
+				s.mock.On("GetByID", mock.Anything, krID).Return(nil, errors.New("error")).Once()
+			}},
+			wantCode: 500,
+			wantBody: nil,
+		},
+		{
+			name: "uuid then not found error",
+			args: args{id: krID, mock: func() {
+				s.mock.On("GetByID", mock.Anything, krID).Return(nil, nil).Once()
+			}},
+			wantCode: 404,
+			wantBody: nil,
+		},
+		{
+			name: "uuid then kr nil",
+			args: args{id: krID, mock: func() {
+				s.mock.On("GetByID", mock.Anything, krID).Return(kr1, nil).Once()
+			}},
+			wantCode: 200,
+			wantBody: kr1,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/krs/%v", tt.args.id)
+			req := httptest.NewRequest(http.MethodGet, uri, nil)
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			var gotBody *okr.KeyResult
+			body, _ := ioutil.ReadAll(got.Body)
+			err := json.Unmarshal(body, &gotBody)
+			if err != nil {
+				s.Errorf(err, "unmarshal response body is failure")
+			}
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "GetByID() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
+				s.T().Errorf("GetByID() got = %v, wantBody = %v", gotBody, tt.wantBody)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}

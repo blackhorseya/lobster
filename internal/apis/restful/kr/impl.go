@@ -1,7 +1,11 @@
 package kr
 
 import (
+	"net/http"
+
 	"github.com/blackhorseya/lobster/internal/biz/kr"
+	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,8 +18,34 @@ func NewImpl(biz kr.IBiz) IHandler {
 	return &impl{biz: biz}
 }
 
+type reqID struct {
+	ID string `uri:"id" binding:"required,uuid"`
+}
+
 func (i *impl) GetByID(c *gin.Context) {
-	panic("implement me")
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "GetByID")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	ret, err := i.biz.GetByID(ctx, req.ID)
+	if err != nil {
+		logger.WithError(err).WithField("id", req.ID).Error(er.ErrGetKRByID)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrGetKRByID})
+		return
+	}
+	if ret == nil {
+		logger.WithField("id", req.ID).Error(er.ErrKRNotExists)
+		c.JSON(http.StatusNotFound, nil)
+		return
+	}
+
+	c.JSON(http.StatusOK, ret)
 }
 
 func (i *impl) List(c *gin.Context) {
