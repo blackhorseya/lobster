@@ -313,6 +313,35 @@ paths:
       summary: List all key results
       tags:
       - KeyResults
+    post:
+      consumes:
+      - application/json
+      description: Create a key result
+      parameters:
+      - description: created key result
+        in: body
+        name: created
+        required: true
+        schema:
+          $ref: '#/definitions/okr.KeyResult'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/okr.KeyResult'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a key result
+      tags:
+      - KeyResults
   /v1/krs/{id}:
     get:
       consumes:

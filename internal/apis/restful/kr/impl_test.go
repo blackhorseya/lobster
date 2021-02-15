@@ -1,6 +1,7 @@
 package kr
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -29,6 +30,11 @@ var (
 		GoalID:   goalID,
 		Title:    "kr1",
 		CreateAt: time1,
+	}
+
+	created1 = &okr.KeyResult{
+		Title:  "created kr1",
+		GoalID: goalID,
 	}
 
 	updated1 = &okr.KeyResult{
@@ -220,6 +226,80 @@ func (s *handlerSuite) Test_impl_List() {
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "List() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
 				s.T().Errorf("List() got = %v, wantBody = %v", gotBody, tt.wantBody)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *handlerSuite) Test_impl_Create() {
+	s.r.POST("/api/v1/krs", s.handler.Create)
+
+	type args struct {
+		created *okr.KeyResult
+		mock    func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+		wantBody *okr.KeyResult
+	}{
+		{
+			name:     "missing title then 400 error",
+			args:     args{created: &okr.KeyResult{Title: "", GoalID: goalID}},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name:     "missing parent goal then 400 error",
+			args:     args{created: &okr.KeyResult{Title: "title", GoalID: ""}},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name: "kr then 500 error",
+			args: args{created: created1, mock: func() {
+				s.mock.On("LinkToGoal", mock.Anything, created1).Return(nil, errors.New("error")).Once()
+			}},
+			wantCode: 500,
+			wantBody: nil,
+		},
+		{
+			name: "kr then 201 nil",
+			args: args{created: created1, mock: func() {
+				s.mock.On("LinkToGoal", mock.Anything, created1).Return(kr1, nil).Once()
+			}},
+			wantCode: 201,
+			wantBody: kr1,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/krs")
+			data, _ := json.Marshal(tt.args.created)
+			req := httptest.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			var gotBody *okr.KeyResult
+			body, _ := ioutil.ReadAll(got.Body)
+			err := json.Unmarshal(body, &gotBody)
+			if err != nil {
+				s.Errorf(err, "unmarshal response body is failure")
+			}
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Create() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
+				s.T().Errorf("Create() got = %v, wantBody = %v", gotBody, tt.wantBody)
 			}
 
 			s.TearDownTest()

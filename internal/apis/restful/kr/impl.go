@@ -6,8 +6,10 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/biz/kr"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -108,8 +110,49 @@ func (i *impl) List(c *gin.Context) {
 	c.JSON(http.StatusOK, ret)
 }
 
+// @Summary Create a key result
+// @Description Create a key result
+// @Tags KeyResults
+// @Accept application/json
+// @Produce application/json
+// @Param created body okr.KeyResult true "created key result"
+// @Success 201 {object} okr.KeyResult
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/krs [post]
 func (i *impl) Create(c *gin.Context) {
-	panic("implement me")
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "Create")
+
+	var created *okr.KeyResult
+	err := c.ShouldBindJSON(&created)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrCreateKR)
+		c.JSON(http.StatusBadRequest, er.ErrCreateKR)
+		return
+	}
+	logger = logger.WithField("created", created)
+
+	if len(created.Title) == 0 {
+		logger.Error(er.ErrEmptyTitle)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
+		return
+	}
+	_, err = uuid.Parse(created.GoalID)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		return
+	}
+
+	ret, err := i.biz.LinkToGoal(ctx, created)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrCreateKR)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrCreateKR})
+		return
+	}
+
+	c.JSON(http.StatusCreated, ret)
 }
 
 func (i *impl) Update(c *gin.Context) {
