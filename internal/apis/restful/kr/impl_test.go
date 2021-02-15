@@ -307,6 +307,87 @@ func (s *handlerSuite) Test_impl_Create() {
 	}
 }
 
+func (s *handlerSuite) Test_impl_Update() {
+	s.r.PUT("/api/v1/krs/:id", s.handler.Update)
+
+	type args struct {
+		id      string
+		updated *okr.KeyResult
+		mock    func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+		wantBody *okr.KeyResult
+	}{
+		{
+			name:     "id then 400 error",
+			args:     args{id: "id"},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name:     "missing title then 400 error",
+			args:     args{id: krID, updated: &okr.KeyResult{Title: "", GoalID: goalID}},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name:     "missing parent goal then 400 error",
+			args:     args{id: krID, updated: &okr.KeyResult{Title: "title", GoalID: "id"}},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name: "update then 500 error",
+			args: args{id: krID, updated: kr1, mock: func() {
+				s.mock.On("Update", mock.Anything, kr1).Return(nil, errors.New("error")).Once()
+			}},
+			wantCode: 500,
+			wantBody: nil,
+		},
+		{
+			name: "update then 200 nil",
+			args: args{id: krID, updated: kr1, mock: func() {
+				s.mock.On("Update", mock.Anything, kr1).Return(updated1, nil).Once()
+			}},
+			wantCode: 200,
+			wantBody: updated1,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/krs/%v", tt.args.id)
+			body, _ := json.Marshal(tt.args.updated)
+			req := httptest.NewRequest(http.MethodPut, uri, bytes.NewBuffer(body))
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			var gotBody *okr.KeyResult
+			body, _ = ioutil.ReadAll(got.Body)
+			err := json.Unmarshal(body, &gotBody)
+			if err != nil {
+				s.Errorf(err, "unmarshal response body is failure")
+			}
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Update() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
+				s.T().Errorf("Update() got = %v, wantBody = %v", gotBody, tt.wantBody)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
 func (s *handlerSuite) Test_impl_Delete() {
 	s.r.DELETE("/api/v1/krs/:id", s.handler.Delete)
 

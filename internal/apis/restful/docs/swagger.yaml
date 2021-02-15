@@ -407,6 +407,38 @@ paths:
       summary: Get a key result by id
       tags:
       - KeyResults
+    put:
+      consumes:
+      - application/json
+      description: Update a key result by id
+      parameters:
+      - description: ID of key result
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/okr.KeyResult'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update a key result by id
+      tags:
+      - KeyResults
   /v1/tasks:
     get:
       consumes:
