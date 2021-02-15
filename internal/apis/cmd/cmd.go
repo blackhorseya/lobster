@@ -5,7 +5,6 @@ import (
 	"github.com/blackhorseya/lobster/internal/apis/cmd/create"
 	"github.com/blackhorseya/lobster/internal/apis/cmd/delete"
 	"github.com/blackhorseya/lobster/internal/apis/cmd/get"
-	"github.com/blackhorseya/lobster/internal/apis/cmd/tasks"
 	"github.com/google/wire"
 	"github.com/spf13/cobra"
 )
@@ -35,7 +34,6 @@ func init() {
 	// will be global for your application.
 	rootCmd.AddCommand(completionCmd)
 	rootCmd.AddCommand(config.Cmd)
-	rootCmd.AddCommand(tasks.Cmd)
 
 	rootCmd.AddCommand(get.Cmd)
 	rootCmd.AddCommand(create.Cmd)
