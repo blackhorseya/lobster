@@ -55,13 +55,6 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error)
 		ctx.WithField("err", err).Errorf("list all tasks is failure")
 		return nil, er.ErrTaskNotExists
 	}
-	if len(ret) == 0 {
-		ctx.WithFields(logrus.Fields{
-			"page": page,
-			"size": size,
-		}).Errorf("list all tasks is not found")
-		return nil, er.ErrTaskNotExists
-	}
 
 	return ret, nil
 }

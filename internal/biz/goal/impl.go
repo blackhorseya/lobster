@@ -54,10 +54,6 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*okr.Objective, er
 		ctx.WithField("err", err).Error(er.ErrListObjectives)
 		return nil, er.ErrListObjectives
 	}
-	if len(ret) == 0 {
-		ctx.WithFields(logrus.Fields{"page": page, "size": size}).Error(er.ErrObjectiveNotExists)
-		return nil, er.ErrObjectiveNotExists
-	}
 
 	return ret, nil
 }

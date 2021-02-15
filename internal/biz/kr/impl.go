@@ -36,10 +36,6 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) (krs []*okr.KeyResult
 		ctx.WithError(err).WithFields(logrus.Fields{"page": page, "size": size}).Error(er.ErrListKeyResult)
 		return nil, er.ErrListKeyResult
 	}
-	if len(ret) == 0 {
-		ctx.WithFields(logrus.Fields{"page": page, "size": size}).Error(er.ErrNotFound)
-		return nil, er.ErrNotFound
-	}
 
 	return ret, nil
 }

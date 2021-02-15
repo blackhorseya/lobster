@@ -152,14 +152,6 @@ func (s *bizSuite) Test_impl_List() {
 			wantErr: true,
 		},
 		{
-			name: "1 1 then not found error",
-			args: args{page: 1, size: 1, mock: func() {
-				s.mock.On("QueryList", mock.Anything, 0, 1).Return(nil, nil).Once()
-			}},
-			wantKrs: nil,
-			wantErr: true,
-		},
-		{
 			name: "1 1 then krs nil",
 			args: args{page: 1, size: 1, mock: func() {
 				s.mock.On("QueryList", mock.Anything, 0, 1).Return([]*okr.KeyResult{kr1}, nil).Once()
