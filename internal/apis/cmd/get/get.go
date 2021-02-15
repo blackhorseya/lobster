@@ -25,144 +25,266 @@ var (
 		Use:       "get [RESOURCE]",
 		Short:     "Display one resource",
 		ValidArgs: []string{"tasks", "results", "goals"},
-		Args:      cobra.ExactValidArgs(1),
+		Args:      cobra.MaximumNArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
 			page, _ := cmd.Flags().GetInt("page")
 			size, _ := cmd.Flags().GetInt("size")
 
-			switch args[0] {
-			case "tasks":
-				// todo: 2021-02-15|14:46|doggy|refactor it
-				uri := fmt.Sprintf("%v/v1/tasks?page=%v&size=%v", cfg.API.EndPoint, page, size)
-				req, err := http.NewRequest(http.MethodGet, uri, nil)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+			// todo: 2021-02-15|14:46|doggy|refactor it
+			if len(args) == 2 {
+				id := args[1]
 
-				client := &http.Client{}
-				resp, err := client.Do(req)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-				defer resp.Body.Close()
+				switch args[0] {
+				case "tasks":
+					uri := fmt.Sprintf("%v/v1/tasks/%v", cfg.API.EndPoint, id)
+					req, err := http.NewRequest(http.MethodGet, uri, nil)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				if resp.StatusCode == http.StatusNotFound {
-					fmt.Println("No resources found")
-					return
-				}
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer func() {
+						_ = resp.Body.Close()
+					}()
 
-				body, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+					if resp.StatusCode == http.StatusNotFound {
+						fmt.Println("No resource found")
+						return
+					}
 
-				var tasks []*todo.Task
-				err = json.Unmarshal(body, &tasks)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				table := tablewriter.NewWriter(os.Stdout)
-				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-				table.SetHeader([]string{"ID", "Title", "Status", "Create At"})
-				for _, t := range tasks {
-					table.Append(t.ToLine())
-				}
-				table.Render()
+					var task *todo.Task
+					err = json.Unmarshal(body, &task)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				break
-			case "goals":
-				// todo: 2021-02-15|14:52|doggy|refactor it
-				uri := fmt.Sprintf("%v/v1/goals?page=%v&size=%v", cfg.API.EndPoint, page, size)
-				req, err := http.NewRequest(http.MethodGet, uri, nil)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+					table := tablewriter.NewWriter(os.Stdout)
+					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+					table.SetHeader([]string{"ID", "Title", "Status", "Create At"})
+					table.Append(task.ToLine())
+					table.Render()
 
-				client := &http.Client{}
-				resp, err := client.Do(req)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-				defer resp.Body.Close()
+					break
+				case "goals":
+					uri := fmt.Sprintf("%v/v1/goals/%v", cfg.API.EndPoint, id)
+					req, err := http.NewRequest(http.MethodGet, uri, nil)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				if resp.StatusCode == http.StatusNotFound {
-					fmt.Println("No resources found")
-					return
-				}
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
 
-				body, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					fmt.Println(body)
-					return
-				}
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				var goals []*okr.Objective
-				err = json.Unmarshal(body, &goals)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+					var obj *okr.Objective
+					err = json.Unmarshal(body, &obj)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				table := tablewriter.NewWriter(os.Stdout)
-				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-				table.SetHeader([]string{"ID", "Title", "Start At", "End At", "Create At"})
-				for _, g := range goals {
-					table.Append(g.ToLine())
-				}
-				table.Render()
+					table := tablewriter.NewWriter(os.Stdout)
+					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+					table.SetHeader([]string{"ID", "Title", "Start At", "End At", "Create At"})
+					table.Append(obj.ToLine())
+					table.Render()
 
-				break
-			case "results":
-				// todo: 2021-02-15|14:52|doggy|refactor it
-				uri := fmt.Sprintf("%v/v1/krs?page=%v&size=%v", cfg.API.EndPoint, page, size)
-				req, err := http.NewRequest(http.MethodGet, uri, nil)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+					break
+				case "results":
+					uri := fmt.Sprintf("%v/v1/krs/%v", cfg.API.EndPoint, id)
+					req, err := http.NewRequest(http.MethodGet, uri, nil)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				client := &http.Client{}
-				resp, err := client.Do(req)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-				defer resp.Body.Close()
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
 
-				if resp.StatusCode == http.StatusNotFound {
-					fmt.Println("No resources found")
-					return
-				}
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				body, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+					var data *okr.KeyResult
+					err = json.Unmarshal(body, &data)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				var tasks []*okr.KeyResult
-				err = json.Unmarshal(body, &tasks)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+					table := tablewriter.NewWriter(os.Stdout)
+					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+					table.SetHeader([]string{"ID", "Goad ID", "Title", "Target", "Actual", "Create At"})
+					table.Append(data.ToLine())
+					table.Render()
 
-				table := tablewriter.NewWriter(os.Stdout)
-				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-				table.SetHeader([]string{"ID", "Goad ID", "Title", "Target", "Actual", "Create At"})
-				for _, t := range tasks {
-					table.Append(t.ToLine())
+					break
 				}
-				table.Render()
+			}
 
-				break
+			if len(args) == 1 {
+				switch args[0] {
+				case "tasks":
+					uri := fmt.Sprintf("%v/v1/tasks?page=%v&size=%v", cfg.API.EndPoint, page, size)
+					req, err := http.NewRequest(http.MethodGet, uri, nil)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
+
+					if resp.StatusCode == http.StatusNotFound {
+						fmt.Println("No resources found")
+						return
+					}
+
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					var tasks []*todo.Task
+					err = json.Unmarshal(body, &tasks)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					table := tablewriter.NewWriter(os.Stdout)
+					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+					table.SetHeader([]string{"ID", "Title", "Status", "Create At"})
+					for _, t := range tasks {
+						table.Append(t.ToLine())
+					}
+					table.Render()
+
+					break
+				case "goals":
+					uri := fmt.Sprintf("%v/v1/goals?page=%v&size=%v", cfg.API.EndPoint, page, size)
+					req, err := http.NewRequest(http.MethodGet, uri, nil)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
+
+					if resp.StatusCode == http.StatusNotFound {
+						fmt.Println("No resources found")
+						return
+					}
+
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println(body)
+						return
+					}
+
+					var goals []*okr.Objective
+					err = json.Unmarshal(body, &goals)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					table := tablewriter.NewWriter(os.Stdout)
+					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+					table.SetHeader([]string{"ID", "Title", "Start At", "End At", "Create At"})
+					for _, g := range goals {
+						table.Append(g.ToLine())
+					}
+					table.Render()
+
+					break
+				case "results":
+					uri := fmt.Sprintf("%v/v1/krs?page=%v&size=%v", cfg.API.EndPoint, page, size)
+					req, err := http.NewRequest(http.MethodGet, uri, nil)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
+
+					if resp.StatusCode == http.StatusNotFound {
+						fmt.Println("No resources found")
+						return
+					}
+
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					var tasks []*okr.KeyResult
+					err = json.Unmarshal(body, &tasks)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					table := tablewriter.NewWriter(os.Stdout)
+					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+					table.SetHeader([]string{"ID", "Goad ID", "Title", "Target", "Actual", "Create At"})
+					for _, t := range tasks {
+						table.Append(t.ToLine())
+					}
+					table.Render()
+
+					break
+				}
 			}
 		},
 	}
