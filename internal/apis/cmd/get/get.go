@@ -1,11 +1,17 @@
 package get
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
 	"github.com/mitchellh/go-homedir"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -21,16 +27,138 @@ var (
 		ValidArgs: []string{"tasks", "results", "goals"},
 		Args:      cobra.ExactValidArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			// todo: 2021-02-15|14:38|doggy|implement me
+			page, _ := cmd.Flags().GetInt("page")
+			size, _ := cmd.Flags().GetInt("size")
+
 			switch args[0] {
 			case "tasks":
-				fmt.Println("print tasks")
+				// todo: 2021-02-15|14:46|doggy|refactor it
+				uri := fmt.Sprintf("%v/v1/tasks?page=%v&size=%v", cfg.API.EndPoint, page, size)
+				req, err := http.NewRequest(http.MethodGet, uri, nil)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				client := &http.Client{}
+				resp, err := client.Do(req)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				defer resp.Body.Close()
+
+				if resp.StatusCode == http.StatusNotFound {
+					fmt.Println("No resources found")
+				}
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				var tasks []*todo.Task
+				err = json.Unmarshal(body, &tasks)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+				table.SetHeader([]string{"ID", "Title", "Status", "Create At"})
+				for _, t := range tasks {
+					table.Append(t.ToLine())
+				}
+				table.Render()
+
 				break
 			case "goals":
-				fmt.Println("print goals")
+				// todo: 2021-02-15|14:52|doggy|refactor it
+				uri := fmt.Sprintf("%v/v1/goals?page=%v&size=%v", cfg.API.EndPoint, page, size)
+				req, err := http.NewRequest(http.MethodGet, uri, nil)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				client := &http.Client{}
+				resp, err := client.Do(req)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				defer resp.Body.Close()
+
+				if resp.StatusCode == http.StatusNotFound {
+					fmt.Println("No resources found")
+				}
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(body)
+					return
+				}
+
+				var goals []*okr.Objective
+				err = json.Unmarshal(body, &goals)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+				table.SetHeader([]string{"ID", "Title", "Start At", "End At", "Create At"})
+				for _, g := range goals {
+					table.Append(g.ToLine())
+				}
+				table.Render()
+
 				break
 			case "results":
-				fmt.Println("print results")
+				// todo: 2021-02-15|14:52|doggy|refactor it
+				uri := fmt.Sprintf("%v/v1/krs?page=%v&size=%v", cfg.API.EndPoint, page, size)
+				req, err := http.NewRequest(http.MethodGet, uri, nil)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				client := &http.Client{}
+				resp, err := client.Do(req)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				defer resp.Body.Close()
+
+				if resp.StatusCode == http.StatusNotFound {
+					fmt.Println("No resources found")
+				}
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				var tasks []*okr.KeyResult
+				err = json.Unmarshal(body, &tasks)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+				table.SetHeader([]string{"ID", "Goad ID", "Title", "Target", "Actual", "Create At"})
+				for _, t := range tasks {
+					table.Append(t.ToLine())
+				}
+				table.Render()
+
 				break
 			}
 		},
@@ -39,6 +167,9 @@ var (
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	Cmd.Flags().Int("page", 1, "list resource which page")
+	Cmd.Flags().Int("size", 10, "list resource which size")
 }
 
 // initConfig reads in config file and ENV variables if set.
