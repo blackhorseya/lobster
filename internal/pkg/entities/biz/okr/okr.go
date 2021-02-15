@@ -1,6 +1,7 @@
 package okr
 
 import (
+	"strconv"
 	"time"
 )
 
@@ -59,4 +60,16 @@ type KeyResult struct {
 
 	// CreateAt describe the key result create milliseconds
 	CreateAt int64 `json:"create_at" db:"create_at"`
+}
+
+// ToLine serve caller to print a string slice
+func (k *KeyResult) ToLine() []string {
+	return []string{
+		k.ID,
+		k.GoalID,
+		k.Title,
+		strconv.Itoa(k.Target),
+		strconv.Itoa(k.Actual),
+		time.Unix(k.CreateAt/1e9, k.CreateAt%1e9).Format(timeFormat),
+	}
 }
