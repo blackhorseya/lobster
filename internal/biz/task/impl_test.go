@@ -161,15 +161,6 @@ func (s *bizSuite) Test_impl_List() {
 			wantErr: true,
 		},
 		{
-			name: "1 1 then nil not found",
-			args: args{page: 1, size: 1, mock: func() {
-				s.mock.On("List", mock.Anything, 0, 1).Return(
-					nil, nil).Once()
-			}},
-			want:    nil,
-			wantErr: true,
-		},
-		{
 			name: "1 1 then tasks nil",
 			args: args{page: 1, size: 1, mock: func() {
 				s.mock.On("List", mock.Anything, 0, 1).Return(
