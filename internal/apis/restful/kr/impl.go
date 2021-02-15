@@ -22,6 +22,17 @@ type reqID struct {
 	ID string `uri:"id" binding:"required,uuid"`
 }
 
+// @Summary Get a key result by id
+// @Description Get a key result by id
+// @Tags KeyResults
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of key result"
+// @Success 200 {object} okr.KeyResult
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /v1/krs/{id} [get]
 func (i *impl) GetByID(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "GetByID")
