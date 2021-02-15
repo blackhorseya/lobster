@@ -306,3 +306,56 @@ func (s *handlerSuite) Test_impl_Create() {
 		})
 	}
 }
+
+func (s *handlerSuite) Test_impl_Delete() {
+	s.r.DELETE("/api/v1/krs/:id", s.handler.Delete)
+
+	type args struct {
+		id   string
+		mock func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+	}{
+		{
+			name:     "id then 400 error",
+			args:     args{id: "id"},
+			wantCode: 400,
+		},
+		{
+			name: "uuid then 500 error",
+			args: args{id: krID, mock: func() {
+				s.mock.On("Delete", mock.Anything, krID).Return(errors.New("error")).Once()
+			}},
+			wantCode: 500,
+		},
+		{
+			name: "uuid then 204 nil",
+			args: args{id: krID, mock: func() {
+				s.mock.On("Delete", mock.Anything, krID).Return(nil).Once()
+			}},
+			wantCode: 204,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/krs/%v", tt.args.id)
+			req := httptest.NewRequest(http.MethodDelete, uri, nil)
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Delete() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+
+			s.TearDownTest()
+		})
+	}
+}

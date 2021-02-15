@@ -159,6 +159,36 @@ func (i *impl) Update(c *gin.Context) {
 	panic("implement me")
 }
 
+// @Summary Delete a key result by id
+// @Description Delete a key result by id
+// @Tags KeyResults
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of key result"
+// @Success 204 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /v1/krs/{id} [delete]
 func (i *impl) Delete(c *gin.Context) {
-	panic("implement me")
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "Delete")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	logger = logger.WithField("id", req.ID)
+
+	err := i.biz.Delete(ctx, req.ID)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrDeleteKeyResult)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrDeleteKeyResult})
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
 }
