@@ -50,6 +50,7 @@ var (
 
 				if resp.StatusCode == http.StatusNotFound {
 					fmt.Println("No resources found")
+					return
 				}
 
 				body, err := ioutil.ReadAll(resp.Body)
@@ -93,6 +94,7 @@ var (
 
 				if resp.StatusCode == http.StatusNotFound {
 					fmt.Println("No resources found")
+					return
 				}
 
 				body, err := ioutil.ReadAll(resp.Body)
@@ -136,6 +138,7 @@ var (
 
 				if resp.StatusCode == http.StatusNotFound {
 					fmt.Println("No resources found")
+					return
 				}
 
 				body, err := ioutil.ReadAll(resp.Body)
