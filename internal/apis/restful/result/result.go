@@ -1,4 +1,4 @@
-package kr
+package result
 
 import (
 	"github.com/gin-gonic/gin"

@@ -105,7 +105,7 @@ var (
 
 				break
 			case "results":
-				uri := fmt.Sprintf("%v/v1/krs", cfg.API.EndPoint)
+				uri := fmt.Sprintf("%v/v1/results", cfg.API.EndPoint)
 				data, _ := json.Marshal(&okr.KeyResult{Title: args[1]})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {

@@ -115,7 +115,7 @@ var (
 
 					break
 				case "results":
-					uri := fmt.Sprintf("%v/v1/krs/%v", cfg.API.EndPoint, id)
+					uri := fmt.Sprintf("%v/v1/results/%v", cfg.API.EndPoint, id)
 					req, err := http.NewRequest(http.MethodGet, uri, nil)
 					if err != nil {
 						fmt.Println(err)

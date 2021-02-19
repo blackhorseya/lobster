@@ -1,6 +1,6 @@
 // +build wireinject
 
-package kr
+package result
 
 import (
 	"github.com/blackhorseya/lobster/internal/biz/kr"

@@ -26,11 +26,6 @@ var (
 			resource := args[0]
 			id := args[1]
 
-			// todo: 2021-02-15|20:02|doggy|refactor me
-			if resource == "results" {
-				resource = "krs"
-			}
-
 			uri := fmt.Sprintf("%v/v1/%v/%v", cfg.API.EndPoint, resource, id)
 			req, err := http.NewRequest(http.MethodDelete, uri, nil)
 			if err != nil {
