@@ -1,7 +1,8 @@
-package tasks
+package delete
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
@@ -11,23 +12,47 @@ import (
 )
 
 var (
-	header = []string{"ID", "Title", "Status", "Create At"}
-)
-
-var (
 	cfgFile string
 
 	cfg *config.Config
 
-	// Cmd is root command
 	Cmd = &cobra.Command{
-		Use:   "tasks",
-		Short: "Task management",
+		Use:       "delete [RESOURCE]",
+		Short:     "Delete one resource",
+		ValidArgs: []string{"tasks", "results", "goals"},
+		Args:      cobra.ExactArgs(2),
+		Aliases:   []string{"del", "remove"},
+		Run: func(cmd *cobra.Command, args []string) {
+			resource := args[0]
+			id := args[1]
+
+			uri := fmt.Sprintf("%v/v1/%v/%v", cfg.API.EndPoint, resource, id)
+			req, err := http.NewRequest(http.MethodDelete, uri, nil)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			client := &http.Client{}
+			resp, err := client.Do(req)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			defer resp.Body.Close()
+
+			if resp.StatusCode == http.StatusNoContent {
+				fmt.Printf("Delete %v ID: %v is success\n", resource, id)
+			}
+		},
 	}
 )
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	Cmd.Flags().Int("page", 1, "list resource which page")
+	Cmd.Flags().Int("size", 10, "list resource which size")
 }
 
 // initConfig reads in config file and ENV variables if set.

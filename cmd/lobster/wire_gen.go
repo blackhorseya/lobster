@@ -9,7 +9,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/apis/restful"
 	goal2 "github.com/blackhorseya/lobster/internal/apis/restful/goal"
 	health2 "github.com/blackhorseya/lobster/internal/apis/restful/health"
-	kr2 "github.com/blackhorseya/lobster/internal/apis/restful/kr"
+	"github.com/blackhorseya/lobster/internal/apis/restful/result"
 	task2 "github.com/blackhorseya/lobster/internal/apis/restful/task"
 	"github.com/blackhorseya/lobster/internal/biz"
 	"github.com/blackhorseya/lobster/internal/biz/goal"
@@ -49,7 +49,7 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	goalIHandler := goal2.NewImpl(goalIBiz)
 	iRepo3 := repo4.NewImpl(db)
 	krIBiz := kr.NewImpl(iRepo3)
-	krIHandler := kr2.NewImpl(krIBiz)
+	krIHandler := result.NewImpl(krIBiz)
 	initHandlers := restful.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, krIHandler)
 	engine := http.NewGinEngine(configConfig, initHandlers)
 	injector := app.NewInjector(engine, configConfig)
