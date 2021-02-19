@@ -16,6 +16,18 @@ I very like concept of OKR and Agile, so I want to bring this mind to my life fo
 goals for long term using concept of OKR then divide to task And sprint tasks via Sprint board, finally achieve that
 goal.
 
+## CLI usage
+
+```bash
+lobster help
+```
+
+### Tasks
+
+```bash
+lobster get tasks
+```
+
 ## Tech
 
 ### WorkFlow
