@@ -26,7 +26,7 @@ var (
 		Use:       "create [RESOURCE] [TITLE]",
 		Short:     "Create one resource",
 		ValidArgs: []string{"tasks", "results", "goals"},
-		Args:      cobra.ExactArgs(3),
+		Args:      cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			// todo: 2021-02-15|19:46|doggy|refactor me
 			switch args[0] {

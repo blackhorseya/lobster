@@ -1,9 +1,9 @@
-package kr
+package result
 
 import (
 	"time"
 
-	"github.com/blackhorseya/lobster/internal/biz/kr/repo"
+	"github.com/blackhorseya/lobster/internal/biz/result/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"

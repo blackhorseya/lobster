@@ -1,9 +1,9 @@
 // +build wireinject
 
-package kr
+package result
 
 import (
-	"github.com/blackhorseya/lobster/internal/biz/kr/repo"
+	"github.com/blackhorseya/lobster/internal/biz/result/repo"
 	"github.com/google/wire"
 )
 

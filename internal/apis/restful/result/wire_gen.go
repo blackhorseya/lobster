@@ -6,13 +6,13 @@
 package result
 
 import (
-	"github.com/blackhorseya/lobster/internal/biz/kr"
+	"github.com/blackhorseya/lobster/internal/biz/result"
 	"github.com/google/wire"
 )
 
 // Injectors from wire.go:
 
-func CreateIHandler(biz kr.IBiz) (IHandler, error) {
+func CreateIHandler(biz result.IBiz) (IHandler, error) {
 	iHandler := NewImpl(biz)
 	return iHandler, nil
 }

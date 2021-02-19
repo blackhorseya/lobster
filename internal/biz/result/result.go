@@ -1,7 +1,7 @@
-package kr
+package result
 
 import (
-	"github.com/blackhorseya/lobster/internal/biz/kr/repo"
+	"github.com/blackhorseya/lobster/internal/biz/result/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	"github.com/google/wire"

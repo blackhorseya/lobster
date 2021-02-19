@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/blackhorseya/lobster/internal/biz/kr"
+	"github.com/blackhorseya/lobster/internal/biz/result"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
@@ -14,11 +14,11 @@ import (
 )
 
 type impl struct {
-	biz kr.IBiz
+	biz result.IBiz
 }
 
 // NewImpl serve caller to create an IHandler
-func NewImpl(biz kr.IBiz) IHandler {
+func NewImpl(biz result.IBiz) IHandler {
 	return &impl{biz: biz}
 }
 
