@@ -26,33 +26,33 @@ var (
 		Use:       "create [RESOURCE] [TITLE]",
 		Short:     "Create one resource",
 		ValidArgs: []string{"tasks", "results", "goals"},
-		Args:      cobra.ExactArgs(2),
+		Args:      cobra.ExactArgs(3),
 		Run: func(cmd *cobra.Command, args []string) {
 			// todo: 2021-02-15|19:46|doggy|refactor me
-			uri := fmt.Sprintf("%v/v1/%v", cfg.API.EndPoint, args[0])
-			data, _ := json.Marshal(&todo.Task{Title: args[1]})
-			req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			client := &http.Client{}
-			resp, err := client.Do(req)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			defer resp.Body.Close()
-
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
 			switch args[0] {
 			case "tasks":
+				uri := fmt.Sprintf("%v/v1/%v", cfg.API.EndPoint, args[0])
+				data, _ := json.Marshal(&todo.Task{Title: args[1]})
+				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				client := &http.Client{}
+				resp, err := client.Do(req)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				defer resp.Body.Close()
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
 				var ret *todo.Task
 				err = json.Unmarshal(body, &ret)
 				if err != nil {
@@ -68,6 +68,28 @@ var (
 
 				break
 			case "goals":
+				uri := fmt.Sprintf("%v/v1/%v", cfg.API.EndPoint, args[0])
+				data, _ := json.Marshal(&okr.Objective{Title: args[1]})
+				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				client := &http.Client{}
+				resp, err := client.Do(req)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				defer resp.Body.Close()
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
 				var ret *okr.Objective
 				err = json.Unmarshal(body, &ret)
 				if err != nil {
@@ -83,7 +105,29 @@ var (
 
 				break
 			case "results":
-				var ret *okr.Objective
+				uri := fmt.Sprintf("%v/v1/%v", cfg.API.EndPoint, args[0])
+				data, _ := json.Marshal(&okr.KeyResult{Title: args[1], GoalID: args[2]})
+				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				client := &http.Client{}
+				resp, err := client.Do(req)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				defer resp.Body.Close()
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				var ret *okr.KeyResult
 				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)
