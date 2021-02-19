@@ -29,32 +29,32 @@ var (
 		Args:      cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
 			// todo: 2021-02-15|19:46|doggy|refactor me
+			uri := fmt.Sprintf("%v/v1/%v", cfg.API.EndPoint, args[0])
+			data, _ := json.Marshal(&todo.Task{Title: args[1]})
+			req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			client := &http.Client{}
+			resp, err := client.Do(req)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			defer resp.Body.Close()
+
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
 			switch args[0] {
 			case "tasks":
-				uri := fmt.Sprintf("%v/v1/tasks", cfg.API.EndPoint)
-				data, _ := json.Marshal(&todo.Task{Title: args[1]})
-				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-
-				client := &http.Client{}
-				resp, err := client.Do(req)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-				defer resp.Body.Close()
-
-				body, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-
-				var task *todo.Task
-				err = json.Unmarshal(body, &task)
+				var ret *todo.Task
+				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)
 					return
@@ -63,35 +63,13 @@ var (
 				table := tablewriter.NewWriter(os.Stdout)
 				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 				table.SetHeader([]string{"ID", "Title", "Status", "Create At"})
-				table.Append(task.ToLine())
+				table.Append(ret.ToLine())
 				table.Render()
 
 				break
 			case "goals":
-				uri := fmt.Sprintf("%v/v1/goals", cfg.API.EndPoint)
-				data, _ := json.Marshal(&okr.Objective{Title: args[1]})
-				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-
-				client := &http.Client{}
-				resp, err := client.Do(req)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-				defer resp.Body.Close()
-
-				body, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-
-				var obj *okr.Objective
-				err = json.Unmarshal(body, &obj)
+				var ret *okr.Objective
+				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)
 					return
@@ -100,35 +78,13 @@ var (
 				table := tablewriter.NewWriter(os.Stdout)
 				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 				table.SetHeader([]string{"ID", "Title", "Start At", "End At", "Create At"})
-				table.Append(obj.ToLine())
+				table.Append(ret.ToLine())
 				table.Render()
 
 				break
 			case "results":
-				uri := fmt.Sprintf("%v/v1/results", cfg.API.EndPoint)
-				data, _ := json.Marshal(&okr.KeyResult{Title: args[1]})
-				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-
-				client := &http.Client{}
-				resp, err := client.Do(req)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-				defer resp.Body.Close()
-
-				body, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-
-				var obj *okr.Objective
-				err = json.Unmarshal(body, &obj)
+				var ret *okr.Objective
+				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)
 					return
@@ -137,7 +93,7 @@ var (
 				table := tablewriter.NewWriter(os.Stdout)
 				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 				table.SetHeader([]string{"ID", "Goad ID", "Title", "Target", "Actual", "Create At"})
-				table.Append(obj.ToLine())
+				table.Append(ret.ToLine())
 				table.Render()
 
 				break

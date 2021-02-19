@@ -33,37 +33,37 @@ var (
 			// todo: 2021-02-15|14:46|doggy|refactor it
 			if len(args) == 2 {
 				id := args[1]
+				uri := fmt.Sprintf("%v/v1/%v/%v", cfg.API.EndPoint, args[0], id)
+
+				req, err := http.NewRequest(http.MethodGet, uri, nil)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				client := &http.Client{}
+				resp, err := client.Do(req)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				defer func() {
+					_ = resp.Body.Close()
+				}()
+
+				if resp.StatusCode == http.StatusNotFound {
+					fmt.Println("No resource found")
+					return
+				}
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
 
 				switch args[0] {
 				case "tasks":
-					uri := fmt.Sprintf("%v/v1/tasks/%v", cfg.API.EndPoint, id)
-					req, err := http.NewRequest(http.MethodGet, uri, nil)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
-					client := &http.Client{}
-					resp, err := client.Do(req)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-					defer func() {
-						_ = resp.Body.Close()
-					}()
-
-					if resp.StatusCode == http.StatusNotFound {
-						fmt.Println("No resource found")
-						return
-					}
-
-					body, err := ioutil.ReadAll(resp.Body)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
 					var task *todo.Task
 					err = json.Unmarshal(body, &task)
 					if err != nil {
@@ -79,29 +79,8 @@ var (
 
 					break
 				case "goals":
-					uri := fmt.Sprintf("%v/v1/goals/%v", cfg.API.EndPoint, id)
-					req, err := http.NewRequest(http.MethodGet, uri, nil)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
-					client := &http.Client{}
-					resp, err := client.Do(req)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-					defer resp.Body.Close()
-
-					body, err := ioutil.ReadAll(resp.Body)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
-					var obj *okr.Objective
-					err = json.Unmarshal(body, &obj)
+					var data *okr.Objective
+					err = json.Unmarshal(body, &data)
 					if err != nil {
 						fmt.Println(err)
 						return
@@ -110,32 +89,11 @@ var (
 					table := tablewriter.NewWriter(os.Stdout)
 					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 					table.SetHeader([]string{"ID", "Title", "Start At", "End At", "Create At"})
-					table.Append(obj.ToLine())
+					table.Append(data.ToLine())
 					table.Render()
 
 					break
 				case "results":
-					uri := fmt.Sprintf("%v/v1/results/%v", cfg.API.EndPoint, id)
-					req, err := http.NewRequest(http.MethodGet, uri, nil)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
-					client := &http.Client{}
-					resp, err := client.Do(req)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-					defer resp.Body.Close()
-
-					body, err := ioutil.ReadAll(resp.Body)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
 					var data *okr.KeyResult
 					err = json.Unmarshal(body, &data)
 					if err != nil {
@@ -154,36 +112,36 @@ var (
 			}
 
 			if len(args) == 1 {
+				uri := fmt.Sprintf("%v/v1/%v?page=%v&size=%v", cfg.API.EndPoint, args[0], page, size)
+				req, err := http.NewRequest(http.MethodGet, uri, nil)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				client := &http.Client{}
+				resp, err := client.Do(req)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				defer resp.Body.Close()
+
+				if resp.StatusCode == http.StatusNotFound {
+					fmt.Println("No resources found")
+					return
+				}
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
 				switch args[0] {
 				case "tasks":
-					uri := fmt.Sprintf("%v/v1/tasks?page=%v&size=%v", cfg.API.EndPoint, page, size)
-					req, err := http.NewRequest(http.MethodGet, uri, nil)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
-					client := &http.Client{}
-					resp, err := client.Do(req)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-					defer resp.Body.Close()
-
-					if resp.StatusCode == http.StatusNotFound {
-						fmt.Println("No resources found")
-						return
-					}
-
-					body, err := ioutil.ReadAll(resp.Body)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
-					var tasks []*todo.Task
-					err = json.Unmarshal(body, &tasks)
+					var data []*todo.Task
+					err = json.Unmarshal(body, &data)
 					if err != nil {
 						fmt.Println(err)
 						return
@@ -192,41 +150,15 @@ var (
 					table := tablewriter.NewWriter(os.Stdout)
 					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 					table.SetHeader([]string{"ID", "Title", "Status", "Create At"})
-					for _, t := range tasks {
+					for _, t := range data {
 						table.Append(t.ToLine())
 					}
 					table.Render()
 
 					break
 				case "goals":
-					uri := fmt.Sprintf("%v/v1/goals?page=%v&size=%v", cfg.API.EndPoint, page, size)
-					req, err := http.NewRequest(http.MethodGet, uri, nil)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
-					client := &http.Client{}
-					resp, err := client.Do(req)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-					defer resp.Body.Close()
-
-					if resp.StatusCode == http.StatusNotFound {
-						fmt.Println("No resources found")
-						return
-					}
-
-					body, err := ioutil.ReadAll(resp.Body)
-					if err != nil {
-						fmt.Println(body)
-						return
-					}
-
-					var goals []*okr.Objective
-					err = json.Unmarshal(body, &goals)
+					var data []*okr.Objective
+					err = json.Unmarshal(body, &data)
 					if err != nil {
 						fmt.Println(err)
 						return
@@ -235,41 +167,15 @@ var (
 					table := tablewriter.NewWriter(os.Stdout)
 					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 					table.SetHeader([]string{"ID", "Title", "Start At", "End At", "Create At"})
-					for _, g := range goals {
+					for _, g := range data {
 						table.Append(g.ToLine())
 					}
 					table.Render()
 
 					break
 				case "results":
-					uri := fmt.Sprintf("%v/v1/krs?page=%v&size=%v", cfg.API.EndPoint, page, size)
-					req, err := http.NewRequest(http.MethodGet, uri, nil)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
-					client := &http.Client{}
-					resp, err := client.Do(req)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-					defer resp.Body.Close()
-
-					if resp.StatusCode == http.StatusNotFound {
-						fmt.Println("No resources found")
-						return
-					}
-
-					body, err := ioutil.ReadAll(resp.Body)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-
-					var tasks []*okr.KeyResult
-					err = json.Unmarshal(body, &tasks)
+					var data []*okr.KeyResult
+					err = json.Unmarshal(body, &data)
 					if err != nil {
 						fmt.Println(err)
 						return
@@ -278,7 +184,7 @@ var (
 					table := tablewriter.NewWriter(os.Stdout)
 					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 					table.SetHeader([]string{"ID", "Goad ID", "Title", "Target", "Actual", "Create At"})
-					for _, t := range tasks {
+					for _, t := range data {
 						table.Append(t.ToLine())
 					}
 					table.Render()
