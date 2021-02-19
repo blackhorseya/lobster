@@ -36,7 +36,7 @@ type reqID struct {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /v1/krs/{id} [get]
+// @Router /v1/results/{id} [get]
 func (i *impl) GetByID(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "GetByID")
@@ -74,7 +74,7 @@ func (i *impl) GetByID(c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /v1/krs [get]
+// @Router /v1/results [get]
 func (i *impl) List(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "List")
@@ -119,7 +119,7 @@ func (i *impl) List(c *gin.Context) {
 // @Success 201 {object} okr.KeyResult
 // @Failure 400 {object} string
 // @Failure 500 {object} string
-// @Router /v1/krs [post]
+// @Router /v1/results [post]
 func (i *impl) Create(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "Create")
@@ -165,7 +165,7 @@ func (i *impl) Create(c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /v1/krs/{id} [put]
+// @Router /v1/results/{id} [put]
 func (i *impl) Update(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "Update")
@@ -220,7 +220,7 @@ func (i *impl) Update(c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /v1/krs/{id} [delete]
+// @Router /v1/results/{id} [delete]
 func (i *impl) Delete(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "Delete")

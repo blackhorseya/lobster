@@ -49,8 +49,8 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	goalIHandler := goal2.NewImpl(goalIBiz)
 	iRepo3 := repo4.NewImpl(db)
 	krIBiz := kr.NewImpl(iRepo3)
-	krIHandler := result.NewImpl(krIBiz)
-	initHandlers := restful.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, krIHandler)
+	resultIHandler := result.NewImpl(krIBiz)
+	initHandlers := restful.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, resultIHandler)
 	engine := http.NewGinEngine(configConfig, initHandlers)
 	injector := app.NewInjector(engine, configConfig)
 	return injector, nil
