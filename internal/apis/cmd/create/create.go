@@ -26,12 +26,13 @@ var (
 		Use:       "create [RESOURCE] [TITLE]",
 		Short:     "Create one resource",
 		ValidArgs: []string{"tasks", "results", "goals"},
-		Args:      cobra.MinimumNArgs(1),
+		Args:      cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
 			// todo: 2021-02-15|19:46|doggy|refactor me
+			uri := fmt.Sprintf("%v/v1/%v", cfg.API.EndPoint, args[0])
+
 			switch args[0] {
 			case "tasks":
-				uri := fmt.Sprintf("%v/v1/%v", cfg.API.EndPoint, args[0])
 				data, _ := json.Marshal(&todo.Task{Title: args[1]})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
@@ -68,7 +69,6 @@ var (
 
 				break
 			case "goals":
-				uri := fmt.Sprintf("%v/v1/%v", cfg.API.EndPoint, args[0])
 				data, _ := json.Marshal(&okr.Objective{Title: args[1]})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
@@ -105,8 +105,7 @@ var (
 
 				break
 			case "results":
-				uri := fmt.Sprintf("%v/v1/%v", cfg.API.EndPoint, args[0])
-				data, _ := json.Marshal(&okr.KeyResult{Title: args[1], GoalID: args[2]})
+				data, _ := json.Marshal(&okr.KeyResult{Title: args[1], GoalID: cfg.Context.Goal})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
 					fmt.Println(err)
