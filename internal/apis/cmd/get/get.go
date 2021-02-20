@@ -73,7 +73,7 @@ var (
 
 					table := tablewriter.NewWriter(os.Stdout)
 					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-					table.SetHeader([]string{"ID", "Title", "Status", "Create At"})
+					table.SetHeader([]string{"ID", "Result ID", "Title", "Status", "Create At"})
 					table.Append(task.ToLine())
 					table.Render()
 
@@ -149,7 +149,7 @@ var (
 
 					table := tablewriter.NewWriter(os.Stdout)
 					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-					table.SetHeader([]string{"ID", "Title", "Status", "Create At"})
+					table.SetHeader([]string{"ID", "Result ID", "Title", "Status", "Create At"})
 					for _, t := range data {
 						table.Append(t.ToLine())
 					}

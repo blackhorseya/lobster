@@ -64,7 +64,7 @@ var (
 
 				table := tablewriter.NewWriter(os.Stdout)
 				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-				table.SetHeader([]string{"ID", "Title", "Status", "Create At"})
+				table.SetHeader([]string{"ID", "Result ID", "Title", "Status", "Create At"})
 				table.Append(ret.ToLine())
 				table.Render()
 
