@@ -11,6 +11,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	"github.com/google/uuid"
 	"github.com/mitchellh/go-homedir"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -105,6 +106,17 @@ var (
 
 				break
 			case "results":
+				if len(cfg.Context.Goal) == 0 {
+					fmt.Println("missing context.goal in .lobster.yaml")
+					return
+				}
+
+				_, err := uuid.Parse(cfg.Context.Goal)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
 				data, _ := json.Marshal(&okr.KeyResult{Title: args[1], GoalID: cfg.Context.Goal})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {

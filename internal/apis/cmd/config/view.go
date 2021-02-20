@@ -13,7 +13,3 @@ var viewCmd = &cobra.Command{
 		fmt.Println(cfg.String())
 	},
 }
-
-func init() {
-	Cmd.AddCommand(viewCmd)
-}
