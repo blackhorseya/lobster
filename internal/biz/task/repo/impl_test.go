@@ -14,10 +14,13 @@ import (
 var (
 	uuid1 = "d76f4f51-f141-41ba-ba57-c4749319586b"
 
+	resultID = "f45b1a55-15cd-4b49-89f1-3e9781cc7e06"
+
 	time1 = int64(1610548520788105000)
 
 	task1 = &todo.Task{
 		ID:        uuid1,
+		ResultID:  resultID,
 		Title:     "task1",
 		Completed: false,
 		CreateAt:  time1,
@@ -37,7 +40,7 @@ type repoSuite struct {
 }
 
 func (s *repoSuite) SetupTest() {
-	if repo, err := CreateRepo("../../../../../configs/app.yaml"); err != nil {
+	if repo, err := CreateRepo("../../../../configs/app.yaml"); err != nil {
 		panic(err)
 	} else {
 		s.repo = repo
