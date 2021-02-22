@@ -4,8 +4,7 @@ package mocks
 
 import (
 	contextx "github.com/blackhorseya/lobster/internal/pkg/contextx"
-	biztodo "github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
-
+	"github.com/blackhorseya/lobster/internal/pkg/entities"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -36,20 +35,20 @@ func (_m *IBiz) Count(ctx contextx.Contextx) (int, error) {
 }
 
 // Create provides a mock function with given fields: ctx, task
-func (_m *IBiz) Create(ctx contextx.Contextx, task *biztodo.Task) (*biztodo.Task, error) {
+func (_m *IBiz) Create(ctx contextx.Contextx, task *task.Task) (*task.Task, error) {
 	ret := _m.Called(ctx, task)
 
-	var r0 *biztodo.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *biztodo.Task) *biztodo.Task); ok {
+	var r0 *task.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *task.Task) *task.Task); ok {
 		r0 = rf(ctx, task)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*biztodo.Task)
+			r0 = ret.Get(0).(*task.Task)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *biztodo.Task) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *task.Task) error); ok {
 		r1 = rf(ctx, task)
 	} else {
 		r1 = ret.Error(1)
@@ -73,15 +72,15 @@ func (_m *IBiz) Delete(ctx contextx.Contextx, id string) error {
 }
 
 // GetByID provides a mock function with given fields: ctx, id
-func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*biztodo.Task, error) {
+func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*task.Task, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 *biztodo.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *biztodo.Task); ok {
+	var r0 *task.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *task.Task); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*biztodo.Task)
+			r0 = ret.Get(0).(*task.Task)
 		}
 	}
 
@@ -96,15 +95,15 @@ func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*biztodo.Task, error)
 }
 
 // List provides a mock function with given fields: ctx, page, size
-func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*biztodo.Task, error) {
+func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*task.Task, error) {
 	ret := _m.Called(ctx, page, size)
 
-	var r0 []*biztodo.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*biztodo.Task); ok {
+	var r0 []*task.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*task.Task); ok {
 		r0 = rf(ctx, page, size)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*biztodo.Task)
+			r0 = ret.Get(0).([]*task.Task)
 		}
 	}
 
@@ -119,20 +118,20 @@ func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*biztodo.Task
 }
 
 // Update provides a mock function with given fields: ctx, updated
-func (_m *IBiz) Update(ctx contextx.Contextx, updated *biztodo.Task) (*biztodo.Task, error) {
+func (_m *IBiz) Update(ctx contextx.Contextx, updated *task.Task) (*task.Task, error) {
 	ret := _m.Called(ctx, updated)
 
-	var r0 *biztodo.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *biztodo.Task) *biztodo.Task); ok {
+	var r0 *task.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *task.Task) *task.Task); ok {
 		r0 = rf(ctx, updated)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*biztodo.Task)
+			r0 = ret.Get(0).(*task.Task)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *biztodo.Task) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *task.Task) error); ok {
 		r1 = rf(ctx, updated)
 	} else {
 		r1 = ret.Error(1)

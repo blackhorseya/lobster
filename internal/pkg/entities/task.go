@@ -1,4 +1,4 @@
-package todo
+package task
 
 import (
 	"strconv"
@@ -19,6 +19,9 @@ type Task struct {
 
 	// Title describe the title of task
 	Title string `json:"title" db:"title"`
+
+	// Status describe the status of task
+	Status Status `json:"status" db:"status"`
 
 	// Completed describe the completed of task
 	Completed bool `json:"completed" db:"completed"`

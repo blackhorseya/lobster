@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	"github.com/blackhorseya/lobster/internal/pkg/entities"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -17,11 +17,11 @@ func NewImpl(rw *sqlx.DB) IRepo {
 	return &impl{rw: rw}
 }
 
-func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*todo.Task, error) {
+func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*task.Task, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	ret := todo.Task{}
+	ret := task.Task{}
 	cmd := "SELECT id, result_id, title, completed, create_at FROM tasks WHERE id = ?"
 	err := i.rw.GetContext(timeout, &ret, cmd, id)
 	if err != nil {
@@ -31,7 +31,7 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*todo.Task, error) {
 	return &ret, nil
 }
 
-func (i *impl) Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error) {
+func (i *impl) Create(ctx contextx.Contextx, task *task.Task) (*task.Task, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
@@ -44,11 +44,11 @@ func (i *impl) Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error
 	return task, nil
 }
 
-func (i *impl) List(ctx contextx.Contextx, offset, limit int) ([]*todo.Task, error) {
+func (i *impl) List(ctx contextx.Contextx, offset, limit int) ([]*task.Task, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var ret []*todo.Task
+	var ret []*task.Task
 	cmd := "SELECT id, result_id, title, completed, create_at FROM tasks LIMIT ? OFFSET ?"
 	if err := i.rw.SelectContext(timeout, &ret, cmd, limit, offset); err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 	return ret, nil
 }
 
-func (i *impl) Update(ctx contextx.Contextx, updated *todo.Task) (*todo.Task, error) {
+func (i *impl) Update(ctx contextx.Contextx, updated *task.Task) (*task.Task, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 

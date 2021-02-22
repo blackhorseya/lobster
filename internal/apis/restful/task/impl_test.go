@@ -12,7 +12,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/biz/task/mocks"
-	entities "github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	"github.com/blackhorseya/lobster/internal/pkg/entities"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
@@ -24,19 +24,19 @@ var (
 
 	time1 = int64(1610548520788105000)
 
-	task1 = &entities.Task{
+	task1 = &task.Task{
 		ID:        uuid1,
 		Title:     "task1",
 		Completed: false,
 		CreateAt:  time1,
 	}
 
-	created1 = &entities.Task{
+	created1 = &task.Task{
 		Title:     "create task1",
 		Completed: true,
 	}
 
-	updated1 = &entities.Task{
+	updated1 = &task.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
 		Completed: false,
@@ -84,7 +84,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *entities.Task
+		wantBody *task.Task
 	}{
 		{
 			name:     "id then 400 error",
@@ -126,7 +126,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *entities.Task
+			var gotBody *task.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -153,7 +153,7 @@ func (s *handlerSuite) Test_impl_List() {
 		name     string
 		args     args
 		wantCode int
-		wantBody []*entities.Task
+		wantBody []*task.Task
 	}{
 		{
 			name:     "a 10 then 400 error",
@@ -186,10 +186,10 @@ func (s *handlerSuite) Test_impl_List() {
 		{
 			name: "1 1 then 200",
 			args: args{page: "1", size: "1", mock: func() {
-				s.mock.On("List", mock.Anything, 1, 1).Return([]*entities.Task{task1}, nil).Once()
+				s.mock.On("List", mock.Anything, 1, 1).Return([]*task.Task{task1}, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: []*entities.Task{task1},
+			wantBody: []*task.Task{task1},
 		},
 	}
 	for _, tt := range tests {
@@ -209,7 +209,7 @@ func (s *handlerSuite) Test_impl_List() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody []*entities.Task
+			var gotBody []*task.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -226,18 +226,18 @@ func (s *handlerSuite) Test_impl_Create() {
 	s.r.POST("/api/v1/tasks", s.handler.Create)
 
 	type args struct {
-		task *entities.Task
+		task *task.Task
 		mock func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *entities.Task
+		wantBody *task.Task
 	}{
 		{
 			name:     "empty title then 400 error",
-			args:     args{task: &entities.Task{Title: ""}},
+			args:     args{task: &task.Task{Title: ""}},
 			wantCode: 400,
 			wantBody: nil,
 		},
@@ -276,7 +276,7 @@ func (s *handlerSuite) Test_impl_Create() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *entities.Task
+			var gotBody *task.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -296,24 +296,24 @@ func (s *handlerSuite) Test_impl_Update() {
 
 	type args struct {
 		id      string
-		updated *entities.Task
+		updated *task.Task
 		mock    func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *entities.Task
+		wantBody *task.Task
 	}{
 		{
 			name:     "id title then 400 error",
-			args:     args{id: "id", updated: &entities.Task{Title: "updated"}},
+			args:     args{id: "id", updated: &task.Task{Title: "updated"}},
 			wantCode: 400,
 			wantBody: nil,
 		},
 		{
 			name:     "uuid empty title then 400 error",
-			args:     args{id: uuid1, updated: &entities.Task{Title: ""}},
+			args:     args{id: uuid1, updated: &task.Task{Title: ""}},
 			wantCode: 400,
 			wantBody: nil,
 		},
@@ -352,7 +352,7 @@ func (s *handlerSuite) Test_impl_Update() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *entities.Task
+			var gotBody *task.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}

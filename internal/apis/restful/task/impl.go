@@ -6,7 +6,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/biz/task"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	entities "github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	task2 "github.com/blackhorseya/lobster/internal/pkg/entities"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -138,7 +138,7 @@ func (i *impl) Create(c *gin.Context) {
 	}
 	logger := ctx.WithField("func", "task list")
 
-	var task *entities.Task
+	var task *task2.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
 		logger.WithField("error", err).Error(er.ErrCreateTask)
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
@@ -188,7 +188,7 @@ func (i *impl) Update(c *gin.Context) {
 		return
 	}
 
-	var task *entities.Task
+	var task *task2.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
 		logger.WithField("error", err).Error(er.ErrCreateTask)
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
