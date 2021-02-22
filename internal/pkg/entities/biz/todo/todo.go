@@ -31,8 +31,8 @@ type Task struct {
 func (t *Task) ToLine() []string {
 	return []string{
 		t.ID,
-		t.Title,
 		t.ResultID,
+		t.Title,
 		strconv.FormatBool(t.Completed),
 		time.Unix(t.CreateAt/1e9, t.CreateAt%1e9).Format(timeFormat),
 	}
