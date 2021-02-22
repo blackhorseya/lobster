@@ -162,8 +162,8 @@ func (i *impl) Create(c *gin.Context) {
 	return
 }
 
-// @Summary UpdateStatus a status of by id
-// @Description UpdateStatus a status of by id
+// @Summary UpdateStatus a status of task by id
+// @Description UpdateStatus a status of task by id
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
@@ -201,9 +201,48 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, ret)
 }
 
+// @Summary ModifyTitle a title of task by id
+// @Description ModifyTitle a status of task by id
+// @Tags Tasks
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of task"
+// @Param updated body pb.Task true "updated task"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/tasks/{id}/title [patch]
 func (i *impl) ModifyTitle(c *gin.Context) {
-	// todo: 2021-02-23|02:53|doggy|implement me
-	panic("implement me")
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "task modify title")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		return
+	}
+
+	var data *pb.Task
+	if err := c.ShouldBindJSON(&data); err != nil {
+		logger.WithField("error", err).Error(er.ErrCreateTask)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
+		return
+	}
+	if len(data.Title) == 0 {
+		logger.Error(er.ErrEmptyTitle)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
+		return
+	}
+
+	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateTask)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateTask})
+		return
+	}
+
+	c.JSON(http.StatusOK, ret)
 }
 
 // @Summary Delete a task by id

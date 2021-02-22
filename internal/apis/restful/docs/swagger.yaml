@@ -573,45 +573,11 @@ paths:
       summary: Get a task by id
       tags:
       - Tasks
-    put:
-      consumes:
-      - application/json
-      description: Update a task by id
-      parameters:
-      - description: ID of task
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: updated task
-        in: body
-        name: updated
-        required: true
-        schema:
-          $ref: '#/definitions/pb.Task'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Update a task by id
-      tags:
-      - Tasks
   /v1/tasks/{id}/status:
     patch:
       consumes:
       - application/json
-      description: UpdateStatus a status of by id
+      description: UpdateStatus a status of task by id
       parameters:
       - description: ID of task
         in: path
@@ -639,7 +605,42 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: UpdateStatus a status of by id
+      summary: UpdateStatus a status of task by id
+      tags:
+      - Tasks
+  /v1/tasks/{id}/title:
+    patch:
+      consumes:
+      - application/json
+      description: ModifyTitle a status of task by id
+      parameters:
+      - description: ID of task
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updated task
+        in: body
+        name: updated
+        required: true
+        schema:
+          $ref: '#/definitions/pb.Task'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: ModifyTitle a title of task by id
       tags:
       - Tasks
 swagger: "2.0"

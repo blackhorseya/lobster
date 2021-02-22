@@ -731,57 +731,6 @@ var doc = `{
                     }
                 }
             },
-            "put": {
-                "description": "Update a task by id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Update a task by id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of task",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "updated task",
-                        "name": "updated",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/pb.Task"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "description": "Delete a task by id",
                 "consumes": [
@@ -833,7 +782,7 @@ var doc = `{
         },
         "/v1/tasks/{id}/status": {
             "patch": {
-                "description": "UpdateStatus a status of by id",
+                "description": "UpdateStatus a status of task by id",
                 "consumes": [
                     "application/json"
                 ],
@@ -843,7 +792,60 @@ var doc = `{
                 "tags": [
                     "Tasks"
                 ],
-                "summary": "UpdateStatus a status of by id",
+                "summary": "UpdateStatus a status of task by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of task",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updated task",
+                        "name": "updated",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/tasks/{id}/title": {
+            "patch": {
+                "description": "ModifyTitle a status of task by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "ModifyTitle a title of task by id",
                 "parameters": [
                     {
                         "type": "string",
