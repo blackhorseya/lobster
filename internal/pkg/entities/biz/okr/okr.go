@@ -20,10 +20,10 @@ type Objective struct {
 	// KeyResults describe key results of objective
 	KeyResults []*KeyResult `json:"key_results" db:"key_results"`
 
-	// StartAt describe the objective start time milliseconds
+	// StartAt describe the objective start timex milliseconds
 	StartAt int64 `json:"start_at" db:"start_at"`
 
-	// EndAt describe the objective end time milliseconds
+	// EndAt describe the objective end timex milliseconds
 	EndAt int64 `json:"end_at" db:"end_at"`
 
 	// CreateAt describe the objective create milliseconds

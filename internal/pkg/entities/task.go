@@ -2,7 +2,8 @@ package task
 
 import (
 	"strconv"
-	"time"
+
+	"github.com/blackhorseya/lobster/internal/pkg/utils/timex"
 )
 
 const (
@@ -37,6 +38,6 @@ func (t *Task) ToLine() []string {
 		t.ResultID,
 		t.Title,
 		strconv.FormatBool(t.Completed),
-		time.Unix(t.CreateAt/1e9, t.CreateAt%1e9).Format(timeFormat),
+		timex.Unix(t.CreateAt).Format(timeFormat),
 	}
 }
