@@ -213,6 +213,34 @@ func (i *impl) Update(c *gin.Context) {
 	return
 }
 
+func (i *impl) UpdateStatus(c *gin.Context) {
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "task update status")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		return
+	}
+
+	var data *pb.Task
+	if err := c.ShouldBindJSON(&data); err != nil {
+		logger.WithField("error", err).Error(er.ErrCreateTask)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
+		return
+	}
+
+	ret, err := i.biz.UpdateStatus(ctx, req.ID, data.Status)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateTask)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateTask})
+		return
+	}
+
+	c.JSON(http.StatusOK, ret)
+}
+
 // @Summary Delete a task by id
 // @Description Delete a task by id
 // @Tags Tasks

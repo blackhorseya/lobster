@@ -19,6 +19,9 @@ type IHandler interface {
 	// Update serve user to update a task
 	Update(c *gin.Context)
 
+	// UpdateStatus serve user to update status of task
+	UpdateStatus(c *gin.Context)
+
 	// Delete serve user to delete a task by id
 	Delete(c *gin.Context)
 }

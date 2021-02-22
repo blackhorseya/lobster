@@ -42,6 +42,14 @@ var (
 		Completed: false,
 		CreateAt:  time1,
 	}
+
+	updated2 = &pb.Task{
+		ID:        uuid1,
+		Status:    pb.Status_INPROGRESS,
+		Title:     "task1",
+		Completed: false,
+		CreateAt:  time1,
+	}
 )
 
 type handlerSuite struct {
@@ -416,6 +424,70 @@ func (s *handlerSuite) Test_impl_Delete() {
 			}()
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Delete() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *handlerSuite) Test_impl_UpdateStatus() {
+	s.r.PATCH("/api/v1/tasks/:id/status", s.handler.UpdateStatus)
+
+	type args struct {
+		id     string
+		status pb.Status
+		mock   func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+		wantBody *pb.Task
+	}{
+		{
+			name:     "id then 400 error",
+			args:     args{id: "id"},
+			wantCode: 400,
+		},
+		{
+			name: "uuid then 500 error",
+			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
+				s.mock.On("UpdateStatus", mock.Anything, uuid1, pb.Status_INPROGRESS).Return(nil, errors.New("error")).Once()
+			}},
+			wantCode: 500,
+		},
+		{
+			name: "uuid status then 200 task",
+			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
+				s.mock.On("UpdateStatus", mock.Anything, uuid1, pb.Status_INPROGRESS).Return(updated2, nil).Once()
+			}},
+			wantCode: 200,
+			wantBody: updated2,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/tasks/%v/status", tt.args.id)
+			data, _ := json.Marshal(&pb.Task{Status: tt.args.status})
+			req := httptest.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			body, _ := ioutil.ReadAll(got.Body)
+			var gotBody *pb.Task
+			_ = json.Unmarshal(body, &gotBody)
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Delete() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
+				s.T().Errorf("Update() got = %v, wantBody = %v", gotBody, tt.wantBody)
+			}
 
 			s.TearDownTest()
 		})
