@@ -15,6 +15,9 @@ type IBiz interface {
 	// GetByID serve caller use key result to get key result by id
 	GetByID(ctx contextx.Contextx, id string) (kr *okr.KeyResult, err error)
 
+	// GetByGoalID serve caller use goal id to get key results
+	GetByGoalID(ctx contextx.Contextx, id string) (krs []*okr.KeyResult, err error)
+
 	// LinkToGoal serve caller link a key result to goal via id
 	LinkToGoal(ctx contextx.Contextx, created *okr.KeyResult) (kr *okr.KeyResult, err error)
 

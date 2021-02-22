@@ -12,21 +12,33 @@ import (
 )
 
 var (
-	krID = "d76f4f51-f141-41ba-ba57-c4749319586b"
+	krID1 = "d0f6de2d-d8cd-4259-85e9-220bdd81e1cf"
+	krID2 = "471322e2-4682-40dd-b344-dbf07800ad5c"
 
-	goalID = "0829ee06-1f04-43d9-8565-812e1826f805"
+	goalID = "d0f6de2d-d8cd-4259-85e9-220bdd81e1cf"
 
 	time1 = int64(1611059529208050000)
 
 	kr1 = &okr.KeyResult{
-		ID:       krID,
+		ID:       krID1,
 		GoalID:   goalID,
 		Title:    "kr1",
-		CreateAt: time1,
+		Target: 99,
+		Actual: 10,
+		CreateAt: int64(1613114039486249000),
+	}
+
+	kr2 = &okr.KeyResult{
+		ID:       krID2,
+		GoalID:   goalID,
+		Title:    "kr",
+		Target: 100,
+		Actual: 20,
+		CreateAt: int64(1614032353580795000),
 	}
 
 	updated1 = &okr.KeyResult{
-		ID:       krID,
+		ID:       krID1,
 		GoalID:   goalID,
 		Title:    "updated kr1",
 		CreateAt: time1,
@@ -93,7 +105,7 @@ func (s *repoSuite) Test_impl_QueryKRByID() {
 	}{
 		{
 			name:    "goalID id then kr nil",
-			args:    args{id: krID},
+			args:    args{id: krID1},
 			want:    kr1,
 			wantErr: false,
 		},
@@ -186,7 +198,7 @@ func (s *repoSuite) Test_impl_Delete() {
 	}{
 		{
 			name:    "uuid then nil",
-			args:    args{id: krID},
+			args:    args{id: krID1},
 			wantErr: false,
 		},
 	}
@@ -194,6 +206,37 @@ func (s *repoSuite) Test_impl_Delete() {
 		s.T().Run(tt.name, func(t *testing.T) {
 			if err := s.repo.Delete(contextx.Background(), tt.args.id); (err != nil) != tt.wantErr {
 				t.Errorf("Delete() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func (s *repoSuite) Test_impl_QueryByGoalID() {
+	type args struct {
+		id string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantKrs []*okr.KeyResult
+		wantErr bool
+	}{
+		{
+			name:    "uuid then krs nil",
+			args:    args{id: goalID},
+			wantKrs: []*okr.KeyResult{kr2, kr1},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			gotKrs, err := s.repo.QueryByGoalID(contextx.Background(), tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("QueryByGoalID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotKrs, tt.wantKrs) {
+				t.Errorf("QueryByGoalID() gotKrs = %v, want %v", gotKrs, tt.wantKrs)
 			}
 		})
 	}

@@ -11,6 +11,9 @@ type IRepo interface {
 	// QueryByID means query key result by key result's id
 	QueryByID(ctx contextx.Contextx, id string) (kr *okr.KeyResult, err error)
 
+	// QueryByGoalID means query key results by goal's id
+	QueryByGoalID(ctx contextx.Contextx, id string) (krs []*okr.KeyResult, err error)
+
 	// QueryList means query key result list
 	QueryList(ctx contextx.Contextx, offset, limit int) (krs []*okr.KeyResult, err error)
 

@@ -18,14 +18,55 @@ goal.
 
 ## CLI usage
 
-```bash
-lobster help
+```shell
+$ lobster help
+
+██╗      ██████╗ ██████╗ ███████╗████████╗███████╗██████╗ 
+██║     ██╔═══██╗██╔══██╗██╔════╝╚══██╔══╝██╔════╝██╔══██╗
+██║     ██║   ██║██████╔╝███████╗   ██║   █████╗  ██████╔╝
+██║     ██║   ██║██╔══██╗╚════██║   ██║   ██╔══╝  ██╔══██╗
+███████╗╚██████╔╝██████╔╝███████║   ██║   ███████╗██║  ██║
+╚══════╝ ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+
+Lobster is a tool which integration todo list, OKRs, sprint board, pomodoro and report etc. functional.
+
+Usage:
+  lobster [command]
+
+Available Commands:
+  completion  Generate completion script
+  config      View and edit Lobster configuration
+  create      Create one resource
+  delete      Delete one resource
+  get         Display one resource
+  help        Help about any command
+  update      Update one resource
+
+Flags:
+      --config string   config file (default is $HOME/.lobster.yaml)
+  -h, --help            help for lobster
+
+Use "lobster [command] --help" for more information about a command.
+
+```
+
+### Auto completion
+
+#### Zsh
+
+```shell
+lobster completion zsh > ~/.zsh/completion/_lobster
 ```
 
 ### Tasks
 
-```bash
+```shell
 lobster get tasks
++--------------------------------------+--------------------------------------+-----------+---------+---------------------+
+| ID                                   | RESULT ID                            | TITLE     | STATUS  | CREATE AT           |
++--------------------------------------+--------------------------------------+-----------+---------+---------------------+
+| 836d2bfb-b002-4c78-8479-177b1dad3e5f | f897a24e-14ac-4293-a783-e16f3b885a1b | interview | BACKLOG | 2021-02-22 21:01:30 |
++--------------------------------------+--------------------------------------+-----------+---------+---------------------+
 ```
 
 ## Tech

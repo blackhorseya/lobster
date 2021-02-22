@@ -22,7 +22,7 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*okr.KeyResult, erro
 	defer cancel()
 
 	var kr okr.KeyResult
-	stmt := `select id, title, target, actual, create_at from keyresults where id = ?`
+	stmt := `select id, goal_id, title, target, actual, create_at from keyresults where id = ?`
 	err := i.rw.GetContext(timeout, &kr, stmt, id)
 	if err != nil {
 		ctx.WithError(err).Errorln("query key result by id is failure")
@@ -30,6 +30,21 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*okr.KeyResult, erro
 	}
 
 	return &kr, nil
+}
+
+func (i *impl) QueryByGoalID(ctx contextx.Contextx, id string) (krs []*okr.KeyResult, err error) {
+	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	var ret []*okr.KeyResult
+	stmt := `select id, goal_id, title, target, actual, create_at from keyresults where goal_id = ? order by create_at desc`
+	err = i.rw.SelectContext(timeout, &ret, stmt, id)
+	if err != nil {
+		ctx.WithError(err).Errorln("query by goal id is failure")
+		return nil, err
+	}
+
+	return ret, nil
 }
 
 func (i *impl) Create(ctx contextx.Contextx, created *okr.KeyResult) (kr *okr.KeyResult, err error) {
