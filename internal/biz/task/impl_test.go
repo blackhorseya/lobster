@@ -21,6 +21,7 @@ var (
 	task1 = &pb.Task{
 		ID:        uuid1,
 		Title:     "task1",
+		Status:    pb.Status_BACKLOG,
 		Completed: false,
 		CreateAt:  time1,
 	}
@@ -35,7 +36,8 @@ var (
 	updated2 = &pb.Task{
 		ID:        uuid1,
 		Title:     "task1",
-		Completed: true,
+		Status:    pb.Status_INPROGRESS,
+		Completed: false,
 		CreateAt:  time1,
 	}
 )
@@ -426,6 +428,79 @@ func (s *bizSuite) Test_impl_Delete() {
 
 			if err := s.biz.Delete(contextx.Background(), tt.args.id); (err != nil) != tt.wantErr {
 				t.Errorf("Delete() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizSuite) Test_impl_UpdateStatus() {
+	type args struct {
+		id     string
+		status pb.Status
+		mock   func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantT   *pb.Task
+		wantErr bool
+	}{
+		{
+			name:    "id then nil error",
+			args:    args{id: "id"},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid then query id error",
+			args: args{id: uuid1, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, errors.New("error")).Once()
+			}},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid then query id not found",
+			args: args{id: uuid1, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, nil).Once()
+			}},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid then update error",
+			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated2).Return(nil, errors.New("error")).Once()
+			}},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid then updated nil",
+			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated2).Return(updated2, nil).Once()
+			}},
+			wantT:   updated2,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotT, err := s.biz.UpdateStatus(contextx.Background(), tt.args.id, tt.args.status)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UpdateStatus() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotT, tt.wantT) {
+				t.Errorf("UpdateStatus() gotT = %v, want %v", gotT, tt.wantT)
 			}
 
 			s.TearDownTest()

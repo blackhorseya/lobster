@@ -125,6 +125,35 @@ func (i *impl) Update(ctx contextx.Contextx, updated *pb.Task) (*pb.Task, error)
 	return ret, nil
 }
 
+func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) (t *pb.Task, err error) {
+	logger := ctx.WithField("id", id)
+
+	_, err = uuid.Parse(id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrInvalidID)
+		return nil, err
+	}
+
+	exist, err := i.repo.QueryByID(ctx, id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrGetTaskByID)
+		return nil, err
+	}
+	if exist == nil {
+		logger.Error(er.ErrTaskNotExists)
+		return nil, er.ErrTaskNotExists
+	}
+
+	exist.Status = status
+	ret, err := i.repo.Update(ctx, exist)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateTask)
+		return nil, err
+	}
+
+	return ret, nil
+}
+
 func (i *impl) Delete(ctx contextx.Contextx, id string) error {
 	if _, err := uuid.Parse(id); err != nil {
 		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrInvalidID)

@@ -140,3 +140,26 @@ func (_m *IBiz) Update(ctx contextx.Contextx, updated *pb.Task) (*pb.Task, error
 
 	return r0, r1
 }
+
+// UpdateStatus provides a mock function with given fields: ctx, id, status
+func (_m *IBiz) UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) (*pb.Task, error) {
+	ret := _m.Called(ctx, id, status)
+
+	var r0 *pb.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, pb.Status) *pb.Task); ok {
+		r0 = rf(ctx, id, status)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.Task)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, string, pb.Status) error); ok {
+		r1 = rf(ctx, id, status)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

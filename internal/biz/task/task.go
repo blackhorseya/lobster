@@ -24,6 +24,9 @@ type IBiz interface {
 	// Update serve user to update a task
 	Update(ctx contextx.Contextx, updated *pb.Task) (*pb.Task, error)
 
+	// UpdateStatus serve user to update status of task
+	UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) (t *pb.Task, err error)
+
 	// Delete serve user to delete a task by id
 	Delete(ctx contextx.Contextx, id string) error
 }
