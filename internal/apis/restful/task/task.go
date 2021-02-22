@@ -16,9 +16,6 @@ type IHandler interface {
 	// Create serve user to creat a task
 	Create(c *gin.Context)
 
-	// Update serve user to update a task
-	Update(c *gin.Context)
-
 	// UpdateStatus serve user to update status of task
 	UpdateStatus(c *gin.Context)
 
