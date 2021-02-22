@@ -123,6 +123,11 @@ func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) 
 	return ret, nil
 }
 
+func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (t *pb.Task, err error) {
+	// todo: 2021-02-23|03:01|doggy|implement me
+	panic("implement me")
+}
+
 func (i *impl) Delete(ctx contextx.Contextx, id string) error {
 	if _, err := uuid.Parse(id); err != nil {
 		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrInvalidID)

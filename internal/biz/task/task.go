@@ -21,6 +21,9 @@ type IBiz interface {
 	// Create serve user to create a task
 	Create(ctx contextx.Contextx, task *pb.Task) (*pb.Task, error)
 
+	// ModifyTitle serve user to modify title of task
+	ModifyTitle(ctx contextx.Contextx, id, title string) (t *pb.Task, err error)
+
 	// UpdateStatus serve user to update status of task
 	UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) (t *pb.Task, err error)
 
