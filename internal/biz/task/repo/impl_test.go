@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -18,7 +18,7 @@ var (
 
 	time1 = int64(1610548520788105000)
 
-	task1 = &task.Task{
+	task1 = &pb.Task{
 		ID:        uuid1,
 		ResultID:  resultID,
 		Title:     "task1",
@@ -26,7 +26,7 @@ var (
 		CreateAt:  time1,
 	}
 
-	updated1 = &task.Task{
+	updated1 = &pb.Task{
 		ID:        uuid1,
 		Title:     "updated1 task1",
 		Completed: false,
@@ -58,7 +58,7 @@ func (s *repoSuite) Test_impl_QueryByID() {
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *pb.Task
 		wantErr bool
 	}{
 		{
@@ -84,12 +84,12 @@ func (s *repoSuite) Test_impl_QueryByID() {
 
 func (s *repoSuite) Test_impl_Create() {
 	type args struct {
-		task *task.Task
+		task *pb.Task
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *pb.Task
 		wantErr bool
 	}{
 		{
@@ -121,13 +121,13 @@ func (s *repoSuite) Test_impl_List() {
 	tests := []struct {
 		name    string
 		args    args
-		want    []*task.Task
+		want    []*pb.Task
 		wantErr bool
 	}{
 		{
 			name:    "0 1 then tasks nil",
 			args:    args{offset: 0, limit: 1},
-			want:    []*task.Task{task1},
+			want:    []*pb.Task{task1},
 			wantErr: false,
 		},
 	}
@@ -177,12 +177,12 @@ func (s *repoSuite) Test_impl_Count() {
 
 func (s *repoSuite) Test_impl_Update() {
 	type args struct {
-		updated *task.Task
+		updated *pb.Task
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *pb.Task
 		wantErr bool
 	}{
 		{

@@ -1,6 +1,6 @@
 syntax = "proto3";
-package pb.task;
-option go_package = ".;task";
+package pb;
+option go_package = ".;pb";
 
 enum Status {
   BACKLOG = 0;

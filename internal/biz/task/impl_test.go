@@ -8,7 +8,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/biz/task/repo/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,21 +18,21 @@ var (
 
 	time1 = time.Now().UnixNano()
 
-	task1 = &task.Task{
+	task1 = &pb.Task{
 		ID:        uuid1,
 		Title:     "task1",
 		Completed: false,
 		CreateAt:  time1,
 	}
 
-	updated1 = &task.Task{
+	updated1 = &pb.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
 		Completed: false,
 		CreateAt:  time1,
 	}
 
-	updated2 = &task.Task{
+	updated2 = &pb.Task{
 		ID:        uuid1,
 		Title:     "task1",
 		Completed: true,
@@ -71,7 +71,7 @@ func (s *bizSuite) Test_impl_GetByID() {
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *pb.Task
 		wantErr bool
 	}{
 		{
@@ -136,7 +136,7 @@ func (s *bizSuite) Test_impl_List() {
 	tests := []struct {
 		name    string
 		args    args
-		want    []*task.Task
+		want    []*pb.Task
 		wantErr bool
 	}{
 		{
@@ -164,9 +164,9 @@ func (s *bizSuite) Test_impl_List() {
 			name: "1 1 then tasks nil",
 			args: args{page: 1, size: 1, mock: func() {
 				s.mock.On("List", mock.Anything, 0, 1).Return(
-					[]*task.Task{task1}, nil).Once()
+					[]*pb.Task{task1}, nil).Once()
 			}},
-			want: []*task.Task{
+			want: []*pb.Task{
 				task1,
 			},
 			wantErr: false,
@@ -249,24 +249,24 @@ func (s *bizSuite) Test_impl_Count() {
 
 func (s *bizSuite) Test_impl_Create() {
 	type args struct {
-		task *task.Task
+		task *pb.Task
 		mock func()
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *pb.Task
 		wantErr bool
 	}{
 		{
 			name:    "missing title then nil error",
-			args:    args{task: &task.Task{Title: ""}},
+			args:    args{task: &pb.Task{Title: ""}},
 			want:    nil,
 			wantErr: true,
 		},
 		{
 			name: "task then nil error",
-			args: args{task: &task.Task{Title: "task1"}, mock: func() {
+			args: args{task: &pb.Task{Title: "task1"}, mock: func() {
 				s.mock.On("Create", mock.Anything, mock.Anything).Return(
 					nil, errors.New("err")).Once()
 			}},
@@ -275,7 +275,7 @@ func (s *bizSuite) Test_impl_Create() {
 		},
 		{
 			name: "task then task nil",
-			args: args{task: &task.Task{Title: "task1"}, mock: func() {
+			args: args{task: &pb.Task{Title: "task1"}, mock: func() {
 				s.mock.On("Create", mock.Anything, mock.Anything).Return(
 					task1, nil).Once()
 			}},
@@ -305,30 +305,30 @@ func (s *bizSuite) Test_impl_Create() {
 
 func (s *bizSuite) Test_impl_Update() {
 	type args struct {
-		updated *task.Task
+		updated *pb.Task
 		mock    func()
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *pb.Task
 		wantErr bool
 	}{
 		{
 			name:    "id title then nil error",
-			args:    args{updated: &task.Task{ID: "id", Title: "updated"}},
+			args:    args{updated: &pb.Task{ID: "id", Title: "updated"}},
 			want:    nil,
 			wantErr: true,
 		},
 		{
 			name:    "uuid empty title then nil error",
-			args:    args{updated: &task.Task{ID: uuid1, Title: ""}},
+			args:    args{updated: &pb.Task{ID: uuid1, Title: ""}},
 			want:    nil,
 			wantErr: true,
 		},
 		{
 			name: "uuid updated then query error",
-			args: args{updated: &task.Task{ID: uuid1, Title: "updated"}, mock: func() {
+			args: args{updated: &pb.Task{ID: uuid1, Title: "updated"}, mock: func() {
 				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, errors.New("error")).Once()
 			}},
 			want:    nil,
@@ -336,7 +336,7 @@ func (s *bizSuite) Test_impl_Update() {
 		},
 		{
 			name: "uuid updated then not found error",
-			args: args{updated: &task.Task{ID: uuid1, Title: "updated"}, mock: func() {
+			args: args{updated: &pb.Task{ID: uuid1, Title: "updated"}, mock: func() {
 				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, nil).Once()
 			}},
 			want:    nil,
@@ -344,7 +344,7 @@ func (s *bizSuite) Test_impl_Update() {
 		},
 		{
 			name: "uuid updated then update error",
-			args: args{updated: &task.Task{ID: uuid1, Title: "updated task1"}, mock: func() {
+			args: args{updated: &pb.Task{ID: uuid1, Title: "updated task1"}, mock: func() {
 				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
 				s.mock.On("Update", mock.Anything, updated1).Return(nil, errors.New("error")).Once()
 			}},
@@ -353,7 +353,7 @@ func (s *bizSuite) Test_impl_Update() {
 		},
 		{
 			name: "uuid updated then updated",
-			args: args{updated: &task.Task{ID: uuid1, Title: "updated task1"}, mock: func() {
+			args: args{updated: &pb.Task{ID: uuid1, Title: "updated task1"}, mock: func() {
 				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
 				s.mock.On("Update", mock.Anything, updated1).Return(updated1, nil).Once()
 			}},

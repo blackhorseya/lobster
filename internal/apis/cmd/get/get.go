@@ -8,8 +8,8 @@ import (
 	"os"
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
-	task2 "github.com/blackhorseya/lobster/internal/pkg/entities"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/mitchellh/go-homedir"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -64,7 +64,7 @@ var (
 
 				switch args[0] {
 				case "tasks":
-					var task *task2.Task
+					var task *pb.Task
 					err = json.Unmarshal(body, &task)
 					if err != nil {
 						fmt.Println(err)
@@ -140,7 +140,7 @@ var (
 
 				switch args[0] {
 				case "tasks":
-					var data []*task2.Task
+					var data []*pb.Task
 					err = json.Unmarshal(body, &data)
 					if err != nil {
 						fmt.Println(err)
