@@ -201,6 +201,11 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, ret)
 }
 
+func (i *impl) ModifyTitle(c *gin.Context) {
+	// todo: 2021-02-23|02:53|doggy|implement me
+	panic("implement me")
+}
+
 // @Summary Delete a task by id
 // @Description Delete a task by id
 // @Tags Tasks
