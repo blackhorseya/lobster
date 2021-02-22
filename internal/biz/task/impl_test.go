@@ -33,9 +33,9 @@ var (
 		CreateAt:  time1,
 	}
 
-	updated2 = &pb.Task{
+	updateStatus = &pb.Task{
 		ID:        uuid1,
-		Title:     "task1",
+		Title:     "updated task1",
 		Status:    pb.Status_INPROGRESS,
 		Completed: false,
 		CreateAt:  time1,
@@ -395,7 +395,7 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 			name: "uuid then update error",
 			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
 				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
-				s.mock.On("Update", mock.Anything, updated2).Return(nil, errors.New("error")).Once()
+				s.mock.On("Update", mock.Anything, updateStatus).Return(nil, errors.New("error")).Once()
 			}},
 			wantT:   nil,
 			wantErr: true,
@@ -404,9 +404,9 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 			name: "uuid then updated nil",
 			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
 				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
-				s.mock.On("Update", mock.Anything, updated2).Return(updated2, nil).Once()
+				s.mock.On("Update", mock.Anything, updateStatus).Return(updateStatus, nil).Once()
 			}},
-			wantT:   updated2,
+			wantT:   updateStatus,
 			wantErr: false,
 		},
 	}
