@@ -429,3 +429,82 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 		})
 	}
 }
+
+func (s *bizSuite) Test_impl_ModifyTitle() {
+	type args struct {
+		id    string
+		title string
+		mock  func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantT   *pb.Task
+		wantErr bool
+	}{
+		{
+			name:    "id then parse id error",
+			args:    args{id: "id", title: "title"},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name:    "uuid missing title then error",
+			args:    args{id: uuid1, title: ""},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then query id error",
+			args: args{id: uuid1, title: "title", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, errors.New("error")).Once()
+			}},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then query id not found",
+			args: args{id: uuid1, title: "title", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, nil).Once()
+			}},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then modify title error",
+			args: args{id: uuid1, title: "updated task1", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated1).Return(nil, errors.New("error")).Once()
+			}},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then modify title",
+			args: args{id: uuid1, title: "updated task1", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated1).Return(updated1, nil).Once()
+			}},
+			wantT:   updated1,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotT, err := s.biz.ModifyTitle(contextx.Background(), tt.args.id, tt.args.title)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ModifyTitle() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotT, tt.wantT) {
+				t.Errorf("ModifyTitle() gotT = %v, want %v", gotT, tt.wantT)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}

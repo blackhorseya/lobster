@@ -118,13 +118,13 @@ func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*pb.Task, err
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: ctx, updated
-func (_m *IBiz) Update(ctx contextx.Contextx, updated *pb.Task) (*pb.Task, error) {
-	ret := _m.Called(ctx, updated)
+// ModifyTitle provides a mock function with given fields: ctx, id, title
+func (_m *IBiz) ModifyTitle(ctx contextx.Contextx, id string, title string) (*pb.Task, error) {
+	ret := _m.Called(ctx, id, title)
 
 	var r0 *pb.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.Task) *pb.Task); ok {
-		r0 = rf(ctx, updated)
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, string) *pb.Task); ok {
+		r0 = rf(ctx, id, title)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*pb.Task)
@@ -132,8 +132,8 @@ func (_m *IBiz) Update(ctx contextx.Contextx, updated *pb.Task) (*pb.Task, error
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.Task) error); ok {
-		r1 = rf(ctx, updated)
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, string, string) error); ok {
+		r1 = rf(ctx, id, title)
 	} else {
 		r1 = ret.Error(1)
 	}

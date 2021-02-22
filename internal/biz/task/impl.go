@@ -124,8 +124,37 @@ func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) 
 }
 
 func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (t *pb.Task, err error) {
-	// todo: 2021-02-23|03:01|doggy|implement me
-	panic("implement me")
+	logger := ctx.WithField("id", id).WithField("title", title)
+
+	_, err = uuid.Parse(id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrInvalidID)
+		return nil, err
+	}
+
+	if len(title) == 0 {
+		logger.Error(er.ErrEmptyTitle)
+		return nil, er.ErrEmptyTitle
+	}
+
+	exist, err := i.repo.QueryByID(ctx, id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrGetTaskByID)
+		return nil, err
+	}
+	if exist == nil {
+		logger.Error(er.ErrTaskNotExists)
+		return nil, er.ErrTaskNotExists
+	}
+
+	exist.Title = title
+	ret, err := i.repo.Update(ctx, exist)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateTask)
+		return nil, err
+	}
+
+	return ret, nil
 }
 
 func (i *impl) Delete(ctx contextx.Contextx, id string) error {
