@@ -1,13 +1,18 @@
 package update
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"strings"
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/mitchellh/go-homedir"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -21,16 +26,53 @@ var (
 		Use:       "update [RESOURCE]",
 		Short:     "Update one resource",
 		ValidArgs: []string{"tasks"},
-		Args:      cobra.MinimumNArgs(3),
+		Args:      cobra.MinimumNArgs(4),
 		Run: func(cmd *cobra.Command, args []string) {
+			resource := args[0]
+			id := args[1]
+			field := args[2]
+			value := args[3]
+
 			// todo: 2021-02-22|23:46|doggy|refactor me
-			switch args[1] {
+			switch field {
 			case "status":
-				if status, ok := pb.Status_value[strings.ToUpper(args[2])]; !ok {
-					fmt.Printf("status parse error %v\n", args[2])
+				if status, ok := pb.Status_value[strings.ToUpper(value)]; !ok {
+					fmt.Printf("status parse error %v\n", value)
 				} else {
-					// todo: 2021-02-22|23:57|doggy|implement me
-					fmt.Printf("update %v resource %v to %v", args[0], args[1], status)
+					uri := fmt.Sprintf("%v/v1/%v/%v/%v", cfg.API.EndPoint, resource, id, field)
+					data, _ := json.Marshal(&pb.Task{Status: pb.Status(status)})
+					req, err := http.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
+
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					var task *pb.Task
+					err = json.Unmarshal(body, &task)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					table := tablewriter.NewWriter(os.Stdout)
+					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+					table.SetHeader([]string{"ID", "Result ID", "Title", "Status", "Create At"})
+					table.Append(task.ToLine())
+					table.Render()
 				}
 				break
 			}
