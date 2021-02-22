@@ -60,7 +60,21 @@ func (i *impl) GetByID(ctx contextx.Contextx, id string) (kr *okr.KeyResult, err
 }
 
 func (i *impl) GetByGoalID(ctx contextx.Contextx, id string) (krs []*okr.KeyResult, err error) {
-	panic("implement me")
+	logger := ctx.WithField("id", id)
+
+	_, err = uuid.Parse(id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrInvalidID)
+		return nil, err
+	}
+
+	ret, err := i.repo.QueryByGoalID(ctx, id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrListKeyResult)
+		return nil, err
+	}
+
+	return ret, nil
 }
 
 func (i *impl) LinkToGoal(ctx contextx.Contextx, created *okr.KeyResult) (kr *okr.KeyResult, err error) {

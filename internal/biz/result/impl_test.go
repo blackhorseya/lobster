@@ -368,3 +368,57 @@ func (s *bizSuite) Test_impl_LinkToGoal() {
 		})
 	}
 }
+
+func (s *bizSuite) Test_impl_GetByGoalID() {
+	type args struct {
+		id   string
+		mock func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantKrs []*okr.KeyResult
+		wantErr bool
+	}{
+		{
+			name:    "id then parse id error",
+			args:    args{id: "id"},
+			wantKrs: nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid then query error",
+			args: args{id: goalID, mock: func() {
+				s.mock.On("QueryByGoalID", mock.Anything, goalID).Return(nil, errors.New("error")).Once()
+			}},
+			wantKrs: nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid then query krs",
+			args: args{id: goalID, mock: func() {
+				s.mock.On("QueryByGoalID", mock.Anything, goalID).Return([]*okr.KeyResult{kr1}, nil).Once()
+			}},
+			wantKrs: []*okr.KeyResult{kr1},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotKrs, err := s.biz.GetByGoalID(contextx.Background(), tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetByGoalID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotKrs, tt.wantKrs) {
+				t.Errorf("GetByGoalID() gotKrs = %v, want %v", gotKrs, tt.wantKrs)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}

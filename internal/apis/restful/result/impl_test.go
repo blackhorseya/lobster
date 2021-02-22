@@ -440,3 +440,78 @@ func (s *handlerSuite) Test_impl_Delete() {
 		})
 	}
 }
+
+func (s *handlerSuite) Test_impl_GetByGoalID() {
+	s.r.GET("/api/v1/goals/:id/results", s.handler.GetByGoalID)
+
+	type args struct {
+		id   string
+		mock func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+		wantBody []*okr.KeyResult
+	}{
+		{
+			name:     "id then 400 error",
+			args:     args{id: "id"},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name: "uuid then 500 error",
+			args: args{id: goalID, mock: func() {
+				s.mock.On("GetByGoalID", mock.Anything, goalID).Return(nil, errors.New("error")).Once()
+			}},
+			wantCode: 500,
+			wantBody: nil,
+		},
+		{
+			name: "uuid then 404 error",
+			args: args{id: goalID, mock: func() {
+				s.mock.On("GetByGoalID", mock.Anything, goalID).Return(nil, nil).Once()
+			}},
+			wantCode: 404,
+			wantBody: nil,
+		},
+		{
+			name: "uuid then 200 results",
+			args: args{id: goalID, mock: func() {
+				s.mock.On("GetByGoalID", mock.Anything, goalID).Return([]*okr.KeyResult{kr1}, nil).Once()
+			}},
+			wantCode: 200,
+			wantBody: []*okr.KeyResult{kr1},
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/goals/%v/results", tt.args.id)
+			req := httptest.NewRequest(http.MethodGet, uri, nil)
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			var gotBody []*okr.KeyResult
+			body, _ := ioutil.ReadAll(got.Body)
+			err := json.Unmarshal(body, &gotBody)
+			if err != nil {
+				s.Errorf(err, "unmarshal response body is failure")
+			}
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "QueryByGoalID() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
+				s.T().Errorf("QueryByGoalID() got = %v, wantBody = %v", gotBody, tt.wantBody)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
