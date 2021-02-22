@@ -64,8 +64,29 @@ func (i *impl) GetByID(c *gin.Context) {
 }
 
 func (i *impl) GetByGoalID(c *gin.Context) {
-	// todo: 2021-02-23|07:04|doggy|implement me
-	panic("implement me")
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "GetByGoalID")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	ret, err := i.biz.GetByGoalID(ctx, req.ID)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrListKeyResult)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	if len(ret) == 0 {
+		logger.Error(er.ErrKRNotExists)
+		c.JSON(http.StatusNotFound, nil)
+		return
+	}
+
+	c.JSON(http.StatusOK, ret)
 }
 
 // @Summary List all key results

@@ -45,6 +45,7 @@ func CreateInitHandlerFn(health health.IHandler, taskH task.IHandler, goalH goal
 					goals.POST("", goalH.Create)
 					goals.PUT(":id", goalH.Update)
 					goals.DELETE(":id", goalH.Delete)
+					goals.GET(":id/results", resultH.GetByGoalID)
 				}
 
 				results := v1.Group("results")
@@ -54,6 +55,7 @@ func CreateInitHandlerFn(health health.IHandler, taskH task.IHandler, goalH goal
 					results.POST("", resultH.Create)
 					results.PUT(":id", resultH.Update)
 					results.DELETE(":id", resultH.Delete)
+
 				}
 			}
 		}
