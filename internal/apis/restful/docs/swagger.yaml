@@ -27,7 +27,7 @@ definitions:
         description: CreateAt describe the objective create milliseconds
         type: integer
       end_at:
-        description: EndAt describe the objective end time milliseconds
+        description: EndAt describe the objective end timex milliseconds
         type: integer
       id:
         description: ID describe the unique identify code of objective
@@ -38,7 +38,7 @@ definitions:
           $ref: '#/definitions/okr.KeyResult'
         type: array
       start_at:
-        description: StartAt describe the objective start time milliseconds
+        description: StartAt describe the objective start timex milliseconds
         type: integer
       title:
         description: Title describe the title of objective

@@ -35,6 +35,7 @@ func CreateInitHandlerFn(health health.IHandler, taskH task.IHandler, goalH goal
 					tasks.POST("", taskH.Create)
 					tasks.PUT(":id", taskH.Update)
 					tasks.DELETE(":id", taskH.Delete)
+					tasks.PATCH(":id/status", taskH.UpdateStatus)
 				}
 
 				goals := v1.Group("goals")

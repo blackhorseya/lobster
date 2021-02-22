@@ -6,8 +6,8 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/biz/task"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	entities "github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -138,7 +138,7 @@ func (i *impl) Create(c *gin.Context) {
 	}
 	logger := ctx.WithField("func", "task list")
 
-	var task *entities.Task
+	var task *pb.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
 		logger.WithField("error", err).Error(er.ErrCreateTask)
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
@@ -188,7 +188,7 @@ func (i *impl) Update(c *gin.Context) {
 		return
 	}
 
-	var task *entities.Task
+	var task *pb.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
 		logger.WithField("error", err).Error(er.ErrCreateTask)
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
@@ -211,6 +211,34 @@ func (i *impl) Update(c *gin.Context) {
 
 	c.JSON(http.StatusOK, ret)
 	return
+}
+
+func (i *impl) UpdateStatus(c *gin.Context) {
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "task update status")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		return
+	}
+
+	var data *pb.Task
+	if err := c.ShouldBindJSON(&data); err != nil {
+		logger.WithField("error", err).Error(er.ErrCreateTask)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
+		return
+	}
+
+	ret, err := i.biz.UpdateStatus(ctx, req.ID, data.Status)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateTask)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateTask})
+		return
+	}
+
+	c.JSON(http.StatusOK, ret)
 }
 
 // @Summary Delete a task by id

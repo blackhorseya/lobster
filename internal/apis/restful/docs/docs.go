@@ -861,7 +861,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "end_at": {
-                    "description": "EndAt describe the objective end time milliseconds",
+                    "description": "EndAt describe the objective end timex milliseconds",
                     "type": "integer"
                 },
                 "id": {
@@ -876,7 +876,7 @@ var doc = `{
                     }
                 },
                 "start_at": {
-                    "description": "StartAt describe the objective start time milliseconds",
+                    "description": "StartAt describe the objective start timex milliseconds",
                     "type": "integer"
                 },
                 "title": {

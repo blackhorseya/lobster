@@ -3,26 +3,29 @@ package task
 import (
 	"github.com/blackhorseya/lobster/internal/biz/task/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/google/wire"
 )
 
 // IBiz declare todo biz service function
 type IBiz interface {
 	// GetByID serve user to get a task by id
-	GetByID(ctx contextx.Contextx, id string) (*todo.Task, error)
+	GetByID(ctx contextx.Contextx, id string) (*pb.Task, error)
 
 	// List serve user to list all tasks
-	List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error)
+	List(ctx contextx.Contextx, page, size int) ([]*pb.Task, error)
 
 	// Count serve user to count all tasks
 	Count(ctx contextx.Contextx) (int, error)
 
 	// Create serve user to create a task
-	Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error)
+	Create(ctx contextx.Contextx, task *pb.Task) (*pb.Task, error)
 
 	// Update serve user to update a task
-	Update(ctx contextx.Contextx, updated *todo.Task) (*todo.Task, error)
+	Update(ctx contextx.Contextx, updated *pb.Task) (*pb.Task, error)
+
+	// UpdateStatus serve user to update status of task
+	UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) (t *pb.Task, err error)
 
 	// Delete serve user to delete a task by id
 	Delete(ctx contextx.Contextx, id string) error

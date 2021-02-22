@@ -9,7 +9,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/mitchellh/go-homedir"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -64,7 +64,7 @@ var (
 
 				switch args[0] {
 				case "tasks":
-					var task *todo.Task
+					var task *pb.Task
 					err = json.Unmarshal(body, &task)
 					if err != nil {
 						fmt.Println(err)
@@ -140,7 +140,7 @@ var (
 
 				switch args[0] {
 				case "tasks":
-					var data []*todo.Task
+					var data []*pb.Task
 					err = json.Unmarshal(body, &data)
 					if err != nil {
 						fmt.Println(err)

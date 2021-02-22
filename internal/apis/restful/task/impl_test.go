@@ -12,7 +12,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/biz/task/mocks"
-	entities "github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
@@ -24,21 +24,29 @@ var (
 
 	time1 = int64(1610548520788105000)
 
-	task1 = &entities.Task{
+	task1 = &pb.Task{
 		ID:        uuid1,
 		Title:     "task1",
 		Completed: false,
 		CreateAt:  time1,
 	}
 
-	created1 = &entities.Task{
+	created1 = &pb.Task{
 		Title:     "create task1",
 		Completed: true,
 	}
 
-	updated1 = &entities.Task{
+	updated1 = &pb.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
+		Completed: false,
+		CreateAt:  time1,
+	}
+
+	updated2 = &pb.Task{
+		ID:        uuid1,
+		Status:    pb.Status_INPROGRESS,
+		Title:     "task1",
 		Completed: false,
 		CreateAt:  time1,
 	}
@@ -84,7 +92,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *entities.Task
+		wantBody *pb.Task
 	}{
 		{
 			name:     "id then 400 error",
@@ -126,7 +134,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *entities.Task
+			var gotBody *pb.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -153,7 +161,7 @@ func (s *handlerSuite) Test_impl_List() {
 		name     string
 		args     args
 		wantCode int
-		wantBody []*entities.Task
+		wantBody []*pb.Task
 	}{
 		{
 			name:     "a 10 then 400 error",
@@ -186,10 +194,10 @@ func (s *handlerSuite) Test_impl_List() {
 		{
 			name: "1 1 then 200",
 			args: args{page: "1", size: "1", mock: func() {
-				s.mock.On("List", mock.Anything, 1, 1).Return([]*entities.Task{task1}, nil).Once()
+				s.mock.On("List", mock.Anything, 1, 1).Return([]*pb.Task{task1}, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: []*entities.Task{task1},
+			wantBody: []*pb.Task{task1},
 		},
 	}
 	for _, tt := range tests {
@@ -209,7 +217,7 @@ func (s *handlerSuite) Test_impl_List() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody []*entities.Task
+			var gotBody []*pb.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -226,18 +234,18 @@ func (s *handlerSuite) Test_impl_Create() {
 	s.r.POST("/api/v1/tasks", s.handler.Create)
 
 	type args struct {
-		task *entities.Task
+		task *pb.Task
 		mock func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *entities.Task
+		wantBody *pb.Task
 	}{
 		{
 			name:     "empty title then 400 error",
-			args:     args{task: &entities.Task{Title: ""}},
+			args:     args{task: &pb.Task{Title: ""}},
 			wantCode: 400,
 			wantBody: nil,
 		},
@@ -276,7 +284,7 @@ func (s *handlerSuite) Test_impl_Create() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *entities.Task
+			var gotBody *pb.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -296,24 +304,24 @@ func (s *handlerSuite) Test_impl_Update() {
 
 	type args struct {
 		id      string
-		updated *entities.Task
+		updated *pb.Task
 		mock    func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *entities.Task
+		wantBody *pb.Task
 	}{
 		{
 			name:     "id title then 400 error",
-			args:     args{id: "id", updated: &entities.Task{Title: "updated"}},
+			args:     args{id: "id", updated: &pb.Task{Title: "updated"}},
 			wantCode: 400,
 			wantBody: nil,
 		},
 		{
 			name:     "uuid empty title then 400 error",
-			args:     args{id: uuid1, updated: &entities.Task{Title: ""}},
+			args:     args{id: uuid1, updated: &pb.Task{Title: ""}},
 			wantCode: 400,
 			wantBody: nil,
 		},
@@ -352,7 +360,7 @@ func (s *handlerSuite) Test_impl_Update() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *entities.Task
+			var gotBody *pb.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -416,6 +424,70 @@ func (s *handlerSuite) Test_impl_Delete() {
 			}()
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Delete() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *handlerSuite) Test_impl_UpdateStatus() {
+	s.r.PATCH("/api/v1/tasks/:id/status", s.handler.UpdateStatus)
+
+	type args struct {
+		id     string
+		status pb.Status
+		mock   func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+		wantBody *pb.Task
+	}{
+		{
+			name:     "id then 400 error",
+			args:     args{id: "id"},
+			wantCode: 400,
+		},
+		{
+			name: "uuid then 500 error",
+			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
+				s.mock.On("UpdateStatus", mock.Anything, uuid1, pb.Status_INPROGRESS).Return(nil, errors.New("error")).Once()
+			}},
+			wantCode: 500,
+		},
+		{
+			name: "uuid status then 200 task",
+			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
+				s.mock.On("UpdateStatus", mock.Anything, uuid1, pb.Status_INPROGRESS).Return(updated2, nil).Once()
+			}},
+			wantCode: 200,
+			wantBody: updated2,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/tasks/%v/status", tt.args.id)
+			data, _ := json.Marshal(&pb.Task{Status: tt.args.status})
+			req := httptest.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			body, _ := ioutil.ReadAll(got.Body)
+			var gotBody *pb.Task
+			_ = json.Unmarshal(body, &gotBody)
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Delete() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
+				s.T().Errorf("Update() got = %v, wantBody = %v", gotBody, tt.wantBody)
+			}
 
 			s.TearDownTest()
 		})

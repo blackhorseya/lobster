@@ -1,8 +1,9 @@
-package todo
+package pb
 
 import (
 	"strconv"
-	"time"
+
+	"github.com/blackhorseya/lobster/internal/pkg/utils/timex"
 )
 
 const (
@@ -20,6 +21,9 @@ type Task struct {
 	// Title describe the title of task
 	Title string `json:"title" db:"title"`
 
+	// Status describe the status of task
+	Status Status `json:"status" db:"status"`
+
 	// Completed describe the completed of task
 	Completed bool `json:"completed" db:"completed"`
 
@@ -31,9 +35,9 @@ type Task struct {
 func (t *Task) ToLine() []string {
 	return []string{
 		t.ID,
-		t.Title,
 		t.ResultID,
+		t.Title,
 		strconv.FormatBool(t.Completed),
-		time.Unix(t.CreateAt/1e9, t.CreateAt%1e9).Format(timeFormat),
+		timex.Unix(t.CreateAt).Format(timeFormat),
 	}
 }

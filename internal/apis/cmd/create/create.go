@@ -10,7 +10,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/google/uuid"
 	"github.com/mitchellh/go-homedir"
 	"github.com/olekukonko/tablewriter"
@@ -34,7 +34,18 @@ var (
 
 			switch args[0] {
 			case "tasks":
-				data, _ := json.Marshal(&todo.Task{Title: args[1]})
+				if len(cfg.Context.Result) == 0 {
+					fmt.Println("missing context.result in .lobster.yaml")
+					return
+				}
+
+				_, err := uuid.Parse(cfg.Context.Result)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				data, _ := json.Marshal(&pb.Task{Title: args[1], ResultID: cfg.Context.Result})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
 					fmt.Println(err)
@@ -55,7 +66,7 @@ var (
 					return
 				}
 
-				var ret *todo.Task
+				var ret *pb.Task
 				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)
