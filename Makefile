@@ -61,11 +61,15 @@ deploy:
 	--set image.tag=$(VERSION)
 
 .PHONY: gen
-gen: gen-wire gen-swagger
+gen: gen-wire gen-pb gen-swagger
 
 .PHONY: gen-wire
 gen-wire:
 	@wire gen ./...
+
+.PHONY: gen-pb
+gen-pb:
+	@protoc --go_out=plugins=grpc:./internal/pkg/pb ./internal/pkg/pb/*.proto
 
 .PHONY: gen-swagger
 gen-swagger:
