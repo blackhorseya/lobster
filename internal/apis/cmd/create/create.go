@@ -11,6 +11,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/todo"
+	"github.com/google/uuid"
 	"github.com/mitchellh/go-homedir"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -29,9 +30,10 @@ var (
 		Args:      cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
 			// todo: 2021-02-15|19:46|doggy|refactor me
+			uri := fmt.Sprintf("%v/v1/%v", cfg.API.EndPoint, args[0])
+
 			switch args[0] {
 			case "tasks":
-				uri := fmt.Sprintf("%v/v1/tasks", cfg.API.EndPoint)
 				data, _ := json.Marshal(&todo.Task{Title: args[1]})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
@@ -53,8 +55,8 @@ var (
 					return
 				}
 
-				var task *todo.Task
-				err = json.Unmarshal(body, &task)
+				var ret *todo.Task
+				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)
 					return
@@ -62,13 +64,12 @@ var (
 
 				table := tablewriter.NewWriter(os.Stdout)
 				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-				table.SetHeader([]string{"ID", "Title", "Status", "Create At"})
-				table.Append(task.ToLine())
+				table.SetHeader([]string{"ID", "Result ID", "Title", "Status", "Create At"})
+				table.Append(ret.ToLine())
 				table.Render()
 
 				break
 			case "goals":
-				uri := fmt.Sprintf("%v/v1/goals", cfg.API.EndPoint)
 				data, _ := json.Marshal(&okr.Objective{Title: args[1]})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
@@ -90,8 +91,8 @@ var (
 					return
 				}
 
-				var obj *okr.Objective
-				err = json.Unmarshal(body, &obj)
+				var ret *okr.Objective
+				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)
 					return
@@ -100,13 +101,23 @@ var (
 				table := tablewriter.NewWriter(os.Stdout)
 				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 				table.SetHeader([]string{"ID", "Title", "Start At", "End At", "Create At"})
-				table.Append(obj.ToLine())
+				table.Append(ret.ToLine())
 				table.Render()
 
 				break
 			case "results":
-				uri := fmt.Sprintf("%v/v1/results", cfg.API.EndPoint)
-				data, _ := json.Marshal(&okr.KeyResult{Title: args[1]})
+				if len(cfg.Context.Goal) == 0 {
+					fmt.Println("missing context.goal in .lobster.yaml")
+					return
+				}
+
+				_, err := uuid.Parse(cfg.Context.Goal)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				data, _ := json.Marshal(&okr.KeyResult{Title: args[1], GoalID: cfg.Context.Goal})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
 					fmt.Println(err)
@@ -127,8 +138,8 @@ var (
 					return
 				}
 
-				var obj *okr.Objective
-				err = json.Unmarshal(body, &obj)
+				var ret *okr.KeyResult
+				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)
 					return
@@ -137,7 +148,7 @@ var (
 				table := tablewriter.NewWriter(os.Stdout)
 				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 				table.SetHeader([]string{"ID", "Goad ID", "Title", "Target", "Actual", "Create At"})
-				table.Append(obj.ToLine())
+				table.Append(ret.ToLine())
 				table.Render()
 
 				break

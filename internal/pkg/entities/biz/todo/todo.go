@@ -14,6 +14,9 @@ type Task struct {
 	// ID describe the unique identify code of task
 	ID string `json:"id" db:"id"`
 
+	// ResultID describe the parent key result's id
+	ResultID string `json:"result_id" db:"result_id"`
+
 	// Title describe the title of task
 	Title string `json:"title" db:"title"`
 
@@ -26,5 +29,11 @@ type Task struct {
 
 // ToLine serve caller to print a string slice
 func (t *Task) ToLine() []string {
-	return []string{t.ID, t.Title, strconv.FormatBool(t.Completed), time.Unix(t.CreateAt/1e9, t.CreateAt%1e9).Format(timeFormat)}
+	return []string{
+		t.ID,
+		t.Title,
+		t.ResultID,
+		strconv.FormatBool(t.Completed),
+		time.Unix(t.CreateAt/1e9, t.CreateAt%1e9).Format(timeFormat),
+	}
 }

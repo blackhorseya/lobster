@@ -1,11 +1,11 @@
-package kr
+package result
 
 import (
 	"errors"
 	"reflect"
 	"testing"
 
-	"github.com/blackhorseya/lobster/internal/biz/kr/repo/mocks"
+	"github.com/blackhorseya/lobster/internal/biz/result/repo/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	"github.com/stretchr/testify/mock"

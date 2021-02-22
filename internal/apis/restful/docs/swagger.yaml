@@ -273,7 +273,7 @@ paths:
       summary: Update a objective by id
       tags:
       - Goals
-  /v1/krs:
+  /v1/results:
     get:
       consumes:
       - application/json
@@ -342,7 +342,7 @@ paths:
       summary: Create a key result
       tags:
       - KeyResults
-  /v1/krs/{id}:
+  /v1/results/{id}:
     delete:
       consumes:
       - application/json

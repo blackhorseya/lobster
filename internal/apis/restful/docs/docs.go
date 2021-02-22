@@ -337,7 +337,7 @@ var doc = `{
                 }
             }
         },
-        "/v1/krs": {
+        "/v1/results": {
             "get": {
                 "description": "List all key results",
                 "consumes": [
@@ -441,7 +441,7 @@ var doc = `{
                 }
             }
         },
-        "/v1/krs/{id}": {
+        "/v1/results/{id}": {
             "get": {
                 "description": "Get a key result by id",
                 "consumes": [

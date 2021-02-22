@@ -10,11 +10,12 @@ import (
 
 // Config declare configuration for application
 type Config struct {
-	APP  *APP  `json:"app" yaml:"app"`
-	HTTP *HTTP `json:"http" yaml:"http"`
-	DB   *DB   `json:"db" yaml:"db"`
-	Log  *Log  `json:"log" yaml:"log"`
-	API  *API  `json:"api" yaml:"api"`
+	APP     *APP     `json:"app" yaml:"app"`
+	HTTP    *HTTP    `json:"http" yaml:"http"`
+	DB      *DB      `json:"db" yaml:"db"`
+	Log     *Log     `json:"log" yaml:"log"`
+	API     *API     `json:"api" yaml:"api"`
+	Context *Context `json:"context" yaml:"context"`
 }
 
 // NewConfig serve caller to create a Config with config file path
@@ -71,6 +72,12 @@ type Log struct {
 // API declare endpoint configuration
 type API struct {
 	EndPoint string `json:"endPoint" yaml:"endPoint"`
+}
+
+// Context declare context configuration
+type Context struct {
+	Goal   string `json:"goal" yaml:"goal"`
+	Result string `json:"result" yaml:"result"`
 }
 
 // ProviderSet is a provider set for wire
