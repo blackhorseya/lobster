@@ -10,6 +10,9 @@ type IHandler interface {
 	// GetByID serve user to get a key result by id
 	GetByID(c *gin.Context)
 
+	// GetByGoalID serve user to get key results by goal id
+	GetByGoalID(c *gin.Context)
+
 	// List serve user to list all key results by page and size
 	List(c *gin.Context)
 

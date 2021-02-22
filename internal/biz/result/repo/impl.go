@@ -32,6 +32,10 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*okr.KeyResult, erro
 	return &kr, nil
 }
 
+func (i *impl) QueryByGoalID(ctx contextx.Contextx, id string) (krs []*okr.KeyResult, err error) {
+	panic("implement me")
+}
+
 func (i *impl) Create(ctx contextx.Contextx, created *okr.KeyResult) (kr *okr.KeyResult, err error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()

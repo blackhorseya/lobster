@@ -59,6 +59,10 @@ func (i *impl) GetByID(ctx contextx.Contextx, id string) (kr *okr.KeyResult, err
 	return kr, nil
 }
 
+func (i *impl) GetByGoalID(ctx contextx.Contextx, id string) (krs []*okr.KeyResult, err error) {
+	panic("implement me")
+}
+
 func (i *impl) LinkToGoal(ctx contextx.Contextx, created *okr.KeyResult) (kr *okr.KeyResult, err error) {
 	logger := ctx.WithField("created", created)
 

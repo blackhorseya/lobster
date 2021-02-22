@@ -4,7 +4,6 @@ package mocks
 
 import (
 	contextx "github.com/blackhorseya/lobster/internal/pkg/contextx"
-
 	mock "github.com/stretchr/testify/mock"
 
 	okr "github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
@@ -27,6 +26,29 @@ func (_m *IBiz) Delete(ctx contextx.Contextx, id string) error {
 	}
 
 	return r0
+}
+
+// GetByGoalID provides a mock function with given fields: ctx, id
+func (_m *IBiz) GetByGoalID(ctx contextx.Contextx, id string) ([]*okr.KeyResult, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 []*okr.KeyResult
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) []*okr.KeyResult); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*okr.KeyResult)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // GetByID provides a mock function with given fields: ctx, id

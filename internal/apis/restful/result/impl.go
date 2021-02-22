@@ -63,6 +63,11 @@ func (i *impl) GetByID(c *gin.Context) {
 	c.JSON(http.StatusOK, ret)
 }
 
+func (i *impl) GetByGoalID(c *gin.Context) {
+	// todo: 2021-02-23|07:04|doggy|implement me
+	panic("implement me")
+}
+
 // @Summary List all key results
 // @Description List all key results
 // @Tags KeyResults
