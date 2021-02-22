@@ -106,6 +106,11 @@ func (i *impl) List(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"error": er.ErrListTasks})
 		return
 	}
+	if len(ret) == 0 {
+		logger.WithError(err).Error(er.ErrTaskNotExists)
+		c.JSON(http.StatusNotFound, nil)
+		return
+	}
 
 	c.JSON(http.StatusOK, ret)
 	return

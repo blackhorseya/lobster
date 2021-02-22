@@ -176,10 +176,17 @@ func (s *handlerSuite) Test_impl_List() {
 			wantBody: nil,
 		},
 		{
-			name: "1 1 then 200 error",
+			name: "1 1 then 404 error",
 			args: args{page: "1", size: "1", mock: func() {
-				s.mock.On("List", mock.Anything, 1, 1).Return(
-					[]*entities.Task{task1}, nil).Once()
+				s.mock.On("List", mock.Anything, 1, 1).Return(nil, nil).Once()
+			}},
+			wantCode: 404,
+			wantBody: nil,
+		},
+		{
+			name: "1 1 then 200",
+			args: args{page: "1", size: "1", mock: func() {
+				s.mock.On("List", mock.Anything, 1, 1).Return([]*entities.Task{task1}, nil).Once()
 			}},
 			wantCode: 200,
 			wantBody: []*entities.Task{task1},
