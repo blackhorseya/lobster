@@ -22,7 +22,7 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*okr.KeyResult, erro
 	defer cancel()
 
 	var kr okr.KeyResult
-	stmt := `select id, title, target, actual, create_at from keyresults where id = ?`
+	stmt := `select id, goal_id, title, target, actual, create_at from keyresults where id = ?`
 	err := i.rw.GetContext(timeout, &kr, stmt, id)
 	if err != nil {
 		ctx.WithError(err).Errorln("query key result by id is failure")

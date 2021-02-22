@@ -1,6 +1,7 @@
 package okr
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -58,6 +59,9 @@ type KeyResult struct {
 	// Actual describe the actual of key result
 	Actual int `json:"actual" db:"actual"`
 
+	// Progress describe the progress of key result
+	Progress int `json:"-"`
+
 	// CreateAt describe the key result create milliseconds
 	CreateAt int64 `json:"create_at" db:"create_at"`
 }
@@ -70,6 +74,7 @@ func (k *KeyResult) ToLine() []string {
 		k.Title,
 		strconv.Itoa(k.Target),
 		strconv.Itoa(k.Actual),
+		fmt.Sprintf("%.2f", (float32(k.Actual)/float32(k.Target))*100),
 		time.Unix(k.CreateAt/1e9, k.CreateAt%1e9).Format(timeFormat),
 	}
 }
