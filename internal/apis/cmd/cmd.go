@@ -5,6 +5,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/apis/cmd/create"
 	"github.com/blackhorseya/lobster/internal/apis/cmd/delete"
 	"github.com/blackhorseya/lobster/internal/apis/cmd/get"
+	"github.com/blackhorseya/lobster/internal/apis/cmd/update"
 	"github.com/google/wire"
 	"github.com/spf13/cobra"
 )
@@ -38,6 +39,7 @@ func init() {
 	rootCmd.AddCommand(get.Cmd)
 	rootCmd.AddCommand(create.Cmd)
 	rootCmd.AddCommand(delete.Cmd)
+	rootCmd.AddCommand(update.Cmd)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.lobster.yaml)")
 }
