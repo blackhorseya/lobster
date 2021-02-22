@@ -34,12 +34,13 @@ var (
 			value := args[3]
 
 			// todo: 2021-02-22|23:46|doggy|refactor me
+			uri := fmt.Sprintf("%v/v1/%v/%v/%v", cfg.API.EndPoint, resource, id, field)
+
 			switch field {
 			case "status":
 				if status, ok := pb.Status_value[strings.ToUpper(value)]; !ok {
 					fmt.Printf("status parse error %v\n", value)
 				} else {
-					uri := fmt.Sprintf("%v/v1/%v/%v/%v", cfg.API.EndPoint, resource, id, field)
 					data, _ := json.Marshal(&pb.Task{Status: pb.Status(status)})
 					req, err := http.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
 					if err != nil {
@@ -74,6 +75,42 @@ var (
 					table.Append(task.ToLine())
 					table.Render()
 				}
+				break
+			case "title":
+				data, _ := json.Marshal(&pb.Task{Title: value})
+				req, err := http.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				client := &http.Client{}
+				resp, err := client.Do(req)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				defer resp.Body.Close()
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				var task *pb.Task
+				err = json.Unmarshal(body, &task)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+				table.SetHeader([]string{"ID", "Result ID", "Title", "Status", "Create At"})
+				table.Append(task.ToLine())
+				table.Render()
+
 				break
 			}
 		},
