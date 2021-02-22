@@ -121,7 +121,7 @@ func (i *impl) List(c *gin.Context) {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
-// @Param created body todo.Task true "created task"
+// @Param created body pb.Task true "created task"
 // @Success 200 {object} string
 // @Success 201 {object} string
 // @Failure 400 {object} string
@@ -168,6 +168,7 @@ func (i *impl) Create(c *gin.Context) {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of task"
+// @Param updated body pb.Task true "updated task"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 500 {object} string
@@ -213,6 +214,17 @@ func (i *impl) Update(c *gin.Context) {
 	return
 }
 
+// @Summary UpdateStatus a status of by id
+// @Description UpdateStatus a status of by id
+// @Tags Tasks
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of task"
+// @Param updated body pb.Task true "updated task"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/tasks/{id}/status [patch]
 func (i *impl) UpdateStatus(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "task update status")

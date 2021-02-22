@@ -3,8 +3,10 @@ package update
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -18,19 +20,26 @@ var (
 	Cmd = &cobra.Command{
 		Use:       "update [RESOURCE]",
 		Short:     "Update one resource",
-		ValidArgs: []string{"tasks", "results", "goals"},
-		Args:      cobra.MinimumNArgs(1),
+		ValidArgs: []string{"tasks"},
+		Args:      cobra.MinimumNArgs(3),
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("update %v resource\n", args[0])
+			// todo: 2021-02-22|23:46|doggy|refactor me
+			switch args[1] {
+			case "status":
+				if status, ok := pb.Status_value[strings.ToUpper(args[2])]; !ok {
+					fmt.Printf("status parse error %v\n", args[2])
+				} else {
+					// todo: 2021-02-22|23:57|doggy|implement me
+					fmt.Printf("update %v resource %v to %v", args[0], args[1], status)
+				}
+				break
+			}
 		},
 	}
 )
 
 func init() {
 	cobra.OnInitialize(initConfig)
-
-	Cmd.Flags().Int("page", 1, "list resource which page")
-	Cmd.Flags().Int("size", 10, "list resource which size")
 }
 
 // initConfig reads in config file and ENV variables if set.

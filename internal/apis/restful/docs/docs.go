@@ -656,7 +656,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/todo.Task"
+                            "$ref": "#/definitions/pb.Task"
                         }
                     }
                 ],
@@ -750,6 +750,15 @@ var doc = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "updated task",
+                        "name": "updated",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.Task"
+                        }
                     }
                 ],
                 "responses": {
@@ -803,6 +812,59 @@ var doc = `{
                     },
                     "204": {
                         "description": "No Content",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/tasks/{id}/status": {
+            "patch": {
+                "description": "UpdateStatus a status of by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "UpdateStatus a status of by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of task",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updated task",
+                        "name": "updated",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "type": "string"
                         }
@@ -885,7 +947,7 @@ var doc = `{
                 }
             }
         },
-        "todo.Task": {
+        "pb.Task": {
             "type": "object",
             "properties": {
                 "completed": {
@@ -899,6 +961,14 @@ var doc = `{
                 "id": {
                     "description": "ID describe the unique identify code of task",
                     "type": "string"
+                },
+                "result_id": {
+                    "description": "ResultID describe the parent key result's id",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Status describe the status of task",
+                    "type": "integer"
                 },
                 "title": {
                     "description": "Title describe the title of task",
