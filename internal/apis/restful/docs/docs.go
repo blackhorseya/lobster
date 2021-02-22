@@ -337,6 +337,59 @@ var doc = `{
                 }
             }
         },
+        "/v1/goals/{id}/results": {
+            "get": {
+                "description": "Get key result by goal id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "KeyResults"
+                ],
+                "summary": "Get key result by goal id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of goal",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/okr.KeyResult"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/results": {
             "get": {
                 "description": "List all key results",

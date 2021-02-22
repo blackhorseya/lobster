@@ -63,6 +63,17 @@ func (i *impl) GetByID(c *gin.Context) {
 	c.JSON(http.StatusOK, ret)
 }
 
+// @Summary Get key result by goal id
+// @Description Get key result by goal id
+// @Tags KeyResults
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of goal"
+// @Success 200 {array} okr.KeyResult
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /v1/goals/{id}/results [get]
 func (i *impl) GetByGoalID(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "GetByGoalID")
