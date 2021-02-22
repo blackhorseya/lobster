@@ -305,84 +305,6 @@ func (s *bizSuite) Test_impl_Create() {
 	}
 }
 
-func (s *bizSuite) Test_impl_Update() {
-	type args struct {
-		updated *pb.Task
-		mock    func()
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *pb.Task
-		wantErr bool
-	}{
-		{
-			name:    "id title then nil error",
-			args:    args{updated: &pb.Task{ID: "id", Title: "updated"}},
-			want:    nil,
-			wantErr: true,
-		},
-		{
-			name:    "uuid empty title then nil error",
-			args:    args{updated: &pb.Task{ID: uuid1, Title: ""}},
-			want:    nil,
-			wantErr: true,
-		},
-		{
-			name: "uuid updated then query error",
-			args: args{updated: &pb.Task{ID: uuid1, Title: "updated"}, mock: func() {
-				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, errors.New("error")).Once()
-			}},
-			want:    nil,
-			wantErr: true,
-		},
-		{
-			name: "uuid updated then not found error",
-			args: args{updated: &pb.Task{ID: uuid1, Title: "updated"}, mock: func() {
-				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, nil).Once()
-			}},
-			want:    nil,
-			wantErr: true,
-		},
-		{
-			name: "uuid updated then update error",
-			args: args{updated: &pb.Task{ID: uuid1, Title: "updated task1"}, mock: func() {
-				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
-				s.mock.On("Update", mock.Anything, updated1).Return(nil, errors.New("error")).Once()
-			}},
-			want:    nil,
-			wantErr: true,
-		},
-		{
-			name: "uuid updated then updated",
-			args: args{updated: &pb.Task{ID: uuid1, Title: "updated task1"}, mock: func() {
-				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
-				s.mock.On("Update", mock.Anything, updated1).Return(updated1, nil).Once()
-			}},
-			want:    updated1,
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		s.T().Run(tt.name, func(t *testing.T) {
-			if tt.args.mock != nil {
-				tt.args.mock()
-			}
-
-			got, err := s.biz.Update(contextx.Background(), tt.args.updated)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Update() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Update() got = %v, want %v", got, tt.want)
-			}
-
-			s.TearDownTest()
-		})
-	}
-}
-
 func (s *bizSuite) Test_impl_Delete() {
 	type args struct {
 		id   string
@@ -501,6 +423,85 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 			}
 			if !reflect.DeepEqual(gotT, tt.wantT) {
 				t.Errorf("UpdateStatus() gotT = %v, want %v", gotT, tt.wantT)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizSuite) Test_impl_ModifyTitle() {
+	type args struct {
+		id    string
+		title string
+		mock  func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantT   *pb.Task
+		wantErr bool
+	}{
+		{
+			name:    "id then parse id error",
+			args:    args{id: "id", title: "title"},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name:    "uuid missing title then error",
+			args:    args{id: uuid1, title: ""},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then query id error",
+			args: args{id: uuid1, title: "title", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, errors.New("error")).Once()
+			}},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then query id not found",
+			args: args{id: uuid1, title: "title", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, nil).Once()
+			}},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then modify title error",
+			args: args{id: uuid1, title: "updated task1", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated1).Return(nil, errors.New("error")).Once()
+			}},
+			wantT:   nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then modify title",
+			args: args{id: uuid1, title: "updated task1", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated1).Return(updated1, nil).Once()
+			}},
+			wantT:   updated1,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotT, err := s.biz.ModifyTitle(contextx.Background(), tt.args.id, tt.args.title)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ModifyTitle() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotT, tt.wantT) {
+				t.Errorf("ModifyTitle() gotT = %v, want %v", gotT, tt.wantT)
 			}
 
 			s.TearDownTest()

@@ -121,7 +121,7 @@ func (i *impl) List(c *gin.Context) {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
-// @Param created body todo.Task true "created task"
+// @Param created body pb.Task true "created task"
 // @Success 200 {object} string
 // @Success 201 {object} string
 // @Failure 400 {object} string
@@ -162,57 +162,17 @@ func (i *impl) Create(c *gin.Context) {
 	return
 }
 
-// @Summary Update a task by id
-// @Description Update a task by id
+// @Summary UpdateStatus a status of task by id
+// @Description UpdateStatus a status of task by id
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of task"
+// @Param updated body pb.Task true "updated task"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 500 {object} string
-// @Router /v1/tasks/{id} [put]
-func (i *impl) Update(c *gin.Context) {
-	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
-	if !ok {
-		logrus.Error(er.ErrCTX)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrCTX.Error()})
-		return
-	}
-	logger := ctx.WithField("func", "task list")
-
-	var req reqID
-	if err := c.ShouldBindUri(&req); err != nil {
-		logger.WithField("err", err).Error(er.ErrInvalidID)
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
-		return
-	}
-
-	var task *pb.Task
-	if err := c.ShouldBindJSON(&task); err != nil {
-		logger.WithField("error", err).Error(er.ErrCreateTask)
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
-		return
-	}
-
-	if len(task.Title) == 0 {
-		logger.WithField("task", task).Error(er.ErrEmptyTitle)
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
-		return
-	}
-
-	task.ID = req.ID
-	ret, err := i.biz.Update(ctx, task)
-	if err != nil {
-		logger.WithFields(logrus.Fields{"error": err, "updated": task}).Error(er.ErrUpdateTask)
-		c.JSON(http.StatusOK, gin.H{"error": er.ErrUpdateTask})
-		return
-	}
-
-	c.JSON(http.StatusOK, ret)
-	return
-}
-
+// @Router /v1/tasks/{id}/status [patch]
 func (i *impl) UpdateStatus(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "task update status")
@@ -232,6 +192,50 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 	}
 
 	ret, err := i.biz.UpdateStatus(ctx, req.ID, data.Status)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateTask)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateTask})
+		return
+	}
+
+	c.JSON(http.StatusOK, ret)
+}
+
+// @Summary ModifyTitle a title of task by id
+// @Description ModifyTitle a status of task by id
+// @Tags Tasks
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of task"
+// @Param updated body pb.Task true "updated task"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/tasks/{id}/title [patch]
+func (i *impl) ModifyTitle(c *gin.Context) {
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "task modify title")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		return
+	}
+
+	var data *pb.Task
+	if err := c.ShouldBindJSON(&data); err != nil {
+		logger.WithField("error", err).Error(er.ErrCreateTask)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
+		return
+	}
+	if len(data.Title) == 0 {
+		logger.Error(er.ErrEmptyTitle)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
+		return
+	}
+
+	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrUpdateTask)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateTask})

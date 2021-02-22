@@ -94,37 +94,6 @@ func (i *impl) Create(ctx contextx.Contextx, task *pb.Task) (*pb.Task, error) {
 	return ret, nil
 }
 
-func (i *impl) Update(ctx contextx.Contextx, updated *pb.Task) (*pb.Task, error) {
-	if _, err := uuid.Parse(updated.ID); err != nil {
-		ctx.WithFields(logrus.Fields{"err": err, "id": updated.ID}).Error(er.ErrInvalidID)
-		return nil, err
-	}
-
-	if len(updated.Title) == 0 {
-		ctx.WithFields(logrus.Fields{"title": updated.Title}).Error(er.ErrEmptyTitle)
-		return nil, er.ErrEmptyTitle
-	}
-
-	exist, err := i.repo.QueryByID(ctx, updated.ID)
-	if err != nil {
-		ctx.WithField("err", err).Error(er.ErrGetTaskByID)
-		return nil, err
-	}
-	if exist == nil {
-		ctx.WithField("updated", updated).Error(er.ErrTaskNotExists)
-		return nil, er.ErrTaskNotExists
-	}
-
-	updated.CreateAt = exist.CreateAt
-	ret, err := i.repo.Update(ctx, updated)
-	if err != nil {
-		ctx.WithFields(logrus.Fields{"err": err}).Error(er.ErrUpdateTask)
-		return nil, er.ErrUpdateTask
-	}
-
-	return ret, nil
-}
-
 func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) (t *pb.Task, err error) {
 	logger := ctx.WithField("id", id)
 
@@ -145,6 +114,40 @@ func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) 
 	}
 
 	exist.Status = status
+	ret, err := i.repo.Update(ctx, exist)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateTask)
+		return nil, err
+	}
+
+	return ret, nil
+}
+
+func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (t *pb.Task, err error) {
+	logger := ctx.WithField("id", id).WithField("title", title)
+
+	_, err = uuid.Parse(id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrInvalidID)
+		return nil, err
+	}
+
+	if len(title) == 0 {
+		logger.Error(er.ErrEmptyTitle)
+		return nil, er.ErrEmptyTitle
+	}
+
+	exist, err := i.repo.QueryByID(ctx, id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrGetTaskByID)
+		return nil, err
+	}
+	if exist == nil {
+		logger.Error(er.ErrTaskNotExists)
+		return nil, er.ErrTaskNotExists
+	}
+
+	exist.Title = title
 	ret, err := i.repo.Update(ctx, exist)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrUpdateTask)
