@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -17,11 +17,11 @@ func NewImpl(rw *sqlx.DB) IRepo {
 	return &impl{rw: rw}
 }
 
-func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*okr.KeyResult, error) {
+func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*pb.KeyResult, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var kr okr.KeyResult
+	var kr pb.KeyResult
 	stmt := `select id, goal_id, title, target, actual, create_at from keyresults where id = ?`
 	err := i.rw.GetContext(timeout, &kr, stmt, id)
 	if err != nil {
@@ -32,11 +32,11 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*okr.KeyResult, erro
 	return &kr, nil
 }
 
-func (i *impl) QueryByGoalID(ctx contextx.Contextx, id string) (krs []*okr.KeyResult, err error) {
+func (i *impl) QueryByGoalID(ctx contextx.Contextx, id string) (krs []*pb.KeyResult, err error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var ret []*okr.KeyResult
+	var ret []*pb.KeyResult
 	stmt := `select id, goal_id, title, target, actual, create_at from keyresults where goal_id = ? order by create_at desc`
 	err = i.rw.SelectContext(timeout, &ret, stmt, id)
 	if err != nil {
@@ -47,7 +47,7 @@ func (i *impl) QueryByGoalID(ctx contextx.Contextx, id string) (krs []*okr.KeyRe
 	return ret, nil
 }
 
-func (i *impl) Create(ctx contextx.Contextx, created *okr.KeyResult) (kr *okr.KeyResult, err error) {
+func (i *impl) Create(ctx contextx.Contextx, created *pb.KeyResult) (kr *pb.KeyResult, err error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
@@ -62,7 +62,7 @@ values (:id, :goal_id, :title, :target, :actual, :create_at)`
 	return created, nil
 }
 
-func (i *impl) Update(ctx contextx.Contextx, updated *okr.KeyResult) (kr *okr.KeyResult, err error) {
+func (i *impl) Update(ctx contextx.Contextx, updated *pb.KeyResult) (kr *pb.KeyResult, err error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
@@ -76,11 +76,11 @@ func (i *impl) Update(ctx contextx.Contextx, updated *okr.KeyResult) (kr *okr.Ke
 	return updated, nil
 }
 
-func (i *impl) QueryList(ctx contextx.Contextx, offset, limit int) (krs []*okr.KeyResult, err error) {
+func (i *impl) QueryList(ctx contextx.Contextx, offset, limit int) (krs []*pb.KeyResult, err error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var ret []*okr.KeyResult
+	var ret []*pb.KeyResult
 	stmt := `select id, goal_id, title, target, actual, create_at from keyresults limit ? offset ?`
 	err = i.rw.SelectContext(timeout, &ret, stmt, limit, offset)
 	if err != nil {

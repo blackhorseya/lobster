@@ -6,8 +6,8 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/biz/goal"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -31,7 +31,7 @@ type reqID struct {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of objective"
-// @Success 200 {object} okr.Objective
+// @Success 200 {object} pb.Objective
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -76,7 +76,7 @@ func (i *impl) GetByID(c *gin.Context) {
 // @Produce application/json
 // @Param page query integer false "page" default(1)
 // @Param size query integer false "size of page" default(10)
-// @Success 200 {array} okr.Objective
+// @Success 200 {array} pb.Objective
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -126,8 +126,8 @@ func (i *impl) List(c *gin.Context) {
 // @Tags Goals
 // @Accept application/json
 // @Produce application/json
-// @Param created body okr.Objective true "created objective"
-// @Success 201 {object} okr.Objective
+// @Param created body pb.Objective true "created objective"
+// @Success 201 {object} pb.Objective
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Router /v1/goals [post]
@@ -142,7 +142,7 @@ func (i *impl) Create(c *gin.Context) {
 	}
 	logger := ctx.WithField("func", "objective create")
 
-	var created *okr.Objective
+	var created *pb.Objective
 	if err := c.ShouldBindJSON(&created); err != nil {
 		logger.WithField("err", err).Error(er.ErrCreateObjective)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrCreateObjective})
@@ -163,58 +163,6 @@ func (i *impl) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, ret)
-}
-
-// @Summary Update a objective by id
-// @Description Update a objective by id
-// @Tags Goals
-// @Accept application/json
-// @Produce application/json
-// @Param id path string true "ID of objective"
-// @Param created body okr.Objective true "created objective"
-// @Success 200 {object} okr.Objective
-// @Failure 400 {object} string
-// @Failure 500 {object} string
-// @Router /v1/goals/{id} [put]
-func (i *impl) Update(c *gin.Context) {
-	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
-	if !ok {
-		logrus.Error(er.ErrCTX)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": er.ErrCTX.Error(),
-		})
-		return
-	}
-	logger := ctx.WithField("func", "objective update")
-
-	var req reqID
-	if err := c.ShouldBindUri(&req); err != nil {
-		logger.WithField("err", err).Error(er.ErrInvalidID)
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
-		return
-	}
-
-	var updated *okr.Objective
-	if err := c.ShouldBindJSON(&updated); err != nil {
-		logger.WithField("err", err).Error(er.ErrCreateObjective)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrCreateObjective})
-		return
-	}
-
-	if len(updated.Title) == 0 {
-		logger.WithField("updated", updated).Error(er.ErrEmptyTitle)
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
-		return
-	}
-
-	ret, err := i.biz.Update(ctx, updated)
-	if err != nil {
-		logger.WithFields(logrus.Fields{"err": err, "updated": updated}).Error(er.ErrUpdateObj)
-		c.JSON(http.StatusOK, gin.H{"error": er.ErrUpdateObj})
-		return
-	}
-
-	c.JSON(http.StatusOK, ret)
 }
 
 // @Summary Get a objective by id

@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/mitchellh/go-homedir"
 	"github.com/olekukonko/tablewriter"
@@ -78,7 +77,7 @@ var (
 
 					break
 				case "goals":
-					var data []*okr.Objective
+					var data []*pb.Objective
 					err = json.Unmarshal(body, &data)
 					if err != nil {
 						fmt.Println(err)
@@ -95,7 +94,7 @@ var (
 
 					break
 				case "results":
-					var data []*okr.KeyResult
+					var data []*pb.KeyResult
 					err = json.Unmarshal(body, &data)
 					if err != nil {
 						fmt.Println(err)

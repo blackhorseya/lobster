@@ -6,8 +6,8 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/biz/result"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
@@ -32,7 +32,7 @@ type reqID struct {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of key result"
-// @Success 200 {object} okr.KeyResult
+// @Success 200 {object} pb.KeyResult
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -69,7 +69,7 @@ func (i *impl) GetByID(c *gin.Context) {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of goal"
-// @Success 200 {array} okr.KeyResult
+// @Success 200 {array} pb.KeyResult
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -107,7 +107,7 @@ func (i *impl) GetByGoalID(c *gin.Context) {
 // @Produce application/json
 // @Param page query integer false "page" default(1)
 // @Param size query integer false "size of page" default(10)
-// @Success 200 {array} okr.KeyResult
+// @Success 200 {array} pb.KeyResult
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -152,8 +152,8 @@ func (i *impl) List(c *gin.Context) {
 // @Tags KeyResults
 // @Accept application/json
 // @Produce application/json
-// @Param created body okr.KeyResult true "created key result"
-// @Success 201 {object} okr.KeyResult
+// @Param created body pb.KeyResult true "created key result"
+// @Success 201 {object} pb.KeyResult
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Router /v1/results [post]
@@ -161,7 +161,7 @@ func (i *impl) Create(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "Create")
 
-	var created *okr.KeyResult
+	var created *pb.KeyResult
 	err := c.ShouldBindJSON(&created)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrCreateKR)
@@ -198,7 +198,7 @@ func (i *impl) Create(c *gin.Context) {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of key result"
-// @Success 200 {object} okr.KeyResult
+// @Success 200 {object} pb.KeyResult
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -215,7 +215,7 @@ func (i *impl) Update(c *gin.Context) {
 	}
 	logger = logger.WithField("id", req.ID)
 
-	var updated *okr.KeyResult
+	var updated *pb.KeyResult
 	err := c.ShouldBindJSON(&updated)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrCreateKR)

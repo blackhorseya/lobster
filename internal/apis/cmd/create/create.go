@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/google/uuid"
 	"github.com/mitchellh/go-homedir"
@@ -81,7 +80,7 @@ var (
 
 				break
 			case "goals":
-				data, _ := json.Marshal(&okr.Objective{Title: args[1]})
+				data, _ := json.Marshal(&pb.Objective{Title: args[1]})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
 					fmt.Println(err)
@@ -102,7 +101,7 @@ var (
 					return
 				}
 
-				var ret *okr.Objective
+				var ret *pb.Objective
 				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)
@@ -128,7 +127,7 @@ var (
 					return
 				}
 
-				data, _ := json.Marshal(&okr.KeyResult{Title: args[1], GoalID: cfg.Context.Goal})
+				data, _ := json.Marshal(&pb.KeyResult{Title: args[1], GoalID: cfg.Context.Goal})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
 					fmt.Println(err)
@@ -149,7 +148,7 @@ var (
 					return
 				}
 
-				var ret *okr.KeyResult
+				var ret *pb.KeyResult
 				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)

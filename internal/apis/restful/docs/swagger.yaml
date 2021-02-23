@@ -1,6 +1,6 @@
 basePath: /api
 definitions:
-  okr.KeyResult:
+  pb.KeyResult:
     properties:
       actual:
         description: Actual describe the actual of key result
@@ -21,7 +21,7 @@ definitions:
         description: Title describe the title of key result
         type: string
     type: object
-  okr.Objective:
+  pb.Objective:
     properties:
       create_at:
         description: CreateAt describe the objective create milliseconds
@@ -35,7 +35,7 @@ definitions:
       key_results:
         description: KeyResults describe key results of objective
         items:
-          $ref: '#/definitions/okr.KeyResult'
+          $ref: '#/definitions/pb.KeyResult'
         type: array
       start_at:
         description: StartAt describe the objective start timex milliseconds
@@ -138,7 +138,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/okr.Objective'
+              $ref: '#/definitions/pb.Objective'
             type: array
         "400":
           description: Bad Request
@@ -165,14 +165,14 @@ paths:
         name: created
         required: true
         schema:
-          $ref: '#/definitions/okr.Objective'
+          $ref: '#/definitions/pb.Objective'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/okr.Objective'
+            $ref: '#/definitions/pb.Objective'
         "400":
           description: Bad Request
           schema:
@@ -229,7 +229,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/okr.Objective'
+            $ref: '#/definitions/pb.Objective'
         "400":
           description: Bad Request
           schema:
@@ -243,40 +243,6 @@ paths:
           schema:
             type: string
       summary: Get a objective by id
-      tags:
-      - Goals
-    put:
-      consumes:
-      - application/json
-      description: Update a objective by id
-      parameters:
-      - description: ID of objective
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: created objective
-        in: body
-        name: created
-        required: true
-        schema:
-          $ref: '#/definitions/okr.Objective'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/okr.Objective'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Update a objective by id
       tags:
       - Goals
   /v1/goals/{id}/results:
@@ -297,7 +263,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/okr.KeyResult'
+              $ref: '#/definitions/pb.KeyResult'
             type: array
         "400":
           description: Bad Request
@@ -337,7 +303,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/okr.KeyResult'
+              $ref: '#/definitions/pb.KeyResult'
             type: array
         "400":
           description: Bad Request
@@ -364,14 +330,14 @@ paths:
         name: created
         required: true
         schema:
-          $ref: '#/definitions/okr.KeyResult'
+          $ref: '#/definitions/pb.KeyResult'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/okr.KeyResult'
+            $ref: '#/definitions/pb.KeyResult'
         "400":
           description: Bad Request
           schema:
@@ -432,7 +398,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/okr.KeyResult'
+            $ref: '#/definitions/pb.KeyResult'
         "400":
           description: Bad Request
           schema:
@@ -464,7 +430,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/okr.KeyResult'
+            $ref: '#/definitions/pb.KeyResult'
         "400":
           description: Bad Request
           schema:

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -19,7 +19,7 @@ var (
 
 	time1 = int64(1611059529208050000)
 
-	kr1 = &okr.KeyResult{
+	kr1 = &pb.KeyResult{
 		ID:       krID1,
 		GoalID:   goalID,
 		Title:    "kr1",
@@ -28,7 +28,7 @@ var (
 		CreateAt: int64(1613114039486249000),
 	}
 
-	kr2 = &okr.KeyResult{
+	kr2 = &pb.KeyResult{
 		ID:       krID2,
 		GoalID:   goalID,
 		Title:    "kr",
@@ -37,7 +37,7 @@ var (
 		CreateAt: int64(1614032353580795000),
 	}
 
-	updated1 = &okr.KeyResult{
+	updated1 = &pb.KeyResult{
 		ID:       krID1,
 		GoalID:   goalID,
 		Title:    "updated kr1",
@@ -64,12 +64,12 @@ func TestRepoSuite(t *testing.T) {
 
 func (s *repoSuite) Test_impl_Create() {
 	type args struct {
-		created *okr.KeyResult
+		created *pb.KeyResult
 	}
 	tests := []struct {
 		name    string
 		args    args
-		wantKr  *okr.KeyResult
+		wantKr  *pb.KeyResult
 		wantErr bool
 	}{
 		{
@@ -100,7 +100,7 @@ func (s *repoSuite) Test_impl_QueryKRByID() {
 	tests := []struct {
 		name    string
 		args    args
-		want    *okr.KeyResult
+		want    *pb.KeyResult
 		wantErr bool
 	}{
 		{
@@ -126,12 +126,12 @@ func (s *repoSuite) Test_impl_QueryKRByID() {
 
 func (s *repoSuite) Test_impl_Update() {
 	type args struct {
-		updated *okr.KeyResult
+		updated *pb.KeyResult
 	}
 	tests := []struct {
 		name    string
 		args    args
-		wantKr  *okr.KeyResult
+		wantKr  *pb.KeyResult
 		wantErr bool
 	}{
 		{
@@ -163,13 +163,13 @@ func (s *repoSuite) Test_impl_QueryList() {
 	tests := []struct {
 		name    string
 		args    args
-		wantKrs []*okr.KeyResult
+		wantKrs []*pb.KeyResult
 		wantErr bool
 	}{
 		{
 			name:    "list then krs nil",
 			args:    args{offset: 0, limit: 1},
-			wantKrs: []*okr.KeyResult{kr1},
+			wantKrs: []*pb.KeyResult{kr1},
 			wantErr: false,
 		},
 	}
@@ -218,13 +218,13 @@ func (s *repoSuite) Test_impl_QueryByGoalID() {
 	tests := []struct {
 		name    string
 		args    args
-		wantKrs []*okr.KeyResult
+		wantKrs []*pb.KeyResult
 		wantErr bool
 	}{
 		{
 			name:    "uuid then krs nil",
 			args:    args{id: goalID},
-			wantKrs: []*okr.KeyResult{kr2, kr1},
+			wantKrs: []*pb.KeyResult{kr2, kr1},
 			wantErr: false,
 		},
 	}

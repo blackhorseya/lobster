@@ -16,9 +16,6 @@ type IHandler interface {
 	// Create serve user to creat a objective
 	Create(c *gin.Context)
 
-	// Update serve user to update a objective
-	Update(c *gin.Context)
-
 	// Delete serve user to delete a objective by id
 	Delete(c *gin.Context)
 }
