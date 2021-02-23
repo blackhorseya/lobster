@@ -114,6 +114,40 @@ func (i *impl) Update(ctx contextx.Contextx, updated *okr.Objective) (*okr.Objec
 	return ret, nil
 }
 
+func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (obj *okr.Objective, err error) {
+	logger := ctx.WithField("id", id).WithField("title", title)
+
+	_, err = uuid.Parse(id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrInvalidID)
+		return nil, err
+	}
+
+	if len(title) == 0 {
+		logger.Error(er.ErrEmptyTitle)
+		return nil, er.ErrEmptyTitle
+	}
+
+	exist, err := i.repo.QueryByID(ctx, id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrGetObjByID)
+		return nil, err
+	}
+	if exist == nil {
+		logger.Error(er.ErrObjectiveNotExists)
+		return nil, er.ErrObjectiveNotExists
+	}
+
+	exist.Title = title
+	ret, err := i.repo.Update(ctx, exist)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateObj)
+		return nil, err
+	}
+
+	return ret, nil
+}
+
 func (i *impl) Delete(ctx contextx.Contextx, id string) error {
 	if _, err := uuid.Parse(id); err != nil {
 		ctx.WithField("err", err).Error(er.ErrInvalidID)

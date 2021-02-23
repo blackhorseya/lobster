@@ -24,6 +24,9 @@ type IBiz interface {
 	// Update serve user to update a objective
 	Update(ctx contextx.Contextx, updated *okr.Objective) (*okr.Objective, error)
 
+	// ModifyTitle serve user to modify title of task
+	ModifyTitle(ctx contextx.Contextx, id, title string) (obj *okr.Objective, err error)
+
 	// Delete serve user to delete a objective by id
 	Delete(ctx contextx.Contextx, id string) error
 }

@@ -406,3 +406,82 @@ func (s *bizSuite) Test_impl_GetByID() {
 		})
 	}
 }
+
+func (s *bizSuite) Test_impl_ModifyTitle() {
+	type args struct {
+		id    string
+		title string
+		mock  func()
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantObj *okr.Objective
+		wantErr bool
+	}{
+		{
+			name:    "id then parse id error",
+			args:    args{id: "id", title: "title"},
+			wantObj: nil,
+			wantErr: true,
+		},
+		{
+			name:    "uuid missing title then error",
+			args:    args{id: uuid1, title: ""},
+			wantObj: nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then query id error",
+			args: args{id: uuid1, title: "title", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, errors.New("error")).Once()
+			}},
+			wantObj: nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then query not found",
+			args: args{id: uuid1, title: "title", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(nil, nil).Once()
+			}},
+			wantObj: nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then update error",
+			args: args{id: uuid1, title: "updated obj1", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(obj1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated1).Return(nil, errors.New("error")).Once()
+			}},
+			wantObj: nil,
+			wantErr: true,
+		},
+		{
+			name: "uuid title then updated nil",
+			args: args{id: uuid1, title: "updated obj1", mock: func() {
+				s.mock.On("QueryByID", mock.Anything, uuid1).Return(obj1, nil).Once()
+				s.mock.On("Update", mock.Anything, updated1).Return(updated1, nil).Once()
+			}},
+			wantObj: updated1,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotObj, err := s.biz.ModifyTitle(contextx.Background(), tt.args.id, tt.args.title)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ModifyTitle() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotObj, tt.wantObj) {
+				t.Errorf("ModifyTitle() gotObj = %v, want %v", gotObj, tt.wantObj)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
