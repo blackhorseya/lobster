@@ -102,27 +102,21 @@ func (i *impl) LinkToGoal(ctx contextx.Contextx, created *pb.Result) (kr *pb.Res
 	return ret, nil
 }
 
-func (i *impl) Update(ctx contextx.Contextx, updated *pb.Result) (kr *pb.Result, err error) {
-	logger := ctx.WithField("updated", updated)
+func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (result *pb.Result, err error) {
+	logger := ctx.WithField("id", id).WithField("title", title)
 
-	_, err = uuid.Parse(updated.ID)
+	_, err = uuid.Parse(id)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrInvalidID)
+		logger.Error(er.ErrInvalidID)
 		return nil, er.ErrInvalidID
 	}
 
-	_, err = uuid.Parse(updated.GoalID)
-	if err != nil {
-		logger.WithError(err).Error(er.ErrInvalidID)
-		return nil, er.ErrInvalidID
-	}
-
-	if len(updated.Title) == 0 {
+	if len(title) == 0 {
 		logger.Error(er.ErrEmptyTitle)
 		return nil, er.ErrEmptyTitle
 	}
 
-	exist, err := i.repo.QueryByID(ctx, updated.ID)
+	exist, err := i.repo.QueryByID(ctx, id)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrGetKRByID)
 		return nil, er.ErrGetKRByID
@@ -132,9 +126,8 @@ func (i *impl) Update(ctx contextx.Contextx, updated *pb.Result) (kr *pb.Result,
 		return nil, er.ErrKRNotExists
 	}
 
-	updated.ID = exist.ID
-	updated.CreateAt = exist.CreateAt
-	ret, err := i.repo.Update(ctx, updated)
+	exist.Title = title
+	ret, err := i.repo.Update(ctx, exist)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrUpdateKeyResult)
 		return nil, er.ErrUpdateKeyResult

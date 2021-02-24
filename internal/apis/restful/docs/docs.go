@@ -125,7 +125,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/pb.Objective"
+                                "$ref": "#/definitions/pb.Goal"
                             }
                         }
                     },
@@ -163,12 +163,12 @@ var doc = `{
                 "summary": "Create a objective",
                 "parameters": [
                     {
-                        "description": "created objective",
+                        "description": "created goal",
                         "name": "created",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Objective"
+                            "$ref": "#/definitions/pb.Goal"
                         }
                     }
                 ],
@@ -176,7 +176,7 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/pb.Objective"
+                            "$ref": "#/definitions/pb.Goal"
                         }
                     },
                     "400": {
@@ -220,7 +220,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/pb.Objective"
+                            "$ref": "#/definitions/pb.Goal"
                         }
                     },
                     "400": {
@@ -296,7 +296,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "KeyResults"
+                    "Results"
                 ],
                 "summary": "Get key result by goal id",
                 "parameters": [
@@ -314,7 +314,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/pb.KeyResult"
+                                "$ref": "#/definitions/pb.Result"
                             }
                         }
                     },
@@ -366,7 +366,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Objective"
+                            "$ref": "#/definitions/pb.Goal"
                         }
                     }
                 ],
@@ -374,7 +374,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/pb.Objective"
+                            "$ref": "#/definitions/pb.Goal"
                         }
                     },
                     "400": {
@@ -402,7 +402,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "KeyResults"
+                    "Results"
                 ],
                 "summary": "List all key results",
                 "parameters": [
@@ -427,7 +427,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/pb.KeyResult"
+                                "$ref": "#/definitions/pb.Result"
                             }
                         }
                     },
@@ -460,7 +460,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "KeyResults"
+                    "Results"
                 ],
                 "summary": "Create a key result",
                 "parameters": [
@@ -470,7 +470,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.KeyResult"
+                            "$ref": "#/definitions/pb.Result"
                         }
                     }
                 ],
@@ -478,7 +478,7 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/pb.KeyResult"
+                            "$ref": "#/definitions/pb.Result"
                         }
                     },
                     "400": {
@@ -506,7 +506,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "KeyResults"
+                    "Results"
                 ],
                 "summary": "Get a key result by id",
                 "parameters": [
@@ -522,55 +522,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/pb.KeyResult"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update a key result by id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "KeyResults"
-                ],
-                "summary": "Update a key result by id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of key result",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/pb.KeyResult"
+                            "$ref": "#/definitions/pb.Result"
                         }
                     },
                     "400": {
@@ -602,7 +554,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "KeyResults"
+                    "Results"
                 ],
                 "summary": "Delete a key result by id",
                 "parameters": [
@@ -629,6 +581,59 @@ var doc = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/results/{id}/title": {
+            "patch": {
+                "description": "Modify title of result",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Results"
+                ],
+                "summary": "Modify title of result",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of result",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updated result",
+                        "name": "updated",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.Result"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "string"
                         }
@@ -943,7 +948,39 @@ var doc = `{
         }
     },
     "definitions": {
-        "pb.KeyResult": {
+        "pb.Goal": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "description": "CreateAt describe the objective create milliseconds",
+                    "type": "integer"
+                },
+                "end_at": {
+                    "description": "EndAt describe the objective end timex milliseconds",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "ID describe the unique identify code of objective",
+                    "type": "string"
+                },
+                "key_results": {
+                    "description": "KeyResults describe key results of objective",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.Result"
+                    }
+                },
+                "start_at": {
+                    "description": "StartAt describe the objective start timex milliseconds",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "Title describe the title of objective",
+                    "type": "string"
+                }
+            }
+        },
+        "pb.Result": {
             "type": "object",
             "properties": {
                 "actual": {
@@ -968,38 +1005,6 @@ var doc = `{
                 },
                 "title": {
                     "description": "Title describe the title of key result",
-                    "type": "string"
-                }
-            }
-        },
-        "pb.Objective": {
-            "type": "object",
-            "properties": {
-                "create_at": {
-                    "description": "CreateAt describe the objective create milliseconds",
-                    "type": "integer"
-                },
-                "end_at": {
-                    "description": "EndAt describe the objective end timex milliseconds",
-                    "type": "integer"
-                },
-                "id": {
-                    "description": "ID describe the unique identify code of objective",
-                    "type": "string"
-                },
-                "key_results": {
-                    "description": "KeyResults describe key results of objective",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/pb.KeyResult"
-                    }
-                },
-                "start_at": {
-                    "description": "StartAt describe the objective start timex milliseconds",
-                    "type": "integer"
-                },
-                "title": {
-                    "description": "Title describe the title of objective",
                     "type": "string"
                 }
             }

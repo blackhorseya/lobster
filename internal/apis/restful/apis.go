@@ -22,9 +22,8 @@ func CreateInitHandlerFn(health health.IHandler, taskH task.IHandler, goalH goal
 			api.GET("readiness", health.Readiness)
 			api.GET("liveness", health.Liveness)
 
-			if mode := gin.Mode(); mode != gin.ReleaseMode {
-				api.GET("docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-			}
+			// open any environments can access swagger
+			api.GET("docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 			v1 := api.Group("v1")
 			{
@@ -52,9 +51,8 @@ func CreateInitHandlerFn(health health.IHandler, taskH task.IHandler, goalH goal
 					results.GET("", resultH.List)
 					results.GET(":id", resultH.GetByID)
 					results.POST("", resultH.Create)
-					results.PUT(":id", resultH.Update)
+					results.PATCH(":id/title", resultH.ModifyTitle)
 					results.DELETE(":id", resultH.Delete)
-
 				}
 			}
 		}

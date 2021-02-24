@@ -1,6 +1,29 @@
 basePath: /api
 definitions:
-  pb.KeyResult:
+  pb.Goal:
+    properties:
+      create_at:
+        description: CreateAt describe the objective create milliseconds
+        type: integer
+      end_at:
+        description: EndAt describe the objective end timex milliseconds
+        type: integer
+      id:
+        description: ID describe the unique identify code of objective
+        type: string
+      key_results:
+        description: KeyResults describe key results of objective
+        items:
+          $ref: '#/definitions/pb.Result'
+        type: array
+      start_at:
+        description: StartAt describe the objective start timex milliseconds
+        type: integer
+      title:
+        description: Title describe the title of objective
+        type: string
+    type: object
+  pb.Result:
     properties:
       actual:
         description: Actual describe the actual of key result
@@ -19,29 +42,6 @@ definitions:
         type: integer
       title:
         description: Title describe the title of key result
-        type: string
-    type: object
-  pb.Objective:
-    properties:
-      create_at:
-        description: CreateAt describe the objective create milliseconds
-        type: integer
-      end_at:
-        description: EndAt describe the objective end timex milliseconds
-        type: integer
-      id:
-        description: ID describe the unique identify code of objective
-        type: string
-      key_results:
-        description: KeyResults describe key results of objective
-        items:
-          $ref: '#/definitions/pb.KeyResult'
-        type: array
-      start_at:
-        description: StartAt describe the objective start timex milliseconds
-        type: integer
-      title:
-        description: Title describe the title of objective
         type: string
     type: object
   pb.Task:
@@ -138,7 +138,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/pb.Objective'
+              $ref: '#/definitions/pb.Goal'
             type: array
         "400":
           description: Bad Request
@@ -160,19 +160,19 @@ paths:
       - application/json
       description: Create a objective
       parameters:
-      - description: created objective
+      - description: created goal
         in: body
         name: created
         required: true
         schema:
-          $ref: '#/definitions/pb.Objective'
+          $ref: '#/definitions/pb.Goal'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/pb.Objective'
+            $ref: '#/definitions/pb.Goal'
         "400":
           description: Bad Request
           schema:
@@ -229,7 +229,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/pb.Objective'
+            $ref: '#/definitions/pb.Goal'
         "400":
           description: Bad Request
           schema:
@@ -263,7 +263,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/pb.KeyResult'
+              $ref: '#/definitions/pb.Result'
             type: array
         "400":
           description: Bad Request
@@ -279,7 +279,7 @@ paths:
             type: string
       summary: Get key result by goal id
       tags:
-      - KeyResults
+      - Results
   /v1/goals/{id}/title:
     patch:
       consumes:
@@ -296,14 +296,14 @@ paths:
         name: updated
         required: true
         schema:
-          $ref: '#/definitions/pb.Objective'
+          $ref: '#/definitions/pb.Goal'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/pb.Objective'
+            $ref: '#/definitions/pb.Goal'
         "400":
           description: Bad Request
           schema:
@@ -338,7 +338,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/pb.KeyResult'
+              $ref: '#/definitions/pb.Result'
             type: array
         "400":
           description: Bad Request
@@ -354,7 +354,7 @@ paths:
             type: string
       summary: List all key results
       tags:
-      - KeyResults
+      - Results
     post:
       consumes:
       - application/json
@@ -365,14 +365,14 @@ paths:
         name: created
         required: true
         schema:
-          $ref: '#/definitions/pb.KeyResult'
+          $ref: '#/definitions/pb.Result'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/pb.KeyResult'
+            $ref: '#/definitions/pb.Result'
         "400":
           description: Bad Request
           schema:
@@ -383,7 +383,7 @@ paths:
             type: string
       summary: Create a key result
       tags:
-      - KeyResults
+      - Results
   /v1/results/{id}:
     delete:
       consumes:
@@ -416,7 +416,7 @@ paths:
             type: string
       summary: Delete a key result by id
       tags:
-      - KeyResults
+      - Results
     get:
       consumes:
       - application/json
@@ -433,7 +433,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/pb.KeyResult'
+            $ref: '#/definitions/pb.Result'
         "400":
           description: Bad Request
           schema:
@@ -448,39 +448,42 @@ paths:
             type: string
       summary: Get a key result by id
       tags:
-      - KeyResults
-    put:
+      - Results
+  /v1/results/{id}/title:
+    patch:
       consumes:
       - application/json
-      description: Update a key result by id
+      description: Modify title of result
       parameters:
-      - description: ID of key result
+      - description: ID of result
         in: path
         name: id
         required: true
         type: string
+      - description: updated result
+        in: body
+        name: updated
+        required: true
+        schema:
+          $ref: '#/definitions/pb.Result'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/pb.KeyResult'
+            $ref: '#/definitions/pb.Result'
         "400":
           description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
           schema:
             type: string
         "500":
           description: Internal Server Error
           schema:
             type: string
-      summary: Update a key result by id
+      summary: Modify title of result
       tags:
-      - KeyResults
+      - Results
   /v1/tasks:
     get:
       consumes:

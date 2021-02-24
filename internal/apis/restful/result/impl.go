@@ -192,55 +192,45 @@ func (i *impl) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, ret)
 }
 
-// @Summary Update a key result by id
-// @Description Update a key result by id
+// @Summary Modify title of result
+// @Description Modify title of result
 // @Tags Results
 // @Accept application/json
 // @Produce application/json
-// @Param id path string true "ID of key result"
+// @Param id path string true "ID of result"
+// @Param updated body pb.Result true "updated result"
 // @Success 200 {object} pb.Result
 // @Failure 400 {object} string
-// @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /v1/results/{id} [put]
-func (i *impl) Update(c *gin.Context) {
+// @Router /v1/results/{id}/title [patch]
+func (i *impl) ModifyTitle(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "Update")
+	logger := ctx.WithField("func", "ModifyTitle")
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
 		logger.WithField("err", err).Error(er.ErrInvalidID)
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-		return
-	}
-	logger = logger.WithField("id", req.ID)
-
-	var updated *pb.Result
-	err := c.ShouldBindJSON(&updated)
-	if err != nil {
-		logger.WithError(err).Error(er.ErrCreateKR)
-		c.JSON(http.StatusBadRequest, er.ErrCreateKR)
-		return
-	}
-	logger = logger.WithField("updated", updated)
-
-	if len(updated.Title) == 0 {
-		logger.Error(er.ErrEmptyTitle)
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
-		return
-	}
-	_, err = uuid.Parse(updated.GoalID)
-	if err != nil {
-		logger.WithError(err).Error(er.ErrInvalidID)
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
 		return
 	}
 
-	updated.ID = req.ID
-	ret, err := i.biz.Update(ctx, updated)
+	var data *pb.Result
+	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrUpdateKeyResult)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateKeyResult})
+		c.JSON(http.StatusBadRequest, er.ErrUpdateKeyResult)
+		return
+	}
+	if len(data.Title) == 0 {
+		logger.Error(er.ErrEmptyTitle)
+		c.JSON(http.StatusBadRequest, er.ErrEmptyTitle)
+		return
+	}
+
+	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateKeyResult)
+		c.JSON(http.StatusInternalServerError, er.ErrUpdateKeyResult)
 		return
 	}
 

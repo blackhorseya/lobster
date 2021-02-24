@@ -307,87 +307,6 @@ func (s *handlerSuite) Test_impl_Create() {
 	}
 }
 
-func (s *handlerSuite) Test_impl_Update() {
-	s.r.PUT("/api/v1/krs/:id", s.handler.Update)
-
-	type args struct {
-		id      string
-		updated *pb.Result
-		mock    func()
-	}
-	tests := []struct {
-		name     string
-		args     args
-		wantCode int
-		wantBody *pb.Result
-	}{
-		{
-			name:     "id then 400 error",
-			args:     args{id: "id"},
-			wantCode: 400,
-			wantBody: nil,
-		},
-		{
-			name:     "missing title then 400 error",
-			args:     args{id: krID, updated: &pb.Result{Title: "", GoalID: goalID}},
-			wantCode: 400,
-			wantBody: nil,
-		},
-		{
-			name:     "missing parent goal then 400 error",
-			args:     args{id: krID, updated: &pb.Result{Title: "title", GoalID: "id"}},
-			wantCode: 400,
-			wantBody: nil,
-		},
-		{
-			name: "update then 500 error",
-			args: args{id: krID, updated: kr1, mock: func() {
-				s.mock.On("Update", mock.Anything, kr1).Return(nil, errors.New("error")).Once()
-			}},
-			wantCode: 500,
-			wantBody: nil,
-		},
-		{
-			name: "update then 200 nil",
-			args: args{id: krID, updated: kr1, mock: func() {
-				s.mock.On("Update", mock.Anything, kr1).Return(updated1, nil).Once()
-			}},
-			wantCode: 200,
-			wantBody: updated1,
-		},
-	}
-	for _, tt := range tests {
-		s.T().Run(tt.name, func(t *testing.T) {
-			if tt.args.mock != nil {
-				tt.args.mock()
-			}
-
-			uri := fmt.Sprintf("/api/v1/krs/%v", tt.args.id)
-			body, _ := json.Marshal(tt.args.updated)
-			req := httptest.NewRequest(http.MethodPut, uri, bytes.NewBuffer(body))
-			w := httptest.NewRecorder()
-			s.r.ServeHTTP(w, req)
-
-			got := w.Result()
-			defer got.Body.Close()
-
-			var gotBody *pb.Result
-			body, _ = ioutil.ReadAll(got.Body)
-			err := json.Unmarshal(body, &gotBody)
-			if err != nil {
-				s.Errorf(err, "unmarshal response body is failure")
-			}
-
-			s.EqualValuesf(tt.wantCode, got.StatusCode, "Update() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
-			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("Update() got = %v, wantBody = %v", gotBody, tt.wantBody)
-			}
-
-			s.TearDownTest()
-		})
-	}
-}
-
 func (s *handlerSuite) Test_impl_Delete() {
 	s.r.DELETE("/api/v1/krs/:id", s.handler.Delete)
 
@@ -509,6 +428,81 @@ func (s *handlerSuite) Test_impl_GetByGoalID() {
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "QueryByGoalID() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
 				s.T().Errorf("QueryByGoalID() got = %v, wantBody = %v", gotBody, tt.wantBody)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *handlerSuite) Test_impl_ModifyTitle() {
+	s.r.PATCH("/api/v1/results/:id/title", s.handler.ModifyTitle)
+
+	type args struct {
+		id    string
+		title string
+		mock  func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+		wantBody *pb.Result
+	}{
+		{
+			name:     "id then parse id error 400",
+			args:     args{id: "id", title: "title"},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name:     "uuid empty then missing title 400",
+			args:     args{id: krID, title: ""},
+			wantCode: 400,
+			wantBody: nil,
+		},
+		{
+			name: "uuid title then 500 error",
+			args: args{id: krID, title: "updated kr1", mock: func() {
+				s.mock.On("ModifyTitle", mock.Anything, krID, "updated kr1").Return(nil, errors.New("error")).Once()
+			}},
+			wantCode: 500,
+			wantBody: nil,
+		},
+		{
+			name: "uuid title then 200 nil",
+			args: args{id: krID, title: "updated kr1", mock: func() {
+				s.mock.On("ModifyTitle", mock.Anything, krID, "updated kr1").Return(kr1, nil).Once()
+			}},
+			wantCode: 200,
+			wantBody: kr1,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/results/%v/title", tt.args.id)
+			data, _ := json.Marshal(&pb.Result{Title: tt.args.title})
+			req := httptest.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			var gotBody *pb.Result
+			body, _ := ioutil.ReadAll(got.Body)
+			err := json.Unmarshal(body, &gotBody)
+			if err != nil {
+				s.Errorf(err, "unmarshal response body is failure")
+			}
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "ModifyTitle() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
+				s.T().Errorf("ModifyTitle() got = %v, wantBody = %v", gotBody, tt.wantBody)
 			}
 
 			s.TearDownTest()
