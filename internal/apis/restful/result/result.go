@@ -19,6 +19,9 @@ type IHandler interface {
 	// Create serve user to create a key result for objective
 	Create(c *gin.Context)
 
+	// ModifyTitle serve user to modify title of result
+	ModifyTitle(c *gin.Context)
+
 	// Delete serve user to delete a key result by id
 	Delete(c *gin.Context)
 }

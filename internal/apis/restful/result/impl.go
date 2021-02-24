@@ -192,6 +192,51 @@ func (i *impl) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, ret)
 }
 
+// @Summary Modify title of result
+// @Description Modify title of result
+// @Tags Results
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of result"
+// @Param updated body pb.Result true "updated result"
+// @Success 200 {object} pb.Result
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/results/{id}/title [patch]
+func (i *impl) ModifyTitle(c *gin.Context) {
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "ModifyTitle")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		return
+	}
+
+	var data *pb.Result
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateKeyResult)
+		c.JSON(http.StatusBadRequest, er.ErrUpdateKeyResult)
+		return
+	}
+	if len(data.Title) == 0 {
+		logger.Error(er.ErrEmptyTitle)
+		c.JSON(http.StatusBadRequest, er.ErrEmptyTitle)
+		return
+	}
+
+	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateKeyResult)
+		c.JSON(http.StatusInternalServerError, er.ErrUpdateKeyResult)
+		return
+	}
+
+	c.JSON(http.StatusOK, ret)
+}
+
 // @Summary Delete a key result by id
 // @Description Delete a key result by id
 // @Tags Results
