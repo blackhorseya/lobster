@@ -5,8 +5,8 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/biz/goal/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
@@ -20,7 +20,7 @@ func NewImpl(repo repo.IRepo) IBiz {
 	return &impl{repo: repo}
 }
 
-func (i *impl) Create(ctx contextx.Contextx, obj *okr.Objective) (*okr.Objective, error) {
+func (i *impl) Create(ctx contextx.Contextx, obj *pb.Goal) (*pb.Goal, error) {
 	if len(obj.Title) == 0 {
 		ctx.WithField("title", obj.Title).Error(er.ErrEmptyTitle)
 		return nil, er.ErrEmptyTitle
@@ -38,7 +38,7 @@ func (i *impl) Create(ctx contextx.Contextx, obj *okr.Objective) (*okr.Objective
 	return ret, nil
 }
 
-func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*okr.Objective, error) {
+func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*pb.Goal, error) {
 	if page <= 0 {
 		ctx.WithField("page", page).Error(er.ErrInvalidPage)
 		return nil, er.ErrInvalidPage
@@ -58,7 +58,7 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*okr.Objective, er
 	return ret, nil
 }
 
-func (i *impl) GetByID(ctx contextx.Contextx, id string) (*okr.Objective, error) {
+func (i *impl) GetByID(ctx contextx.Contextx, id string) (*pb.Goal, error) {
 	if _, err := uuid.Parse(id); err != nil {
 		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrInvalidID)
 		return nil, er.ErrInvalidID
@@ -83,32 +83,35 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 	return ret, nil
 }
 
-func (i *impl) Update(ctx contextx.Contextx, updated *okr.Objective) (*okr.Objective, error) {
-	if _, err := uuid.Parse(updated.ID); err != nil {
-		ctx.WithField("id", updated.ID).Error(er.ErrInvalidID)
-		return nil, er.ErrInvalidID
+func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (obj *pb.Goal, err error) {
+	logger := ctx.WithField("id", id).WithField("title", title)
+
+	_, err = uuid.Parse(id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrInvalidID)
+		return nil, err
 	}
 
-	if len(updated.Title) == 0 {
-		ctx.WithField("title", updated.Title).Error(er.ErrEmptyTitle)
+	if len(title) == 0 {
+		logger.Error(er.ErrEmptyTitle)
 		return nil, er.ErrEmptyTitle
 	}
 
-	exist, err := i.repo.QueryByID(ctx, updated.ID)
+	exist, err := i.repo.QueryByID(ctx, id)
 	if err != nil {
-		ctx.WithField("err", err).Error(er.ErrGetObjByID)
-		return nil, er.ErrGetTaskByID
+		logger.WithError(err).Error(er.ErrGetObjByID)
+		return nil, err
 	}
 	if exist == nil {
-		ctx.WithField("id", updated.ID).Error(er.ErrObjectiveNotExists)
+		logger.Error(er.ErrObjectiveNotExists)
 		return nil, er.ErrObjectiveNotExists
 	}
 
-	updated.CreateAt = exist.CreateAt
-	ret, err := i.repo.Update(ctx, updated)
+	exist.Title = title
+	ret, err := i.repo.Update(ctx, exist)
 	if err != nil {
-		ctx.WithField("err", err).Error(er.ErrUpdateObj)
-		return nil, er.ErrUpdateObj
+		logger.WithError(err).Error(er.ErrUpdateObj)
+		return nil, err
 	}
 
 	return ret, nil

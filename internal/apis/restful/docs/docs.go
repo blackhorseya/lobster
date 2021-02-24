@@ -125,7 +125,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/okr.Objective"
+                                "$ref": "#/definitions/pb.Objective"
                             }
                         }
                     },
@@ -168,7 +168,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/okr.Objective"
+                            "$ref": "#/definitions/pb.Objective"
                         }
                     }
                 ],
@@ -176,7 +176,7 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/okr.Objective"
+                            "$ref": "#/definitions/pb.Objective"
                         }
                     },
                     "400": {
@@ -220,7 +220,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/okr.Objective"
+                            "$ref": "#/definitions/pb.Objective"
                         }
                     },
                     "400": {
@@ -231,57 +231,6 @@ var doc = `{
                     },
                     "404": {
                         "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update a objective by id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Goals"
-                ],
-                "summary": "Update a objective by id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of objective",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "created objective",
-                        "name": "created",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/okr.Objective"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/okr.Objective"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
                         "schema": {
                             "type": "string"
                         }
@@ -365,7 +314,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/okr.KeyResult"
+                                "$ref": "#/definitions/pb.KeyResult"
                             }
                         }
                     },
@@ -377,6 +326,59 @@ var doc = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/goals/{id}/title": {
+            "patch": {
+                "description": "Modify title of goal",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Goals"
+                ],
+                "summary": "Modify title of goal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of goal",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updated goal",
+                        "name": "updated",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.Objective"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.Objective"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "string"
                         }
@@ -425,7 +427,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/okr.KeyResult"
+                                "$ref": "#/definitions/pb.KeyResult"
                             }
                         }
                     },
@@ -468,7 +470,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/okr.KeyResult"
+                            "$ref": "#/definitions/pb.KeyResult"
                         }
                     }
                 ],
@@ -476,7 +478,7 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/okr.KeyResult"
+                            "$ref": "#/definitions/pb.KeyResult"
                         }
                     },
                     "400": {
@@ -520,7 +522,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/okr.KeyResult"
+                            "$ref": "#/definitions/pb.KeyResult"
                         }
                     },
                     "400": {
@@ -568,7 +570,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/okr.KeyResult"
+                            "$ref": "#/definitions/pb.KeyResult"
                         }
                     },
                     "400": {
@@ -941,7 +943,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "okr.KeyResult": {
+        "pb.KeyResult": {
             "type": "object",
             "properties": {
                 "actual": {
@@ -970,7 +972,7 @@ var doc = `{
                 }
             }
         },
-        "okr.Objective": {
+        "pb.Objective": {
             "type": "object",
             "properties": {
                 "create_at": {
@@ -989,7 +991,7 @@ var doc = `{
                     "description": "KeyResults describe key results of objective",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/okr.KeyResult"
+                        "$ref": "#/definitions/pb.KeyResult"
                     }
                 },
                 "start_at": {

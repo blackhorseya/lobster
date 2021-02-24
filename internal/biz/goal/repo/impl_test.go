@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -16,13 +16,13 @@ var (
 
 	time1 = int64(1611059529208050000)
 
-	obj1 = &okr.Objective{
+	obj1 = &pb.Goal{
 		ID:       uuid1,
 		Title:    "obj1",
 		CreateAt: time1,
 	}
 
-	updated1 = &okr.Objective{
+	updated1 = &pb.Goal{
 		ID:       uuid1,
 		Title:    "updated obj1",
 		CreateAt: time1,
@@ -48,12 +48,12 @@ func TestRepoSuite(t *testing.T) {
 
 func (s *repoSuite) Test_impl_Create() {
 	type args struct {
-		created *okr.Objective
+		created *pb.Goal
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *okr.Objective
+		want    *pb.Goal
 		wantErr bool
 	}{
 		{
@@ -84,7 +84,7 @@ func (s *repoSuite) Test_impl_QueryByID() {
 	tests := []struct {
 		name    string
 		args    args
-		want    *okr.Objective
+		want    *pb.Goal
 		wantErr bool
 	}{
 		{
@@ -116,13 +116,13 @@ func (s *repoSuite) Test_impl_List() {
 	tests := []struct {
 		name    string
 		args    args
-		want    []*okr.Objective
+		want    []*pb.Goal
 		wantErr bool
 	}{
 		{
 			name:    "0 1 then objs nil",
 			args:    args{offset: 0, limit: 1},
-			want:    []*okr.Objective{obj1},
+			want:    []*pb.Goal{obj1},
 			wantErr: false,
 		},
 	}
@@ -172,12 +172,12 @@ func (s *repoSuite) Test_impl_Count() {
 
 func (s *repoSuite) Test_impl_Update() {
 	type args struct {
-		updated *okr.Objective
+		updated *pb.Goal
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *okr.Objective
+		want    *pb.Goal
 		wantErr bool
 	}{
 		{

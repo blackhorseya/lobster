@@ -3,26 +3,26 @@ package goal
 import (
 	"github.com/blackhorseya/lobster/internal/biz/goal/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/biz/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/pb"
 	"github.com/google/wire"
 )
 
 // IBiz declare objective biz service function
 type IBiz interface {
 	// Create serve user to create a objective
-	Create(ctx contextx.Contextx, obj *okr.Objective) (*okr.Objective, error)
+	Create(ctx contextx.Contextx, obj *pb.Goal) (*pb.Goal, error)
 
 	// GetByID serve user to get a objective by id
-	GetByID(ctx contextx.Contextx, id string) (*okr.Objective, error)
+	GetByID(ctx contextx.Contextx, id string) (*pb.Goal, error)
 
 	// List serve user to list all objectives
-	List(ctx contextx.Contextx, page, size int) ([]*okr.Objective, error)
+	List(ctx contextx.Contextx, page, size int) ([]*pb.Goal, error)
 
 	// Count serve user to count all objectives
 	Count(ctx contextx.Contextx) (int, error)
 
-	// Update serve user to update a objective
-	Update(ctx contextx.Contextx, updated *okr.Objective) (*okr.Objective, error)
+	// ModifyTitle serve user to modify title of task
+	ModifyTitle(ctx contextx.Contextx, id, title string) (obj *pb.Goal, err error)
 
 	// Delete serve user to delete a objective by id
 	Delete(ctx contextx.Contextx, id string) error
