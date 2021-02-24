@@ -31,7 +31,7 @@ type reqID struct {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of objective"
-// @Success 200 {object} pb.Objective
+// @Success 200 {object} pb.Goal
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -76,7 +76,7 @@ func (i *impl) GetByID(c *gin.Context) {
 // @Produce application/json
 // @Param page query integer false "page" default(1)
 // @Param size query integer false "size of page" default(10)
-// @Success 200 {array} pb.Objective
+// @Success 200 {array} pb.Goal
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -126,8 +126,8 @@ func (i *impl) List(c *gin.Context) {
 // @Tags Goals
 // @Accept application/json
 // @Produce application/json
-// @Param created body pb.Objective true "created objective"
-// @Success 201 {object} pb.Objective
+// @Param created body pb.Goal true "created goal"
+// @Success 201 {object} pb.Goal
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Router /v1/goals [post]
@@ -142,7 +142,7 @@ func (i *impl) Create(c *gin.Context) {
 	}
 	logger := ctx.WithField("func", "objective create")
 
-	var created *pb.Objective
+	var created *pb.Goal
 	if err := c.ShouldBindJSON(&created); err != nil {
 		logger.WithField("err", err).Error(er.ErrCreateObjective)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrCreateObjective})
@@ -171,8 +171,8 @@ func (i *impl) Create(c *gin.Context) {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of goal"
-// @Param updated body pb.Objective true "updated goal"
-// @Success 200 {object} pb.Objective
+// @Param updated body pb.Goal true "updated goal"
+// @Success 200 {object} pb.Goal
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Router /v1/goals/{id}/title [patch]
@@ -187,7 +187,7 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 		return
 	}
 
-	var data *pb.Objective
+	var data *pb.Goal
 	if err := c.ShouldBindJSON(&data); err != nil {
 		logger.WithField("err", err).Error(er.ErrUpdateObj)
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrUpdateObj})

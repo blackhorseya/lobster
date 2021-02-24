@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-// Objective declare an objective basic information
-type Objective struct {
+// Goal declare an objective basic information
+type Goal struct {
 	// ID describe the unique identify code of objective
 	ID string `json:"id" db:"id"`
 
@@ -28,7 +28,7 @@ type Objective struct {
 }
 
 // ToLine serve caller to print a string slice
-func (o *Objective) ToLine() []string {
+func (o *Goal) ToLine() []string {
 	return []string{
 		o.ID,
 		o.Title,

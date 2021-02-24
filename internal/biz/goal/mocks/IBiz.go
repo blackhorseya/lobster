@@ -36,20 +36,20 @@ func (_m *IBiz) Count(ctx contextx.Contextx) (int, error) {
 }
 
 // Create provides a mock function with given fields: ctx, obj
-func (_m *IBiz) Create(ctx contextx.Contextx, obj *pb.Objective) (*pb.Objective, error) {
+func (_m *IBiz) Create(ctx contextx.Contextx, obj *pb.Goal) (*pb.Goal, error) {
 	ret := _m.Called(ctx, obj)
 
-	var r0 *pb.Objective
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.Objective) *pb.Objective); ok {
+	var r0 *pb.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.Goal) *pb.Goal); ok {
 		r0 = rf(ctx, obj)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Objective)
+			r0 = ret.Get(0).(*pb.Goal)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.Objective) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.Goal) error); ok {
 		r1 = rf(ctx, obj)
 	} else {
 		r1 = ret.Error(1)
@@ -73,15 +73,15 @@ func (_m *IBiz) Delete(ctx contextx.Contextx, id string) error {
 }
 
 // GetByID provides a mock function with given fields: ctx, id
-func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*pb.Objective, error) {
+func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*pb.Goal, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 *pb.Objective
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *pb.Objective); ok {
+	var r0 *pb.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *pb.Goal); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Objective)
+			r0 = ret.Get(0).(*pb.Goal)
 		}
 	}
 
@@ -96,15 +96,15 @@ func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*pb.Objective, error)
 }
 
 // List provides a mock function with given fields: ctx, page, size
-func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*pb.Objective, error) {
+func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*pb.Goal, error) {
 	ret := _m.Called(ctx, page, size)
 
-	var r0 []*pb.Objective
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*pb.Objective); ok {
+	var r0 []*pb.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*pb.Goal); ok {
 		r0 = rf(ctx, page, size)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*pb.Objective)
+			r0 = ret.Get(0).([]*pb.Goal)
 		}
 	}
 
@@ -119,15 +119,15 @@ func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*pb.Objective
 }
 
 // ModifyTitle provides a mock function with given fields: ctx, id, title
-func (_m *IBiz) ModifyTitle(ctx contextx.Contextx, id string, title string) (*pb.Objective, error) {
+func (_m *IBiz) ModifyTitle(ctx contextx.Contextx, id string, title string) (*pb.Goal, error) {
 	ret := _m.Called(ctx, id, title)
 
-	var r0 *pb.Objective
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, string) *pb.Objective); ok {
+	var r0 *pb.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, string) *pb.Goal); ok {
 		r0 = rf(ctx, id, title)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Objective)
+			r0 = ret.Get(0).(*pb.Goal)
 		}
 	}
 

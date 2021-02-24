@@ -80,7 +80,7 @@ var (
 
 				break
 			case "goals":
-				data, _ := json.Marshal(&pb.Objective{Title: args[1]})
+				data, _ := json.Marshal(&pb.Goal{Title: args[1]})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
 					fmt.Println(err)
@@ -101,7 +101,7 @@ var (
 					return
 				}
 
-				var ret *pb.Objective
+				var ret *pb.Goal
 				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)

@@ -17,7 +17,7 @@ func NewImpl(rw *sqlx.DB) IRepo {
 	return &impl{rw: rw}
 }
 
-func (i *impl) Create(ctx contextx.Contextx, created *pb.Objective) (*pb.Objective, error) {
+func (i *impl) Create(ctx contextx.Contextx, created *pb.Goal) (*pb.Goal, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
@@ -30,11 +30,11 @@ func (i *impl) Create(ctx contextx.Contextx, created *pb.Objective) (*pb.Objecti
 	return created, nil
 }
 
-func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*pb.Objective, error) {
+func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*pb.Goal, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var ret pb.Objective
+	var ret pb.Goal
 	cmd := "SELECT id, title, start_at, end_at, create_at FROM goals WHERE id = ?"
 	err := i.rw.GetContext(timeout, &ret, cmd, id)
 	if err != nil {
@@ -44,11 +44,11 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*pb.Objective, error
 	return &ret, nil
 }
 
-func (i *impl) List(ctx contextx.Contextx, offset, limit int) ([]*pb.Objective, error) {
+func (i *impl) List(ctx contextx.Contextx, offset, limit int) ([]*pb.Goal, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var ret []*pb.Objective
+	var ret []*pb.Goal
 	cmd := "SELECT id, title, start_at, end_at, create_at FROM goals LIMIT ? OFFSET ?"
 	err := i.rw.SelectContext(timeout, &ret, cmd, limit, offset)
 	if err != nil {
@@ -73,7 +73,7 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 	return ret, nil
 }
 
-func (i *impl) Update(ctx contextx.Contextx, updated *pb.Objective) (*pb.Objective, error) {
+func (i *impl) Update(ctx contextx.Contextx, updated *pb.Goal) (*pb.Goal, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 

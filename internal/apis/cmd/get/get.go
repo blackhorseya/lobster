@@ -77,7 +77,7 @@ var (
 
 					break
 				case "goals":
-					var data []*pb.Objective
+					var data []*pb.Goal
 					err = json.Unmarshal(body, &data)
 					if err != nil {
 						fmt.Println(err)

@@ -18,19 +18,19 @@ var (
 
 	time1 = time.Now().UnixNano()
 
-	emptyTitle = &pb.Objective{Title: ""}
+	emptyTitle = &pb.Goal{Title: ""}
 
-	created1 = &pb.Objective{
+	created1 = &pb.Goal{
 		Title: "obj1",
 	}
 
-	obj1 = &pb.Objective{
+	obj1 = &pb.Goal{
 		ID:       uuid1,
 		Title:    "obj1",
 		CreateAt: time1,
 	}
 
-	updated1 = &pb.Objective{
+	updated1 = &pb.Goal{
 		ID:       uuid1,
 		Title:    "updated obj1",
 		CreateAt: time1,
@@ -62,13 +62,13 @@ func TestBizSuite(t *testing.T) {
 
 func (s *bizSuite) Test_impl_Create() {
 	type args struct {
-		obj  *pb.Objective
+		obj  *pb.Goal
 		mock func()
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *pb.Objective
+		want    *pb.Goal
 		wantErr bool
 	}{
 		{
@@ -124,7 +124,7 @@ func (s *bizSuite) Test_impl_List() {
 	tests := []struct {
 		name    string
 		args    args
-		want    []*pb.Objective
+		want    []*pb.Goal
 		wantErr bool
 	}{
 		{
@@ -150,9 +150,9 @@ func (s *bizSuite) Test_impl_List() {
 		{
 			name: "1 1 then objs nil",
 			args: args{page: 1, size: 1, mock: func() {
-				s.mock.On("List", mock.Anything, 0, 1).Return([]*pb.Objective{obj1}, nil).Once()
+				s.mock.On("List", mock.Anything, 0, 1).Return([]*pb.Goal{obj1}, nil).Once()
 			}},
-			want:    []*pb.Objective{obj1},
+			want:    []*pb.Goal{obj1},
 			wantErr: false,
 		},
 	}
@@ -283,7 +283,7 @@ func (s *bizSuite) Test_impl_GetByID() {
 	tests := []struct {
 		name    string
 		args    args
-		want    *pb.Objective
+		want    *pb.Goal
 		wantErr bool
 	}{
 		{
@@ -338,7 +338,7 @@ func (s *bizSuite) Test_impl_ModifyTitle() {
 	tests := []struct {
 		name    string
 		args    args
-		wantObj *pb.Objective
+		wantObj *pb.Goal
 		wantErr bool
 	}{
 		{
