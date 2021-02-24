@@ -28,11 +28,11 @@ type reqID struct {
 
 // @Summary Get a key result by id
 // @Description Get a key result by id
-// @Tags KeyResults
+// @Tags Results
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of key result"
-// @Success 200 {object} pb.KeyResult
+// @Success 200 {object} pb.Result
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -65,11 +65,11 @@ func (i *impl) GetByID(c *gin.Context) {
 
 // @Summary Get key result by goal id
 // @Description Get key result by goal id
-// @Tags KeyResults
+// @Tags Results
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of goal"
-// @Success 200 {array} pb.KeyResult
+// @Success 200 {array} pb.Result
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -102,12 +102,12 @@ func (i *impl) GetByGoalID(c *gin.Context) {
 
 // @Summary List all key results
 // @Description List all key results
-// @Tags KeyResults
+// @Tags Results
 // @Accept application/json
 // @Produce application/json
 // @Param page query integer false "page" default(1)
 // @Param size query integer false "size of page" default(10)
-// @Success 200 {array} pb.KeyResult
+// @Success 200 {array} pb.Result
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -149,11 +149,11 @@ func (i *impl) List(c *gin.Context) {
 
 // @Summary Create a key result
 // @Description Create a key result
-// @Tags KeyResults
+// @Tags Results
 // @Accept application/json
 // @Produce application/json
-// @Param created body pb.KeyResult true "created key result"
-// @Success 201 {object} pb.KeyResult
+// @Param created body pb.Result true "created key result"
+// @Success 201 {object} pb.Result
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Router /v1/results [post]
@@ -161,7 +161,7 @@ func (i *impl) Create(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "Create")
 
-	var created *pb.KeyResult
+	var created *pb.Result
 	err := c.ShouldBindJSON(&created)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrCreateKR)
@@ -194,11 +194,11 @@ func (i *impl) Create(c *gin.Context) {
 
 // @Summary Update a key result by id
 // @Description Update a key result by id
-// @Tags KeyResults
+// @Tags Results
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of key result"
-// @Success 200 {object} pb.KeyResult
+// @Success 200 {object} pb.Result
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -215,7 +215,7 @@ func (i *impl) Update(c *gin.Context) {
 	}
 	logger = logger.WithField("id", req.ID)
 
-	var updated *pb.KeyResult
+	var updated *pb.Result
 	err := c.ShouldBindJSON(&updated)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrCreateKR)
@@ -249,7 +249,7 @@ func (i *impl) Update(c *gin.Context) {
 
 // @Summary Delete a key result by id
 // @Description Delete a key result by id
-// @Tags KeyResults
+// @Tags Results
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of key result"

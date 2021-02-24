@@ -25,19 +25,19 @@ var (
 
 	time1 = int64(1611059529208050000)
 
-	kr1 = &pb.KeyResult{
+	kr1 = &pb.Result{
 		ID:       krID,
 		GoalID:   goalID,
 		Title:    "kr1",
 		CreateAt: time1,
 	}
 
-	created1 = &pb.KeyResult{
+	created1 = &pb.Result{
 		Title:  "created kr1",
 		GoalID: goalID,
 	}
 
-	updated1 = &pb.KeyResult{
+	updated1 = &pb.Result{
 		ID:       krID,
 		GoalID:   goalID,
 		Title:    "updated kr1",
@@ -87,7 +87,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.KeyResult
+		wantBody *pb.Result
 	}{
 		{
 			name:     "id then 400 error",
@@ -134,7 +134,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 			got := w.Result()
 			defer got.Body.Close()
 
-			var gotBody *pb.KeyResult
+			var gotBody *pb.Result
 			body, _ := ioutil.ReadAll(got.Body)
 			err := json.Unmarshal(body, &gotBody)
 			if err != nil {
@@ -163,7 +163,7 @@ func (s *handlerSuite) Test_impl_List() {
 		name     string
 		args     args
 		wantCode int
-		wantBody []*pb.KeyResult
+		wantBody []*pb.Result
 	}{
 		{
 			name:     "a 10 then 400 error",
@@ -196,10 +196,10 @@ func (s *handlerSuite) Test_impl_List() {
 		{
 			name: "1 1 then 200 nil",
 			args: args{page: "1", size: "1", mock: func() {
-				s.mock.On("List", mock.Anything, 1, 1).Return([]*pb.KeyResult{kr1}, nil).Once()
+				s.mock.On("List", mock.Anything, 1, 1).Return([]*pb.Result{kr1}, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: []*pb.KeyResult{kr1},
+			wantBody: []*pb.Result{kr1},
 		},
 	}
 	for _, tt := range tests {
@@ -216,7 +216,7 @@ func (s *handlerSuite) Test_impl_List() {
 			got := w.Result()
 			defer got.Body.Close()
 
-			var gotBody []*pb.KeyResult
+			var gotBody []*pb.Result
 			body, _ := ioutil.ReadAll(got.Body)
 			err := json.Unmarshal(body, &gotBody)
 			if err != nil {
@@ -237,24 +237,24 @@ func (s *handlerSuite) Test_impl_Create() {
 	s.r.POST("/api/v1/krs", s.handler.Create)
 
 	type args struct {
-		created *pb.KeyResult
+		created *pb.Result
 		mock    func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.KeyResult
+		wantBody *pb.Result
 	}{
 		{
 			name:     "missing title then 400 error",
-			args:     args{created: &pb.KeyResult{Title: "", GoalID: goalID}},
+			args:     args{created: &pb.Result{Title: "", GoalID: goalID}},
 			wantCode: 400,
 			wantBody: nil,
 		},
 		{
 			name:     "missing parent goal then 400 error",
-			args:     args{created: &pb.KeyResult{Title: "title", GoalID: ""}},
+			args:     args{created: &pb.Result{Title: "title", GoalID: ""}},
 			wantCode: 400,
 			wantBody: nil,
 		},
@@ -290,7 +290,7 @@ func (s *handlerSuite) Test_impl_Create() {
 			got := w.Result()
 			defer got.Body.Close()
 
-			var gotBody *pb.KeyResult
+			var gotBody *pb.Result
 			body, _ := ioutil.ReadAll(got.Body)
 			err := json.Unmarshal(body, &gotBody)
 			if err != nil {
@@ -312,14 +312,14 @@ func (s *handlerSuite) Test_impl_Update() {
 
 	type args struct {
 		id      string
-		updated *pb.KeyResult
+		updated *pb.Result
 		mock    func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.KeyResult
+		wantBody *pb.Result
 	}{
 		{
 			name:     "id then 400 error",
@@ -329,13 +329,13 @@ func (s *handlerSuite) Test_impl_Update() {
 		},
 		{
 			name:     "missing title then 400 error",
-			args:     args{id: krID, updated: &pb.KeyResult{Title: "", GoalID: goalID}},
+			args:     args{id: krID, updated: &pb.Result{Title: "", GoalID: goalID}},
 			wantCode: 400,
 			wantBody: nil,
 		},
 		{
 			name:     "missing parent goal then 400 error",
-			args:     args{id: krID, updated: &pb.KeyResult{Title: "title", GoalID: "id"}},
+			args:     args{id: krID, updated: &pb.Result{Title: "title", GoalID: "id"}},
 			wantCode: 400,
 			wantBody: nil,
 		},
@@ -371,7 +371,7 @@ func (s *handlerSuite) Test_impl_Update() {
 			got := w.Result()
 			defer got.Body.Close()
 
-			var gotBody *pb.KeyResult
+			var gotBody *pb.Result
 			body, _ = ioutil.ReadAll(got.Body)
 			err := json.Unmarshal(body, &gotBody)
 			if err != nil {
@@ -452,7 +452,7 @@ func (s *handlerSuite) Test_impl_GetByGoalID() {
 		name     string
 		args     args
 		wantCode int
-		wantBody []*pb.KeyResult
+		wantBody []*pb.Result
 	}{
 		{
 			name:     "id then 400 error",
@@ -479,10 +479,10 @@ func (s *handlerSuite) Test_impl_GetByGoalID() {
 		{
 			name: "uuid then 200 results",
 			args: args{id: goalID, mock: func() {
-				s.mock.On("GetByGoalID", mock.Anything, goalID).Return([]*pb.KeyResult{kr1}, nil).Once()
+				s.mock.On("GetByGoalID", mock.Anything, goalID).Return([]*pb.Result{kr1}, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: []*pb.KeyResult{kr1},
+			wantBody: []*pb.Result{kr1},
 		},
 	}
 	for _, tt := range tests {
@@ -499,7 +499,7 @@ func (s *handlerSuite) Test_impl_GetByGoalID() {
 			got := w.Result()
 			defer got.Body.Close()
 
-			var gotBody []*pb.KeyResult
+			var gotBody []*pb.Result
 			body, _ := ioutil.ReadAll(got.Body)
 			err := json.Unmarshal(body, &gotBody)
 			if err != nil {

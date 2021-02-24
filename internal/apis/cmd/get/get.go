@@ -94,7 +94,7 @@ var (
 
 					break
 				case "results":
-					var data []*pb.KeyResult
+					var data []*pb.Result
 					err = json.Unmarshal(body, &data)
 					if err != nil {
 						fmt.Println(err)

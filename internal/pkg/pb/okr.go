@@ -15,7 +15,7 @@ type Goal struct {
 	Title string `json:"title" db:"title"`
 
 	// KeyResults describe key results of objective
-	KeyResults []*KeyResult `json:"key_results" db:"key_results"`
+	KeyResults []*Result `json:"key_results" db:"key_results"`
 
 	// StartAt describe the objective start timex milliseconds
 	StartAt int64 `json:"start_at" db:"start_at"`
@@ -38,8 +38,8 @@ func (o *Goal) ToLine() []string {
 	}
 }
 
-// KeyResult declare a key result basic information
-type KeyResult struct {
+// Result declare a key result basic information
+type Result struct {
 	// ID describe the unique identify code of key result
 	ID string `json:"id" db:"id"`
 
@@ -63,7 +63,7 @@ type KeyResult struct {
 }
 
 // ToLine serve caller to print a string slice
-func (k *KeyResult) ToLine() []string {
+func (k *Result) ToLine() []string {
 	return []string{
 		k.ID,
 		k.GoalID,

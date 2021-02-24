@@ -127,7 +127,7 @@ var (
 					return
 				}
 
-				data, _ := json.Marshal(&pb.KeyResult{Title: args[1], GoalID: cfg.Context.Goal})
+				data, _ := json.Marshal(&pb.Result{Title: args[1], GoalID: cfg.Context.Goal})
 				req, err := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 				if err != nil {
 					fmt.Println(err)
@@ -148,7 +148,7 @@ var (
 					return
 				}
 
-				var ret *pb.KeyResult
+				var ret *pb.Result
 				err = json.Unmarshal(body, &ret)
 				if err != nil {
 					fmt.Println(err)

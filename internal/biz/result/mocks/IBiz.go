@@ -28,15 +28,15 @@ func (_m *IBiz) Delete(ctx contextx.Contextx, id string) error {
 }
 
 // GetByGoalID provides a mock function with given fields: ctx, id
-func (_m *IBiz) GetByGoalID(ctx contextx.Contextx, id string) ([]*pb.KeyResult, error) {
+func (_m *IBiz) GetByGoalID(ctx contextx.Contextx, id string) ([]*pb.Result, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 []*pb.KeyResult
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) []*pb.KeyResult); ok {
+	var r0 []*pb.Result
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) []*pb.Result); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*pb.KeyResult)
+			r0 = ret.Get(0).([]*pb.Result)
 		}
 	}
 
@@ -51,15 +51,15 @@ func (_m *IBiz) GetByGoalID(ctx contextx.Contextx, id string) ([]*pb.KeyResult, 
 }
 
 // GetByID provides a mock function with given fields: ctx, id
-func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*pb.KeyResult, error) {
+func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*pb.Result, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 *pb.KeyResult
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *pb.KeyResult); ok {
+	var r0 *pb.Result
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *pb.Result); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.KeyResult)
+			r0 = ret.Get(0).(*pb.Result)
 		}
 	}
 
@@ -74,20 +74,20 @@ func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*pb.KeyResult, error)
 }
 
 // LinkToGoal provides a mock function with given fields: ctx, created
-func (_m *IBiz) LinkToGoal(ctx contextx.Contextx, created *pb.KeyResult) (*pb.KeyResult, error) {
+func (_m *IBiz) LinkToGoal(ctx contextx.Contextx, created *pb.Result) (*pb.Result, error) {
 	ret := _m.Called(ctx, created)
 
-	var r0 *pb.KeyResult
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.KeyResult) *pb.KeyResult); ok {
+	var r0 *pb.Result
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.Result) *pb.Result); ok {
 		r0 = rf(ctx, created)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.KeyResult)
+			r0 = ret.Get(0).(*pb.Result)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.KeyResult) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.Result) error); ok {
 		r1 = rf(ctx, created)
 	} else {
 		r1 = ret.Error(1)
@@ -97,15 +97,15 @@ func (_m *IBiz) LinkToGoal(ctx contextx.Contextx, created *pb.KeyResult) (*pb.Ke
 }
 
 // List provides a mock function with given fields: ctx, page, size
-func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*pb.KeyResult, error) {
+func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*pb.Result, error) {
 	ret := _m.Called(ctx, page, size)
 
-	var r0 []*pb.KeyResult
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*pb.KeyResult); ok {
+	var r0 []*pb.Result
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*pb.Result); ok {
 		r0 = rf(ctx, page, size)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*pb.KeyResult)
+			r0 = ret.Get(0).([]*pb.Result)
 		}
 	}
 
@@ -120,20 +120,20 @@ func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*pb.KeyResult
 }
 
 // Update provides a mock function with given fields: ctx, updated
-func (_m *IBiz) Update(ctx contextx.Contextx, updated *pb.KeyResult) (*pb.KeyResult, error) {
+func (_m *IBiz) Update(ctx contextx.Contextx, updated *pb.Result) (*pb.Result, error) {
 	ret := _m.Called(ctx, updated)
 
-	var r0 *pb.KeyResult
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.KeyResult) *pb.KeyResult); ok {
+	var r0 *pb.Result
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.Result) *pb.Result); ok {
 		r0 = rf(ctx, updated)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.KeyResult)
+			r0 = ret.Get(0).(*pb.Result)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.KeyResult) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.Result) error); ok {
 		r1 = rf(ctx, updated)
 	} else {
 		r1 = ret.Error(1)

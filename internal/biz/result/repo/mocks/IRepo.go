@@ -14,20 +14,20 @@ type IRepo struct {
 }
 
 // Create provides a mock function with given fields: ctx, created
-func (_m *IRepo) Create(ctx contextx.Contextx, created *pb.KeyResult) (*pb.KeyResult, error) {
+func (_m *IRepo) Create(ctx contextx.Contextx, created *pb.Result) (*pb.Result, error) {
 	ret := _m.Called(ctx, created)
 
-	var r0 *pb.KeyResult
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.KeyResult) *pb.KeyResult); ok {
+	var r0 *pb.Result
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.Result) *pb.Result); ok {
 		r0 = rf(ctx, created)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.KeyResult)
+			r0 = ret.Get(0).(*pb.Result)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.KeyResult) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.Result) error); ok {
 		r1 = rf(ctx, created)
 	} else {
 		r1 = ret.Error(1)
@@ -51,15 +51,15 @@ func (_m *IRepo) Delete(ctx contextx.Contextx, id string) error {
 }
 
 // QueryByGoalID provides a mock function with given fields: ctx, id
-func (_m *IRepo) QueryByGoalID(ctx contextx.Contextx, id string) ([]*pb.KeyResult, error) {
+func (_m *IRepo) QueryByGoalID(ctx contextx.Contextx, id string) ([]*pb.Result, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 []*pb.KeyResult
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) []*pb.KeyResult); ok {
+	var r0 []*pb.Result
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) []*pb.Result); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*pb.KeyResult)
+			r0 = ret.Get(0).([]*pb.Result)
 		}
 	}
 
@@ -74,15 +74,15 @@ func (_m *IRepo) QueryByGoalID(ctx contextx.Contextx, id string) ([]*pb.KeyResul
 }
 
 // QueryByID provides a mock function with given fields: ctx, id
-func (_m *IRepo) QueryByID(ctx contextx.Contextx, id string) (*pb.KeyResult, error) {
+func (_m *IRepo) QueryByID(ctx contextx.Contextx, id string) (*pb.Result, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 *pb.KeyResult
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *pb.KeyResult); ok {
+	var r0 *pb.Result
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *pb.Result); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.KeyResult)
+			r0 = ret.Get(0).(*pb.Result)
 		}
 	}
 
@@ -97,15 +97,15 @@ func (_m *IRepo) QueryByID(ctx contextx.Contextx, id string) (*pb.KeyResult, err
 }
 
 // QueryList provides a mock function with given fields: ctx, offset, limit
-func (_m *IRepo) QueryList(ctx contextx.Contextx, offset int, limit int) ([]*pb.KeyResult, error) {
+func (_m *IRepo) QueryList(ctx contextx.Contextx, offset int, limit int) ([]*pb.Result, error) {
 	ret := _m.Called(ctx, offset, limit)
 
-	var r0 []*pb.KeyResult
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*pb.KeyResult); ok {
+	var r0 []*pb.Result
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*pb.Result); ok {
 		r0 = rf(ctx, offset, limit)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*pb.KeyResult)
+			r0 = ret.Get(0).([]*pb.Result)
 		}
 	}
 
@@ -120,20 +120,20 @@ func (_m *IRepo) QueryList(ctx contextx.Contextx, offset int, limit int) ([]*pb.
 }
 
 // Update provides a mock function with given fields: ctx, updated
-func (_m *IRepo) Update(ctx contextx.Contextx, updated *pb.KeyResult) (*pb.KeyResult, error) {
+func (_m *IRepo) Update(ctx contextx.Contextx, updated *pb.Result) (*pb.Result, error) {
 	ret := _m.Called(ctx, updated)
 
-	var r0 *pb.KeyResult
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.KeyResult) *pb.KeyResult); ok {
+	var r0 *pb.Result
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.Result) *pb.Result); ok {
 		r0 = rf(ctx, updated)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.KeyResult)
+			r0 = ret.Get(0).(*pb.Result)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.KeyResult) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.Result) error); ok {
 		r1 = rf(ctx, updated)
 	} else {
 		r1 = ret.Error(1)

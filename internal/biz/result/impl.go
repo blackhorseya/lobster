@@ -20,7 +20,7 @@ func NewImpl(repo repo.IRepo) IBiz {
 	return &impl{repo: repo}
 }
 
-func (i *impl) List(ctx contextx.Contextx, page, size int) (krs []*pb.KeyResult, err error) {
+func (i *impl) List(ctx contextx.Contextx, page, size int) (krs []*pb.Result, err error) {
 	if page <= 0 {
 		ctx.WithField("page", page).Error(er.ErrInvalidPage)
 		return nil, er.ErrInvalidPage
@@ -40,7 +40,7 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) (krs []*pb.KeyResult,
 	return ret, nil
 }
 
-func (i *impl) GetByID(ctx contextx.Contextx, id string) (kr *pb.KeyResult, err error) {
+func (i *impl) GetByID(ctx contextx.Contextx, id string) (kr *pb.Result, err error) {
 	if _, err = uuid.Parse(id); err != nil {
 		ctx.WithError(err).WithField("id", id).Error(er.ErrInvalidID)
 		return nil, er.ErrInvalidID
@@ -59,7 +59,7 @@ func (i *impl) GetByID(ctx contextx.Contextx, id string) (kr *pb.KeyResult, err 
 	return kr, nil
 }
 
-func (i *impl) GetByGoalID(ctx contextx.Contextx, id string) (krs []*pb.KeyResult, err error) {
+func (i *impl) GetByGoalID(ctx contextx.Contextx, id string) (krs []*pb.Result, err error) {
 	logger := ctx.WithField("id", id)
 
 	_, err = uuid.Parse(id)
@@ -77,7 +77,7 @@ func (i *impl) GetByGoalID(ctx contextx.Contextx, id string) (krs []*pb.KeyResul
 	return ret, nil
 }
 
-func (i *impl) LinkToGoal(ctx contextx.Contextx, created *pb.KeyResult) (kr *pb.KeyResult, err error) {
+func (i *impl) LinkToGoal(ctx contextx.Contextx, created *pb.Result) (kr *pb.Result, err error) {
 	logger := ctx.WithField("created", created)
 
 	_, err = uuid.Parse(created.GoalID)
@@ -102,7 +102,7 @@ func (i *impl) LinkToGoal(ctx contextx.Contextx, created *pb.KeyResult) (kr *pb.
 	return ret, nil
 }
 
-func (i *impl) Update(ctx contextx.Contextx, updated *pb.KeyResult) (kr *pb.KeyResult, err error) {
+func (i *impl) Update(ctx contextx.Contextx, updated *pb.Result) (kr *pb.Result, err error) {
 	logger := ctx.WithField("updated", updated)
 
 	_, err = uuid.Parse(updated.ID)
