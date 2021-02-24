@@ -24,6 +24,9 @@ type IBiz interface {
 	// Update serve caller to update a key result
 	Update(ctx contextx.Contextx, updated *pb.Result) (kr *pb.Result, err error)
 
+	// ModifyTitle serve caller to modify title of result
+	ModifyTitle(ctx contextx.Contextx, id, title string) (result *pb.Result, err error)
+
 	// Delete serve caller to delete a key result by id
 	Delete(ctx contextx.Contextx, id string) (err error)
 }

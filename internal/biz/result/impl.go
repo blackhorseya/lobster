@@ -143,6 +143,40 @@ func (i *impl) Update(ctx contextx.Contextx, updated *pb.Result) (kr *pb.Result,
 	return ret, nil
 }
 
+func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (result *pb.Result, err error) {
+	logger := ctx.WithField("id", id).WithField("title", title)
+
+	_, err = uuid.Parse(id)
+	if err != nil {
+		logger.Error(er.ErrInvalidID)
+		return nil, er.ErrInvalidID
+	}
+
+	if len(title) == 0 {
+		logger.Error(er.ErrEmptyTitle)
+		return nil, er.ErrEmptyTitle
+	}
+
+	exist, err := i.repo.QueryByID(ctx, id)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrGetKRByID)
+		return nil, er.ErrGetKRByID
+	}
+	if exist == nil {
+		logger.Error(er.ErrKRNotExists)
+		return nil, er.ErrKRNotExists
+	}
+
+	exist.Title = title
+	ret, err := i.repo.Update(ctx, exist)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateKeyResult)
+		return nil, er.ErrUpdateKeyResult
+	}
+
+	return ret, nil
+}
+
 func (i *impl) Delete(ctx contextx.Contextx, id string) (err error) {
 	_, err = uuid.Parse(id)
 	if err != nil {
