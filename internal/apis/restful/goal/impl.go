@@ -165,6 +165,11 @@ func (i *impl) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, ret)
 }
 
+func (i *impl) ModifyTitle(c *gin.Context) {
+	// todo: 2021-02-24|14:04|doggy|implement me
+	panic("implement me")
+}
+
 // @Summary Get a objective by id
 // @Description Get a objective by id
 // @Tags Goals
