@@ -165,9 +165,48 @@ func (i *impl) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, ret)
 }
 
+// @Summary Modify title of goal
+// @Description Modify title of goal
+// @Tags Goals
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "ID of goal"
+// @Param updated body pb.Objective true "updated goal"
+// @Success 200 {object} pb.Objective
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Router /v1/goals/{id}/title [patch]
 func (i *impl) ModifyTitle(c *gin.Context) {
-	// todo: 2021-02-24|14:04|doggy|implement me
-	panic("implement me")
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "ModifyTitle")
+
+	var req reqID
+	if err := c.ShouldBindUri(&req); err != nil {
+		logger.WithField("err", err).Error(er.ErrInvalidID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		return
+	}
+
+	var data *pb.Objective
+	if err := c.ShouldBindJSON(&data); err != nil {
+		logger.WithField("err", err).Error(er.ErrUpdateObj)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrUpdateObj})
+		return
+	}
+	if len(data.Title) == 0 {
+		logger.WithField("data", data).Error(er.ErrEmptyTitle)
+		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
+		return
+	}
+
+	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
+	if err != nil {
+		logger.WithError(err).Error(er.ErrUpdateObj)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateObj})
+		return
+	}
+
+	c.JSON(http.StatusOK, ret)
 }
 
 // @Summary Get a objective by id
