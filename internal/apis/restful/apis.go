@@ -52,7 +52,6 @@ func CreateInitHandlerFn(health health.IHandler, taskH task.IHandler, goalH goal
 					results.GET("", resultH.List)
 					results.GET(":id", resultH.GetByID)
 					results.POST("", resultH.Create)
-					results.PUT(":id", resultH.Update)
 					results.DELETE(":id", resultH.Delete)
 
 				}

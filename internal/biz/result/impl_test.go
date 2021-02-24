@@ -225,90 +225,6 @@ func (s *bizSuite) Test_impl_Delete() {
 	}
 }
 
-func (s *bizSuite) Test_impl_Update() {
-	type args struct {
-		updated *pb.Result
-		mock    func()
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantKr  *pb.Result
-		wantErr bool
-	}{
-		{
-			name:    "id title then nil error",
-			args:    args{updated: &pb.Result{ID: "id", GoalID: goalID, Title: "title"}},
-			wantKr:  nil,
-			wantErr: true,
-		},
-		{
-			name:    "uuid missing title then nil error",
-			args:    args{updated: &pb.Result{ID: krID, GoalID: goalID, Title: ""}},
-			wantKr:  nil,
-			wantErr: true,
-		},
-		{
-			name:    "goal id then nil error",
-			args:    args{updated: &pb.Result{ID: krID, GoalID: "id", Title: "title"}},
-			wantKr:  nil,
-			wantErr: true,
-		},
-		{
-			name: "uuid then query error",
-			args: args{updated: updated1, mock: func() {
-				s.mock.On("QueryByID", mock.Anything, krID).Return(nil, errors.New("error")).Once()
-			}},
-			wantKr:  nil,
-			wantErr: true,
-		},
-		{
-			name: "uuid then query not found error",
-			args: args{updated: updated1, mock: func() {
-				s.mock.On("QueryByID", mock.Anything, krID).Return(nil, nil).Once()
-			}},
-			wantKr:  nil,
-			wantErr: true,
-		},
-		{
-			name: "uuid then update error",
-			args: args{updated: updated1, mock: func() {
-				s.mock.On("QueryByID", mock.Anything, krID).Return(kr1, nil).Once()
-				s.mock.On("Update", mock.Anything, updated1).Return(nil, errors.New("error")).Once()
-			}},
-			wantKr:  nil,
-			wantErr: true,
-		},
-		{
-			name: "uuid then updated1 nil",
-			args: args{updated: updated1, mock: func() {
-				s.mock.On("QueryByID", mock.Anything, updated1.ID).Return(kr1, nil).Once()
-				s.mock.On("Update", mock.Anything, updated1).Return(updated1, nil).Once()
-			}},
-			wantKr:  updated1,
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		s.T().Run(tt.name, func(t *testing.T) {
-			if tt.args.mock != nil {
-				tt.args.mock()
-			}
-
-			gotKr, err := s.biz.Update(contextx.Background(), tt.args.updated)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Update() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(gotKr, tt.wantKr) {
-				t.Errorf("Update() gotKr = %v, want %v", gotKr, tt.wantKr)
-			}
-
-			s.TearDownTest()
-		})
-	}
-}
-
 func (s *bizSuite) Test_impl_LinkToGoal() {
 	type args struct {
 		created *pb.Result
@@ -466,16 +382,16 @@ func (s *bizSuite) Test_impl_ModifyTitle() {
 		{
 			name: "uuid title then update error",
 			args: args{id: krID, title: "updated kr1", mock: func() {
-				s.mock.On("QueryByID", mock.Anything, krID).Return(kr1, nil).Once()
+				s.mock.On("QueryByID", mock.Anything, krID).Return(updated1, nil).Once()
 				s.mock.On("Update", mock.Anything, updated1).Return(nil, errors.New("error")).Once()
 			}},
 			wantResult: nil,
 			wantErr:    true,
 		},
 		{
-			name: "uuid title then updated",
+			name: "uuid title then updated nil",
 			args: args{id: krID, title: "updated kr1", mock: func() {
-				s.mock.On("QueryByID", mock.Anything, krID).Return(kr1, nil).Once()
+				s.mock.On("QueryByID", mock.Anything, krID).Return(updated1, nil)
 				s.mock.On("Update", mock.Anything, updated1).Return(updated1, nil).Once()
 			}},
 			wantResult: updated1,

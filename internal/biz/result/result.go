@@ -21,9 +21,6 @@ type IBiz interface {
 	// LinkToGoal serve caller link a key result to goal via id
 	LinkToGoal(ctx contextx.Contextx, created *pb.Result) (kr *pb.Result, err error)
 
-	// Update serve caller to update a key result
-	Update(ctx contextx.Contextx, updated *pb.Result) (kr *pb.Result, err error)
-
 	// ModifyTitle serve caller to modify title of result
 	ModifyTitle(ctx contextx.Contextx, id, title string) (result *pb.Result, err error)
 

@@ -102,47 +102,6 @@ func (i *impl) LinkToGoal(ctx contextx.Contextx, created *pb.Result) (kr *pb.Res
 	return ret, nil
 }
 
-func (i *impl) Update(ctx contextx.Contextx, updated *pb.Result) (kr *pb.Result, err error) {
-	logger := ctx.WithField("updated", updated)
-
-	_, err = uuid.Parse(updated.ID)
-	if err != nil {
-		logger.WithError(err).Error(er.ErrInvalidID)
-		return nil, er.ErrInvalidID
-	}
-
-	_, err = uuid.Parse(updated.GoalID)
-	if err != nil {
-		logger.WithError(err).Error(er.ErrInvalidID)
-		return nil, er.ErrInvalidID
-	}
-
-	if len(updated.Title) == 0 {
-		logger.Error(er.ErrEmptyTitle)
-		return nil, er.ErrEmptyTitle
-	}
-
-	exist, err := i.repo.QueryByID(ctx, updated.ID)
-	if err != nil {
-		logger.WithError(err).Error(er.ErrGetKRByID)
-		return nil, er.ErrGetKRByID
-	}
-	if exist == nil {
-		logger.Error(er.ErrKRNotExists)
-		return nil, er.ErrKRNotExists
-	}
-
-	updated.ID = exist.ID
-	updated.CreateAt = exist.CreateAt
-	ret, err := i.repo.Update(ctx, updated)
-	if err != nil {
-		logger.WithError(err).Error(er.ErrUpdateKeyResult)
-		return nil, er.ErrUpdateKeyResult
-	}
-
-	return ret, nil
-}
-
 func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (result *pb.Result, err error) {
 	logger := ctx.WithField("id", id).WithField("title", title)
 
