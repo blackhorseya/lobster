@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/blackhorseya/lobster/internal/apis/cmd/completion"
 	"github.com/blackhorseya/lobster/internal/apis/cmd/config"
 	"github.com/blackhorseya/lobster/internal/apis/cmd/create"
 	"github.com/blackhorseya/lobster/internal/apis/cmd/delete"
@@ -33,7 +34,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.AddCommand(completionCmd)
+	rootCmd.AddCommand(completion.Cmd)
 	rootCmd.AddCommand(config.Cmd)
 
 	rootCmd.AddCommand(get.Cmd)
