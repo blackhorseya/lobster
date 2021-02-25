@@ -13,7 +13,7 @@ import (
 var cfgFile string
 var cfg *config.Config
 
-// Cmd is root command
+// Cmd is a root command for config
 var Cmd = &cobra.Command{
 	Use: "config",
 	Short: "View and edit Lobster configuration",

@@ -16,6 +16,7 @@ var (
 
 	cfg *config.Config
 
+	// Cmd is a root command for delete
 	Cmd = &cobra.Command{
 		Use:       "delete [RESOURCE]",
 		Short:     "Delete one resource",

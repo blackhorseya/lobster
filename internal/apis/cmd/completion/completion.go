@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Cmd is a root command for completion
 var Cmd = &cobra.Command{
 	Use:   "completion [bash|zsh]",
 	Short: "Generate completion script",

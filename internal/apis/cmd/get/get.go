@@ -20,6 +20,7 @@ var (
 
 	cfg *config.Config
 
+	// Cmd is a root command for get
 	Cmd = &cobra.Command{
 		Use:       "get [RESOURCE]",
 		Short:     "Display one resource",

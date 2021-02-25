@@ -22,6 +22,7 @@ var (
 
 	cfg *config.Config
 
+	// Cmd is a root command for update
 	Cmd = &cobra.Command{
 		Use:       "update [RESOURCE]",
 		Short:     "Update one resource",

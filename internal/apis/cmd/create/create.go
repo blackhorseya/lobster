@@ -22,6 +22,7 @@ var (
 
 	cfg *config.Config
 
+	// Cmd is a root command for create
 	Cmd = &cobra.Command{
 		Use:       "create [RESOURCE] [TITLE]",
 		Short:     "Create one resource",
