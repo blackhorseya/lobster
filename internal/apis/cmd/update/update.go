@@ -25,7 +25,7 @@ var (
 	Cmd = &cobra.Command{
 		Use:       "update [RESOURCE]",
 		Short:     "Update one resource",
-		ValidArgs: []string{"tasks"},
+		ValidArgs: []string{"tasks", "goals", "results"},
 		Args:      cobra.MinimumNArgs(4),
 		Run: func(cmd *cobra.Command, args []string) {
 			resource := args[0]
@@ -77,39 +77,116 @@ var (
 				}
 				break
 			case "title":
-				data, _ := json.Marshal(&pb.Task{Title: value})
-				req, err := http.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+				switch resource {
+				case "tasks":
+					data, _ := json.Marshal(&pb.Task{Title: value})
+					req, err := http.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				client := &http.Client{}
-				resp, err := client.Do(req)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-				defer resp.Body.Close()
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
 
-				body, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				var task *pb.Task
-				err = json.Unmarshal(body, &task)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+					var task *pb.Task
+					err = json.Unmarshal(body, &task)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
 
-				table := tablewriter.NewWriter(os.Stdout)
-				table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-				table.SetHeader([]string{"ID", "Result ID", "Title", "Status", "Create At"})
-				table.Append(task.ToLine())
-				table.Render()
+					table := tablewriter.NewWriter(os.Stdout)
+					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+					table.SetHeader([]string{"ID", "Result ID", "Title", "Status", "Create At"})
+					table.Append(task.ToLine())
+					table.Render()
+
+					break
+				case "goals":
+					data, _ := json.Marshal(&pb.Goal{Title: value})
+					req, err := http.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
+
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					var task *pb.Goal
+					err = json.Unmarshal(body, &task)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					table := tablewriter.NewWriter(os.Stdout)
+					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+					table.SetHeader([]string{"ID", "Title", "Start At", "End At", "Create At"})
+					table.Append(task.ToLine())
+					table.Render()
+
+					break
+				case "results":
+					data, _ := json.Marshal(&pb.Result{Title: value})
+					req, err := http.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
+
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					var ret *pb.Result
+					err = json.Unmarshal(body, &ret)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					table := tablewriter.NewWriter(os.Stdout)
+					table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+					table.SetHeader([]string{"ID", "Goal ID", "Title", "Target", "Actual", "Progress", "Create At"})
+					table.Append(ret.ToLine())
+					table.Render()
+
+					break
+				}
 
 				break
 			}
