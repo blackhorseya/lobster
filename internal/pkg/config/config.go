@@ -42,7 +42,8 @@ func (c *Config) String() string {
 
 // APP declare information of application
 type APP struct {
-	Name string `json:"name" yaml:"name"`
+	Name     string `json:"name" yaml:"name"`
+	ClientID string `json:"client_id" yaml:"clientID"`
 }
 
 // HTTP declare http configuration

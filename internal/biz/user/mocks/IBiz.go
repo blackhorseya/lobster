@@ -119,3 +119,26 @@ func (_m *IBiz) Logout(ctx contextx.Contextx, _a1 *pb.Profile) error {
 
 	return r0
 }
+
+// Signup provides a mock function with given fields: ctx, email
+func (_m *IBiz) Signup(ctx contextx.Contextx, email string) (*pb.Profile, error) {
+	ret := _m.Called(ctx, email)
+
+	var r0 *pb.Profile
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *pb.Profile); ok {
+		r0 = rf(ctx, email)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.Profile)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, string) error); ok {
+		r1 = rf(ctx, email)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

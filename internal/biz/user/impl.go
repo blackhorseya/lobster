@@ -16,21 +16,38 @@ func NewImpl(repo repo.IRepo) IBiz {
 }
 
 func (i *impl) GetInfoByID(ctx contextx.Contextx, id string) (info *pb.Profile, err error) {
+	// todo: 2021-02-28|17:31|doggy|implement me
 	panic("implement me")
 }
 
 func (i *impl) GetInfoByEmail(ctx contextx.Contextx, email string) (info *pb.Profile, err error) {
-	panic("implement me")
+	logger := ctx.WithField("email", email)
+
+	ret, err := i.repo.QueryInfoByEmail(ctx, email)
+	if err != nil {
+		logger.WithError(err)
+		return nil, err
+	}
+
+	return ret, nil
 }
 
 func (i *impl) GetInfoByAccessToken(ctx contextx.Contextx, token string) (info *pb.Profile, err error) {
+	// todo: 2021-02-28|17:31|doggy|implement me
+	panic("implement me")
+}
+
+func (i *impl) Signup(ctx contextx.Contextx, email string) (info *pb.Profile, err error) {
+	// todo: 2021-02-28|17:31|doggy|implement me
 	panic("implement me")
 }
 
 func (i *impl) Login(ctx contextx.Contextx, email, token string) (info *pb.Profile, err error) {
+	// todo: 2021-02-28|17:31|doggy|implement me
 	panic("implement me")
 }
 
 func (i *impl) Logout(ctx contextx.Contextx, user *pb.Profile) (err error) {
+	// todo: 2021-02-28|17:31|doggy|implement me
 	panic("implement me")
 }
