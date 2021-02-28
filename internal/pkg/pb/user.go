@@ -1,9 +1,12 @@
-package user
+package pb
 
 // Profile declare a user basic information
 type Profile struct {
 	// ID describe the unique identify code of user
 	ID string `json:"-" db:"sn"`
+
+	// AccessToken describe this user's accessToken
+	AccessToken string `json:"access_token" db:"access_token"`
 
 	// Password describe user's password to login system
 	Password string `json:"-" db:"password"`
@@ -12,5 +15,5 @@ type Profile struct {
 	Email string `json:"email" db:"email"`
 
 	// SignupAt describe user signup platform milliseconds
-	SignupAt int64 `json:"-" db:"signupAt"`
+	SignupAt int64 `json:"-" db:"signup_at"`
 }
