@@ -7,6 +7,14 @@ import (
 	"github.com/google/wire"
 )
 
+// QueryCondition is a struct for caller can applied it to retrieved result list.
+type QueryCondition struct {
+	ID           string
+	Name         string
+	UserID       string
+	AuthorizerID string
+}
+
 // IBiz declare key result biz service function
 type IBiz interface {
 	// List serve get key result list by page and size
