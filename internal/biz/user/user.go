@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/google/wire"
 )
 
 // IBiz declare user biz service function
@@ -22,3 +23,6 @@ type IBiz interface {
 	// Logout serve user to logout application which he/she wants
 	Logout(ctx contextx.Contextx, user *pb.Profile) (err error)
 }
+
+// ProviderSet is a provider set for wire
+var ProviderSet = wire.NewSet()
