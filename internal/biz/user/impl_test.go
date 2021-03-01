@@ -101,3 +101,80 @@ func (s *bizSuite) Test_impl_GetInfoByEmail() {
 		})
 	}
 }
+
+func (s *bizSuite) Test_impl_Login() {
+	type args struct {
+		email string
+		token string
+		mock  func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantInfo *pb.Profile
+		wantErr  bool
+	}{
+		{
+			name:     "email is empty then error",
+			args:     args{email: "", token: token1},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name:     "token is empty then error",
+			args:     args{email: email1, token: ""},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "email and token then nil error",
+			args: args{email: email1, token: token1, mock: func() {
+				s.mock.On("QueryInfoByEmail", mock.Anything, email1).Return(nil, errors.New("error")).Once()
+			}},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "email and token then query not found error",
+			args: args{email: email1, token: token1, mock: func() {
+				s.mock.On("QueryInfoByEmail", mock.Anything, email1).Return(nil, nil).Once()
+			}},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "email and token then token not equal error",
+			args: args{email: email1, token: "test", mock: func() {
+				s.mock.On("QueryInfoByEmail", mock.Anything, email1).Return(&user1, nil).Once()
+			}},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "email and token then profile ok",
+			args: args{email: email1, token: token1, mock: func() {
+				s.mock.On("QueryInfoByEmail", mock.Anything, email1).Return(&user1, nil).Once()
+			}},
+			wantInfo: &user1,
+			wantErr:  false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotInfo, err := s.biz.Login(contextx.Background(), tt.args.email, tt.args.token)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Login() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
+				t.Errorf("Login() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}

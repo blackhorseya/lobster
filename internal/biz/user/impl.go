@@ -1,9 +1,25 @@
 package user
 
 import (
+	"fmt"
+
 	"github.com/blackhorseya/lobster/internal/biz/user/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/pb"
+)
+
+var (
+	// ErrEmailOrTokenEmpty means email or token is empty
+	ErrEmailOrTokenEmpty = fmt.Errorf("email or token is empty")
+
+	// ErrQueryInfoByEmail means get user profile by email is failure
+	ErrQueryInfoByEmail = fmt.Errorf("query info by email is failure")
+
+	// ErrUserNotExists means user not exists
+	ErrUserNotExists = fmt.Errorf("user not exists")
+
+	// ErrUserLogin means user login failure
+	ErrUserLogin = fmt.Errorf("user login failure")
 )
 
 type impl struct {
@@ -43,8 +59,29 @@ func (i *impl) Signup(ctx contextx.Contextx, email string) (info *pb.Profile, er
 }
 
 func (i *impl) Login(ctx contextx.Contextx, email, token string) (info *pb.Profile, err error) {
-	// todo: 2021-02-28|17:31|doggy|implement me
-	panic("implement me")
+	logger := ctx.WithField("email", email).WithField("token", token)
+
+	if len(email) == 0 || len(token) == 0 {
+		logger.Error(ErrEmailOrTokenEmpty)
+		return nil, ErrEmailOrTokenEmpty
+	}
+
+	exist, err := i.repo.QueryInfoByEmail(ctx, email)
+	if err != nil {
+		logger.WithError(err).Error(ErrQueryInfoByEmail)
+		return nil, ErrQueryInfoByEmail
+	}
+	if exist == nil {
+		logger.Error(ErrUserNotExists)
+		return nil, ErrUserNotExists
+	}
+
+	if exist.AccessToken != token {
+		logger.Error(ErrUserLogin)
+		return nil, ErrUserLogin
+	}
+
+	return exist, nil
 }
 
 func (i *impl) Logout(ctx contextx.Contextx, user *pb.Profile) (err error) {
