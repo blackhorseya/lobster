@@ -1,5 +1,6 @@
 app:
   name: "lobster"
+  clientID: "7d01eb0200bc730a2c58"
 
 http:
   port: 8080

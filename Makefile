@@ -49,10 +49,6 @@ install-db:
 	@helm --namespace $(NS) upgrade --install $(APP_NAME)-db bitnami/mariadb \
 	--values ./deployments/configs/$(DEPLOY_TO)/db.yaml
 
-.PHONY: install-cli
-install-cli:
-	@go install ./cmd/cli/lobster.go
-
 .PHONY: deploy
 deploy:
 	@helm --namespace $(NS) \
