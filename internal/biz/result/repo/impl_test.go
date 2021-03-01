@@ -23,8 +23,8 @@ var (
 		ID:       krID1,
 		GoalID:   goalID,
 		Title:    "kr1",
-		Target: 99,
-		Actual: 10,
+		Target:   99,
+		Actual:   10,
 		CreateAt: int64(1613114039486249000),
 	}
 
@@ -32,8 +32,8 @@ var (
 		ID:       krID2,
 		GoalID:   goalID,
 		Title:    "kr",
-		Target: 100,
-		Actual: 20,
+		Target:   100,
+		Actual:   20,
 		CreateAt: int64(1614032353580795000),
 	}
 
