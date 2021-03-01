@@ -11,6 +11,7 @@ import (
 	health2 "github.com/blackhorseya/lobster/internal/apis/restful/health"
 	result2 "github.com/blackhorseya/lobster/internal/apis/restful/result"
 	task2 "github.com/blackhorseya/lobster/internal/apis/restful/task"
+	user2 "github.com/blackhorseya/lobster/internal/apis/restful/user"
 	"github.com/blackhorseya/lobster/internal/biz"
 	"github.com/blackhorseya/lobster/internal/biz/goal"
 	repo3 "github.com/blackhorseya/lobster/internal/biz/goal/repo"
@@ -20,6 +21,8 @@ import (
 	repo4 "github.com/blackhorseya/lobster/internal/biz/result/repo"
 	"github.com/blackhorseya/lobster/internal/biz/task"
 	repo2 "github.com/blackhorseya/lobster/internal/biz/task/repo"
+	"github.com/blackhorseya/lobster/internal/biz/user"
+	repo5 "github.com/blackhorseya/lobster/internal/biz/user/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/app"
 	"github.com/blackhorseya/lobster/internal/pkg/config"
 	"github.com/blackhorseya/lobster/internal/pkg/databases"
@@ -50,7 +53,10 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	iRepo3 := repo4.NewImpl(db)
 	resultIBiz := result.NewImpl(iRepo3)
 	resultIHandler := result2.NewImpl(resultIBiz)
-	initHandlers := restful.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, resultIHandler)
+	iRepo4 := repo5.NewImpl(db)
+	userIBiz := user.NewImpl(iRepo4)
+	userIHandler := user2.NewImpl(userIBiz)
+	initHandlers := restful.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, resultIHandler, userIHandler)
 	engine := http.NewGinEngine(configConfig, initHandlers)
 	injector := app.NewInjector(engine, configConfig)
 	return injector, nil

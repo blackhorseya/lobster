@@ -7,6 +7,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/apis/restful/health"
 	"github.com/blackhorseya/lobster/internal/apis/restful/result"
 	"github.com/blackhorseya/lobster/internal/apis/restful/task"
+	"github.com/blackhorseya/lobster/internal/apis/restful/user"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -15,7 +16,12 @@ import (
 )
 
 // CreateInitHandlerFn serve caller to create init handler
-func CreateInitHandlerFn(health health.IHandler, taskH task.IHandler, goalH goal.IHandler, resultH result.IHandler) http.InitHandlers {
+func CreateInitHandlerFn(
+	health health.IHandler,
+	taskH task.IHandler,
+	goalH goal.IHandler,
+	resultH result.IHandler,
+	userH user.IHandler) http.InitHandlers {
 	return func(r *gin.Engine) {
 		api := r.Group("api")
 		{
@@ -54,6 +60,12 @@ func CreateInitHandlerFn(health health.IHandler, taskH task.IHandler, goalH goal
 					results.PATCH(":id/title", resultH.ModifyTitle)
 					results.DELETE(":id", resultH.Delete)
 				}
+
+				users := v1.Group("users")
+				{
+					users.POST("signup", userH.Signup)
+					users.POST("login", userH.Login)
+				}
 			}
 		}
 	}
@@ -65,5 +77,6 @@ var ProviderSet = wire.NewSet(
 	task.ProviderSet,
 	goal.ProviderSet,
 	result.ProviderSet,
+	user.ProviderSet,
 	CreateInitHandlerFn,
 )

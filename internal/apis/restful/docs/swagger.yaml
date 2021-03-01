@@ -23,6 +23,15 @@ definitions:
         description: Title describe the title of objective
         type: string
     type: object
+  pb.Profile:
+    properties:
+      access_token:
+        description: AccessToken describe this user's accessToken
+        type: string
+      email:
+        description: Email describe user's email to login system
+        type: string
+    type: object
   pb.Result:
     properties:
       actual:
@@ -682,4 +691,64 @@ paths:
       summary: ModifyTitle a title of task by id
       tags:
       - Tasks
+  /v1/users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: user profile
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/pb.Profile'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - Users
+  /v1/users/signup:
+    post:
+      consumes:
+      - application/json
+      description: Signup
+      parameters:
+      - description: new user profile
+        in: body
+        name: newUser
+        required: true
+        schema:
+          $ref: '#/definitions/pb.Profile'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Signup
+      tags:
+      - Users
 swagger: "2.0"
