@@ -19,7 +19,7 @@ type IBiz interface {
 	GetInfoByAccessToken(ctx contextx.Contextx, token string) (info *pb.Profile, err error)
 
 	// Signup serve user to setup a new account
-	Signup(ctx contextx.Contextx, email string) (info *pb.Profile, err error)
+	Signup(ctx contextx.Contextx, email, token string) (info *pb.Profile, err error)
 
 	// Login serve user to login with userEmail, and user Password
 	Login(ctx contextx.Contextx, email, token string) (info *pb.Profile, err error)

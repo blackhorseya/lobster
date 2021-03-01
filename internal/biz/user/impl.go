@@ -2,10 +2,12 @@ package user
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/blackhorseya/lobster/internal/biz/user/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/google/uuid"
 )
 
 var (
@@ -20,6 +22,9 @@ var (
 
 	// ErrUserLogin means user login failure
 	ErrUserLogin = fmt.Errorf("user login failure")
+
+	// ErrUserSignup means user signup failure
+	ErrUserSignup = fmt.Errorf("user signup failure")
 )
 
 type impl struct {
@@ -53,9 +58,36 @@ func (i *impl) GetInfoByAccessToken(ctx contextx.Contextx, token string) (info *
 	panic("implement me")
 }
 
-func (i *impl) Signup(ctx contextx.Contextx, email string) (info *pb.Profile, err error) {
-	// todo: 2021-02-28|17:31|doggy|implement me
-	panic("implement me")
+func (i *impl) Signup(ctx contextx.Contextx, email, token string) (info *pb.Profile, err error) {
+	logger := ctx.WithField("email", email).WithField("token", token)
+
+	if len(email) == 0 || len(token) == 0 {
+		logger.Error(ErrEmailOrTokenEmpty)
+		return nil, ErrEmailOrTokenEmpty
+	}
+
+	exist, err := i.repo.QueryInfoByEmail(ctx, email)
+	if err != nil {
+		logger.WithError(err).Error(ErrQueryInfoByEmail)
+		return nil, ErrQueryInfoByEmail
+	}
+	if exist != nil {
+		logger.Error("email is exists")
+		return nil, ErrUserSignup
+	}
+
+	newUser, err := i.repo.UserRegister(ctx, pb.Profile{
+		ID:          uuid.New().String(),
+		AccessToken: token,
+		Email:       email,
+		SignupAt:    time.Now().UnixNano(),
+	})
+	if err != nil {
+		logger.WithError(err).Error(ErrUserSignup)
+		return nil, ErrUserSignup
+	}
+
+	return newUser, nil
 }
 
 func (i *impl) Login(ctx contextx.Contextx, email, token string) (info *pb.Profile, err error) {
