@@ -127,3 +127,63 @@ func (s *handlerSuite) Test_impl_Signup() {
 		})
 	}
 }
+
+func (s *handlerSuite) Test_impl_Login() {
+	s.r.POST("/api/v1/users/login", s.handler.Login)
+
+	type args struct {
+		email string
+		token string
+		mock  func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+		wantBody *pb.Profile
+	}{
+		{
+			name: "profile then 500 error",
+			args: args{email: email1, token: token1, mock: func() {
+				s.mock.On("Login", mock.Anything, email1, token1).Return(nil, errors.New("error")).Once()
+			}},
+			wantCode: 500,
+			wantBody: nil,
+		},
+		{
+			name: "profile then 201",
+			args: args{email: email1, token: token1, mock: func() {
+				s.mock.On("Login", mock.Anything, email1, token1).Return(&user1, nil).Once()
+			}},
+			wantCode: 201,
+			wantBody: nil,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/users/login")
+			data, _ := json.Marshal(&pb.Profile{Email: tt.args.email, AccessToken: tt.args.token})
+			req := httptest.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			body, _ := ioutil.ReadAll(got.Body)
+			var gotBody *pb.Profile
+			_ = json.Unmarshal(body, &gotBody)
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Signup() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
+				s.T().Errorf("Signup() got = %v, wantBody = %v", gotBody, tt.wantBody)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}

@@ -13,6 +13,9 @@ import (
 var (
 	// ErrSignup means user signup is failure
 	ErrSignup = fmt.Errorf("user signup is failure")
+
+	// ErrLogin means user login is failure
+	ErrLogin = fmt.Errorf("user login is failure")
 )
 
 type impl struct {
@@ -66,6 +69,22 @@ func (i *impl) Signup(c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /v1/users/login [post]
 func (i *impl) Login(c *gin.Context) {
-	// todo: 2021-03-01|17:04|doggy|implement me
-	panic("implement me")
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+	logger := ctx.WithField("func", "Login")
+
+	var user *pb.Profile
+	if err := c.ShouldBindJSON(&user); err != nil {
+		logger.WithError(err).Error(ErrLogin)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrLogin})
+		return
+	}
+
+	ret, err := i.biz.Login(ctx, user.Email, user.AccessToken)
+	if err != nil {
+		logger.WithError(err).Error(ErrLogin)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrLogin})
+		return
+	}
+
+	c.JSON(http.StatusCreated, ret)
 }
