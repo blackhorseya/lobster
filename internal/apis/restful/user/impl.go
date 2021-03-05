@@ -72,14 +72,14 @@ func (i *impl) Login(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "Login")
 
-	var user *pb.Profile
-	if err := c.ShouldBindJSON(&user); err != nil {
+	var data *pb.Profile
+	if err := c.ShouldBindJSON(&data); err != nil {
 		logger.WithError(err).Error(ErrLogin)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrLogin})
 		return
 	}
 
-	ret, err := i.biz.Login(ctx, user.Email, user.AccessToken)
+	ret, err := i.biz.Login(ctx, data.Email, data.AccessToken)
 	if err != nil {
 		logger.WithError(err).Error(ErrLogin)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrLogin})
