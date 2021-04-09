@@ -8,7 +8,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task/repo/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/task"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,25 +18,25 @@ var (
 
 	time1 = time.Now().UnixNano()
 
-	task1 = &pb.Task{
+	task1 = &task.Task{
 		ID:        uuid1,
 		Title:     "task1",
-		Status:    pb.Status_BACKLOG,
+		Status:    task.Status_BACKLOG,
 		Completed: false,
 		CreateAt:  time1,
 	}
 
-	updated1 = &pb.Task{
+	updated1 = &task.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
 		Completed: false,
 		CreateAt:  time1,
 	}
 
-	updateStatus = &pb.Task{
+	updateStatus = &task.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
-		Status:    pb.Status_INPROGRESS,
+		Status:    task.Status_INPROGRESS,
 		Completed: false,
 		CreateAt:  time1,
 	}
@@ -73,7 +73,7 @@ func (s *bizSuite) Test_impl_GetByID() {
 	tests := []struct {
 		name    string
 		args    args
-		want    *pb.Task
+		want    *task.Task
 		wantErr bool
 	}{
 		{
@@ -138,7 +138,7 @@ func (s *bizSuite) Test_impl_List() {
 	tests := []struct {
 		name    string
 		args    args
-		want    []*pb.Task
+		want    []*task.Task
 		wantErr bool
 	}{
 		{
@@ -166,9 +166,9 @@ func (s *bizSuite) Test_impl_List() {
 			name: "1 1 then tasks nil",
 			args: args{page: 1, size: 1, mock: func() {
 				s.mock.On("List", mock.Anything, 0, 1).Return(
-					[]*pb.Task{task1}, nil).Once()
+					[]*task.Task{task1}, nil).Once()
 			}},
-			want: []*pb.Task{
+			want: []*task.Task{
 				task1,
 			},
 			wantErr: false,
@@ -251,24 +251,24 @@ func (s *bizSuite) Test_impl_Count() {
 
 func (s *bizSuite) Test_impl_Create() {
 	type args struct {
-		task *pb.Task
+		task *task.Task
 		mock func()
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *pb.Task
+		want    *task.Task
 		wantErr bool
 	}{
 		{
 			name:    "missing title then nil error",
-			args:    args{task: &pb.Task{Title: ""}},
+			args:    args{task: &task.Task{Title: ""}},
 			want:    nil,
 			wantErr: true,
 		},
 		{
 			name: "task then nil error",
-			args: args{task: &pb.Task{Title: "task1"}, mock: func() {
+			args: args{task: &task.Task{Title: "task1"}, mock: func() {
 				s.mock.On("Create", mock.Anything, mock.Anything).Return(
 					nil, errors.New("err")).Once()
 			}},
@@ -277,7 +277,7 @@ func (s *bizSuite) Test_impl_Create() {
 		},
 		{
 			name: "task then task nil",
-			args: args{task: &pb.Task{Title: "task1"}, mock: func() {
+			args: args{task: &task.Task{Title: "task1"}, mock: func() {
 				s.mock.On("Create", mock.Anything, mock.Anything).Return(
 					task1, nil).Once()
 			}},
@@ -360,13 +360,13 @@ func (s *bizSuite) Test_impl_Delete() {
 func (s *bizSuite) Test_impl_UpdateStatus() {
 	type args struct {
 		id     string
-		status pb.Status
+		status task.Status
 		mock   func()
 	}
 	tests := []struct {
 		name    string
 		args    args
-		wantT   *pb.Task
+		wantT   *task.Task
 		wantErr bool
 	}{
 		{
@@ -393,7 +393,7 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 		},
 		{
 			name: "uuid then update error",
-			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
+			args: args{id: uuid1, status: task.Status_INPROGRESS, mock: func() {
 				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
 				s.mock.On("Update", mock.Anything, updateStatus).Return(nil, errors.New("error")).Once()
 			}},
@@ -402,7 +402,7 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 		},
 		{
 			name: "uuid then updated nil",
-			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
+			args: args{id: uuid1, status: task.Status_INPROGRESS, mock: func() {
 				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
 				s.mock.On("Update", mock.Anything, updateStatus).Return(updateStatus, nil).Once()
 			}},
@@ -439,7 +439,7 @@ func (s *bizSuite) Test_impl_ModifyTitle() {
 	tests := []struct {
 		name    string
 		args    args
-		wantT   *pb.Task
+		wantT   *task.Task
 		wantErr bool
 	}{
 		{

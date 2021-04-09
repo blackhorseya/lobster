@@ -7,7 +7,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	task2 "github.com/blackhorseya/lobster/internal/pkg/entities/task"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -138,7 +138,7 @@ func (i *impl) Create(c *gin.Context) {
 	}
 	logger := ctx.WithField("func", "task list")
 
-	var task *pb.Task
+	var task *task2.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
 		logger.WithField("error", err).Error(er.ErrCreateTask)
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
@@ -184,7 +184,7 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 		return
 	}
 
-	var data *pb.Task
+	var data *task2.Task
 	if err := c.ShouldBindJSON(&data); err != nil {
 		logger.WithField("error", err).Error(er.ErrCreateTask)
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
@@ -223,7 +223,7 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 		return
 	}
 
-	var data *pb.Task
+	var data *task2.Task
 	if err := c.ShouldBindJSON(&data); err != nil {
 		logger.WithField("error", err).Error(er.ErrCreateTask)
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})

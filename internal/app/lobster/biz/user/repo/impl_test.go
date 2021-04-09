@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -20,7 +20,7 @@ var (
 
 	email1 = "test@gmail.com"
 
-	user1 = pb.Profile{
+	user1 = user.Profile{
 		ID:          uuid1,
 		AccessToken: token1,
 		Email:       email1,
@@ -47,12 +47,12 @@ func TestRepoSuite(t *testing.T) {
 
 func (s *repoSuite) Test_impl_UserRegister() {
 	type args struct {
-		newUser pb.Profile
+		newUser user.Profile
 	}
 	tests := []struct {
 		name     string
 		args     args
-		wantInfo *pb.Profile
+		wantInfo *user.Profile
 		wantErr  bool
 	}{
 		{
@@ -83,7 +83,7 @@ func (s *repoSuite) Test_impl_QueryInfoByEmail() {
 	tests := []struct {
 		name     string
 		args     args
-		wantInfo *pb.Profile
+		wantInfo *user.Profile
 		wantErr  bool
 	}{
 		{

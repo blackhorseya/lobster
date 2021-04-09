@@ -7,7 +7,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/goal"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -142,7 +142,7 @@ func (i *impl) Create(c *gin.Context) {
 	}
 	logger := ctx.WithField("func", "objective create")
 
-	var created *pb.Goal
+	var created *okr.Goal
 	if err := c.ShouldBindJSON(&created); err != nil {
 		logger.WithField("err", err).Error(er.ErrCreateObjective)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrCreateObjective})
@@ -187,7 +187,7 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 		return
 	}
 
-	var data *pb.Goal
+	var data *okr.Goal
 	if err := c.ShouldBindJSON(&data); err != nil {
 		logger.WithField("err", err).Error(er.ErrUpdateObj)
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrUpdateObj})

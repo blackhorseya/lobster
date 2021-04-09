@@ -6,7 +6,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/goal/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
@@ -20,7 +20,7 @@ func NewImpl(repo repo.IRepo) IBiz {
 	return &impl{repo: repo}
 }
 
-func (i *impl) Create(ctx contextx.Contextx, obj *pb.Goal) (*pb.Goal, error) {
+func (i *impl) Create(ctx contextx.Contextx, obj *okr.Goal) (*okr.Goal, error) {
 	if len(obj.Title) == 0 {
 		ctx.WithField("title", obj.Title).Error(er.ErrEmptyTitle)
 		return nil, er.ErrEmptyTitle
@@ -38,7 +38,7 @@ func (i *impl) Create(ctx contextx.Contextx, obj *pb.Goal) (*pb.Goal, error) {
 	return ret, nil
 }
 
-func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*pb.Goal, error) {
+func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*okr.Goal, error) {
 	if page <= 0 {
 		ctx.WithField("page", page).Error(er.ErrInvalidPage)
 		return nil, er.ErrInvalidPage
@@ -58,7 +58,7 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*pb.Goal, error) {
 	return ret, nil
 }
 
-func (i *impl) GetByID(ctx contextx.Contextx, id string) (*pb.Goal, error) {
+func (i *impl) GetByID(ctx contextx.Contextx, id string) (*okr.Goal, error) {
 	if _, err := uuid.Parse(id); err != nil {
 		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Error(er.ErrInvalidID)
 		return nil, er.ErrInvalidID
@@ -83,7 +83,7 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 	return ret, nil
 }
 
-func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (obj *pb.Goal, err error) {
+func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (obj *okr.Goal, err error) {
 	logger := ctx.WithField("id", id).WithField("title", title)
 
 	_, err = uuid.Parse(id)

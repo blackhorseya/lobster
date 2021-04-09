@@ -12,7 +12,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task/mocks"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/task"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
@@ -24,28 +24,28 @@ var (
 
 	time1 = int64(1610548520788105000)
 
-	task1 = &pb.Task{
+	task1 = &task.Task{
 		ID:        uuid1,
 		Title:     "task1",
 		Completed: false,
 		CreateAt:  time1,
 	}
 
-	created1 = &pb.Task{
+	created1 = &task.Task{
 		Title:     "create task1",
 		Completed: true,
 	}
 
-	updated1 = &pb.Task{
+	updated1 = &task.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
 		Completed: false,
 		CreateAt:  time1,
 	}
 
-	updated2 = &pb.Task{
+	updated2 = &task.Task{
 		ID:        uuid1,
-		Status:    pb.Status_INPROGRESS,
+		Status:    task.Status_INPROGRESS,
 		Title:     "task1",
 		Completed: false,
 		CreateAt:  time1,
@@ -91,7 +91,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.Task
+		wantBody *task.Task
 	}{
 		{
 			name:     "id then 400 error",
@@ -133,7 +133,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *pb.Task
+			var gotBody *task.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -160,7 +160,7 @@ func (s *handlerSuite) Test_impl_List() {
 		name     string
 		args     args
 		wantCode int
-		wantBody []*pb.Task
+		wantBody []*task.Task
 	}{
 		{
 			name:     "a 10 then 400 error",
@@ -193,10 +193,10 @@ func (s *handlerSuite) Test_impl_List() {
 		{
 			name: "1 1 then 200",
 			args: args{page: "1", size: "1", mock: func() {
-				s.mock.On("List", mock.Anything, 1, 1).Return([]*pb.Task{task1}, nil).Once()
+				s.mock.On("List", mock.Anything, 1, 1).Return([]*task.Task{task1}, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: []*pb.Task{task1},
+			wantBody: []*task.Task{task1},
 		},
 	}
 	for _, tt := range tests {
@@ -216,7 +216,7 @@ func (s *handlerSuite) Test_impl_List() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody []*pb.Task
+			var gotBody []*task.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -233,18 +233,18 @@ func (s *handlerSuite) Test_impl_Create() {
 	s.r.POST("/api/v1/tasks", s.handler.Create)
 
 	type args struct {
-		task *pb.Task
+		task *task.Task
 		mock func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.Task
+		wantBody *task.Task
 	}{
 		{
 			name:     "empty title then 400 error",
-			args:     args{task: &pb.Task{Title: ""}},
+			args:     args{task: &task.Task{Title: ""}},
 			wantCode: 400,
 			wantBody: nil,
 		},
@@ -283,7 +283,7 @@ func (s *handlerSuite) Test_impl_Create() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *pb.Task
+			var gotBody *task.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -358,14 +358,14 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 
 	type args struct {
 		id     string
-		status pb.Status
+		status task.Status
 		mock   func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.Task
+		wantBody *task.Task
 	}{
 		{
 			name:     "id then 400 error",
@@ -374,15 +374,15 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 		},
 		{
 			name: "uuid then 500 error",
-			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
-				s.mock.On("UpdateStatus", mock.Anything, uuid1, pb.Status_INPROGRESS).Return(nil, errors.New("error")).Once()
+			args: args{id: uuid1, status: task.Status_INPROGRESS, mock: func() {
+				s.mock.On("UpdateStatus", mock.Anything, uuid1, task.Status_INPROGRESS).Return(nil, errors.New("error")).Once()
 			}},
 			wantCode: 500,
 		},
 		{
 			name: "uuid status then 200 task",
-			args: args{id: uuid1, status: pb.Status_INPROGRESS, mock: func() {
-				s.mock.On("UpdateStatus", mock.Anything, uuid1, pb.Status_INPROGRESS).Return(updated2, nil).Once()
+			args: args{id: uuid1, status: task.Status_INPROGRESS, mock: func() {
+				s.mock.On("UpdateStatus", mock.Anything, uuid1, task.Status_INPROGRESS).Return(updated2, nil).Once()
 			}},
 			wantCode: 200,
 			wantBody: updated2,
@@ -395,7 +395,7 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 			}
 
 			uri := fmt.Sprintf("/api/v1/tasks/%v/status", tt.args.id)
-			data, _ := json.Marshal(&pb.Task{Status: tt.args.status})
+			data, _ := json.Marshal(&task.Task{Status: tt.args.status})
 			req := httptest.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
@@ -404,7 +404,7 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 			defer got.Body.Close()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *pb.Task
+			var gotBody *task.Task
 			_ = json.Unmarshal(body, &gotBody)
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Delete() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
@@ -429,7 +429,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.Task
+		wantBody *task.Task
 	}{
 		{
 			name:     "id title then parse id error",
@@ -467,7 +467,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 			}
 
 			uri := fmt.Sprintf("/api/v1/tasks/%v/title", tt.args.id)
-			data, _ := json.Marshal(&pb.Task{ID: tt.args.id, Title: tt.args.title})
+			data, _ := json.Marshal(&task.Task{ID: tt.args.id, Title: tt.args.title})
 			req := httptest.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
@@ -476,7 +476,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 			defer got.Body.Close()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *pb.Task
+			var gotBody *task.Task
 			_ = json.Unmarshal(body, &gotBody)
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "ModifyTitle() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)

@@ -4,8 +4,7 @@ package mocks
 
 import (
 	contextx "github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
-
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -36,20 +35,20 @@ func (_m *IBiz) Count(ctx contextx.Contextx) (int, error) {
 }
 
 // Create provides a mock function with given fields: ctx, obj
-func (_m *IBiz) Create(ctx contextx.Contextx, obj *pb.Goal) (*pb.Goal, error) {
+func (_m *IBiz) Create(ctx contextx.Contextx, obj *okr.Goal) (*okr.Goal, error) {
 	ret := _m.Called(ctx, obj)
 
-	var r0 *pb.Goal
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.Goal) *pb.Goal); ok {
+	var r0 *okr.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *okr.Goal) *okr.Goal); ok {
 		r0 = rf(ctx, obj)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Goal)
+			r0 = ret.Get(0).(*okr.Goal)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.Goal) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *okr.Goal) error); ok {
 		r1 = rf(ctx, obj)
 	} else {
 		r1 = ret.Error(1)
@@ -73,15 +72,15 @@ func (_m *IBiz) Delete(ctx contextx.Contextx, id string) error {
 }
 
 // GetByID provides a mock function with given fields: ctx, id
-func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*pb.Goal, error) {
+func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*okr.Goal, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 *pb.Goal
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *pb.Goal); ok {
+	var r0 *okr.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *okr.Goal); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Goal)
+			r0 = ret.Get(0).(*okr.Goal)
 		}
 	}
 
@@ -96,15 +95,15 @@ func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*pb.Goal, error) {
 }
 
 // List provides a mock function with given fields: ctx, page, size
-func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*pb.Goal, error) {
+func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*okr.Goal, error) {
 	ret := _m.Called(ctx, page, size)
 
-	var r0 []*pb.Goal
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*pb.Goal); ok {
+	var r0 []*okr.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*okr.Goal); ok {
 		r0 = rf(ctx, page, size)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*pb.Goal)
+			r0 = ret.Get(0).([]*okr.Goal)
 		}
 	}
 
@@ -119,15 +118,15 @@ func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*pb.Goal, err
 }
 
 // ModifyTitle provides a mock function with given fields: ctx, id, title
-func (_m *IBiz) ModifyTitle(ctx contextx.Contextx, id string, title string) (*pb.Goal, error) {
+func (_m *IBiz) ModifyTitle(ctx contextx.Contextx, id string, title string) (*okr.Goal, error) {
 	ret := _m.Called(ctx, id, title)
 
-	var r0 *pb.Goal
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, string) *pb.Goal); ok {
+	var r0 *okr.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, string) *okr.Goal); ok {
 		r0 = rf(ctx, id, title)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Goal)
+			r0 = ret.Get(0).(*okr.Goal)
 		}
 	}
 

@@ -7,7 +7,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/result/repo/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,14 +18,14 @@ var (
 
 	time1 = int64(1611059529208050000)
 
-	kr1 = &pb.Result{
+	kr1 = &okr.Result{
 		ID:       krID,
 		GoalID:   goalID,
 		Title:    "kr1",
 		CreateAt: time1,
 	}
 
-	updated1 = &pb.Result{
+	updated1 = &okr.Result{
 		ID:       krID,
 		GoalID:   goalID,
 		Title:    "updated kr1",
@@ -65,7 +65,7 @@ func (s *bizSuite) Test_impl_GetByID() {
 	tests := []struct {
 		name    string
 		args    args
-		wantKr  *pb.Result
+		wantKr  *okr.Result
 		wantErr bool
 	}{
 		{
@@ -128,7 +128,7 @@ func (s *bizSuite) Test_impl_List() {
 	tests := []struct {
 		name    string
 		args    args
-		wantKrs []*pb.Result
+		wantKrs []*okr.Result
 		wantErr bool
 	}{
 		{
@@ -154,9 +154,9 @@ func (s *bizSuite) Test_impl_List() {
 		{
 			name: "1 1 then krs nil",
 			args: args{page: 1, size: 1, mock: func() {
-				s.mock.On("QueryList", mock.Anything, 0, 1).Return([]*pb.Result{kr1}, nil).Once()
+				s.mock.On("QueryList", mock.Anything, 0, 1).Return([]*okr.Result{kr1}, nil).Once()
 			}},
-			wantKrs: []*pb.Result{kr1},
+			wantKrs: []*okr.Result{kr1},
 			wantErr: false,
 		},
 	}
@@ -227,24 +227,24 @@ func (s *bizSuite) Test_impl_Delete() {
 
 func (s *bizSuite) Test_impl_LinkToGoal() {
 	type args struct {
-		created *pb.Result
+		created *okr.Result
 		mock    func()
 	}
 	tests := []struct {
 		name    string
 		args    args
-		wantKr  *pb.Result
+		wantKr  *okr.Result
 		wantErr bool
 	}{
 		{
 			name:    "missing title then nil error",
-			args:    args{created: &pb.Result{ID: krID, GoalID: goalID, Title: ""}},
+			args:    args{created: &okr.Result{ID: krID, GoalID: goalID, Title: ""}},
 			wantKr:  nil,
 			wantErr: true,
 		},
 		{
 			name:    "goal id not uuid then nil error",
-			args:    args{created: &pb.Result{ID: krID, GoalID: "id", Title: "title"}},
+			args:    args{created: &okr.Result{ID: krID, GoalID: "id", Title: "title"}},
 			wantKr:  nil,
 			wantErr: true,
 		},
@@ -293,7 +293,7 @@ func (s *bizSuite) Test_impl_GetByGoalID() {
 	tests := []struct {
 		name    string
 		args    args
-		wantKrs []*pb.Result
+		wantKrs []*okr.Result
 		wantErr bool
 	}{
 		{
@@ -313,9 +313,9 @@ func (s *bizSuite) Test_impl_GetByGoalID() {
 		{
 			name: "uuid then query krs",
 			args: args{id: goalID, mock: func() {
-				s.mock.On("QueryByGoalID", mock.Anything, goalID).Return([]*pb.Result{kr1}, nil).Once()
+				s.mock.On("QueryByGoalID", mock.Anything, goalID).Return([]*okr.Result{kr1}, nil).Once()
 			}},
-			wantKrs: []*pb.Result{kr1},
+			wantKrs: []*okr.Result{kr1},
 			wantErr: false,
 		},
 	}
@@ -348,7 +348,7 @@ func (s *bizSuite) Test_impl_ModifyTitle() {
 	tests := []struct {
 		name       string
 		args       args
-		wantResult *pb.Result
+		wantResult *okr.Result
 		wantErr    bool
 	}{
 		{

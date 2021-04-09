@@ -1,4 +1,4 @@
-package pb
+package user
 
 // Profile declare a user basic information
 type Profile struct {

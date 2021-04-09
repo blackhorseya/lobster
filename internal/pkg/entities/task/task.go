@@ -1,4 +1,4 @@
-package pb
+package task
 
 import (
 	"github.com/blackhorseya/lobster/internal/pkg/utils/timex"

@@ -1,9 +1,13 @@
-package pb
+package okr
 
 import (
 	"fmt"
 	"strconv"
 	"time"
+)
+
+const (
+	timeFormat = "2006-01-02 15:04:05"
 )
 
 // Goal declare an objective basic information

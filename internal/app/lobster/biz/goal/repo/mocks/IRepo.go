@@ -4,7 +4,7 @@ package mocks
 
 import (
 	contextx "github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -35,20 +35,20 @@ func (_m *IRepo) Count(ctx contextx.Contextx) (int, error) {
 }
 
 // Create provides a mock function with given fields: ctx, created
-func (_m *IRepo) Create(ctx contextx.Contextx, created *pb.Goal) (*pb.Goal, error) {
+func (_m *IRepo) Create(ctx contextx.Contextx, created *okr.Goal) (*okr.Goal, error) {
 	ret := _m.Called(ctx, created)
 
-	var r0 *pb.Goal
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.Goal) *pb.Goal); ok {
+	var r0 *okr.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *okr.Goal) *okr.Goal); ok {
 		r0 = rf(ctx, created)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Goal)
+			r0 = ret.Get(0).(*okr.Goal)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.Goal) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *okr.Goal) error); ok {
 		r1 = rf(ctx, created)
 	} else {
 		r1 = ret.Error(1)
@@ -79,15 +79,15 @@ func (_m *IRepo) Delete(ctx contextx.Contextx, id string) (int, error) {
 }
 
 // List provides a mock function with given fields: ctx, offset, limit
-func (_m *IRepo) List(ctx contextx.Contextx, offset int, limit int) ([]*pb.Goal, error) {
+func (_m *IRepo) List(ctx contextx.Contextx, offset int, limit int) ([]*okr.Goal, error) {
 	ret := _m.Called(ctx, offset, limit)
 
-	var r0 []*pb.Goal
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*pb.Goal); ok {
+	var r0 []*okr.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*okr.Goal); ok {
 		r0 = rf(ctx, offset, limit)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*pb.Goal)
+			r0 = ret.Get(0).([]*okr.Goal)
 		}
 	}
 
@@ -102,15 +102,15 @@ func (_m *IRepo) List(ctx contextx.Contextx, offset int, limit int) ([]*pb.Goal,
 }
 
 // QueryByID provides a mock function with given fields: ctx, id
-func (_m *IRepo) QueryByID(ctx contextx.Contextx, id string) (*pb.Goal, error) {
+func (_m *IRepo) QueryByID(ctx contextx.Contextx, id string) (*okr.Goal, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 *pb.Goal
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *pb.Goal); ok {
+	var r0 *okr.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *okr.Goal); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Goal)
+			r0 = ret.Get(0).(*okr.Goal)
 		}
 	}
 
@@ -125,20 +125,20 @@ func (_m *IRepo) QueryByID(ctx contextx.Contextx, id string) (*pb.Goal, error) {
 }
 
 // Update provides a mock function with given fields: ctx, updated
-func (_m *IRepo) Update(ctx contextx.Contextx, updated *pb.Goal) (*pb.Goal, error) {
+func (_m *IRepo) Update(ctx contextx.Contextx, updated *okr.Goal) (*okr.Goal, error) {
 	ret := _m.Called(ctx, updated)
 
-	var r0 *pb.Goal
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *pb.Goal) *pb.Goal); ok {
+	var r0 *okr.Goal
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *okr.Goal) *okr.Goal); ok {
 		r0 = rf(ctx, updated)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pb.Goal)
+			r0 = ret.Get(0).(*okr.Goal)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *pb.Goal) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *okr.Goal) error); ok {
 		r1 = rf(ctx, updated)
 	} else {
 		r1 = ret.Error(1)

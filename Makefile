@@ -65,7 +65,7 @@ gen-wire:
 
 .PHONY: gen-pb
 gen-pb:
-	@protoc --go_out=plugins=grpc:./internal/pkg/pb ./internal/pkg/pb/*.proto
+	@protoc --go_out=plugins=grpc:./internal/pkg/entities ./internal/pkg/entities/**/*.proto
 
 .PHONY: gen-swagger
 gen-swagger:

@@ -6,7 +6,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	user2 "github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,7 +41,7 @@ func (i *impl) Signup(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "Signup")
 
-	var newUser *pb.Profile
+	var newUser *user2.Profile
 	if err := c.ShouldBindJSON(&newUser); err != nil {
 		logger.WithError(err).Error(ErrSignup)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrSignup})
@@ -72,7 +72,7 @@ func (i *impl) Login(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "Login")
 
-	var data *pb.Profile
+	var data *user2.Profile
 	if err := c.ShouldBindJSON(&data); err != nil {
 		logger.WithError(err).Error(ErrLogin)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrLogin})

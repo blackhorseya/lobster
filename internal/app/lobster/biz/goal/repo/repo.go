@@ -2,26 +2,26 @@ package repo
 
 import (
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/google/wire"
 )
 
 // IRepo declare okr repo service function
 type IRepo interface {
 	// QueryByID serve caller to query a objective by id from database
-	QueryByID(ctx contextx.Contextx, id string) (*pb.Goal, error)
+	QueryByID(ctx contextx.Contextx, id string) (*okr.Goal, error)
 
 	// Create serve caller to create a objective to database
-	Create(ctx contextx.Contextx, created *pb.Goal) (*pb.Goal, error)
+	Create(ctx contextx.Contextx, created *okr.Goal) (*okr.Goal, error)
 
 	// List serve caller to list all objectives from database
-	List(ctx contextx.Contextx, offset, limit int) ([]*pb.Goal, error)
+	List(ctx contextx.Contextx, offset, limit int) ([]*okr.Goal, error)
 
 	// Count serve caller to count all objectives from database
 	Count(ctx contextx.Contextx) (int, error)
 
 	// Update serve caller to update a objective to database
-	Update(ctx contextx.Contextx, updated *pb.Goal) (*pb.Goal, error)
+	Update(ctx contextx.Contextx, updated *okr.Goal) (*okr.Goal, error)
 
 	// Delete serve caller to delete a objective by id from database
 	Delete(ctx contextx.Contextx, id string) (int, error)

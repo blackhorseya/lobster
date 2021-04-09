@@ -8,7 +8,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/goal/repo/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,19 +18,19 @@ var (
 
 	time1 = time.Now().UnixNano()
 
-	emptyTitle = &pb.Goal{Title: ""}
+	emptyTitle = &okr.Goal{Title: ""}
 
-	created1 = &pb.Goal{
+	created1 = &okr.Goal{
 		Title: "obj1",
 	}
 
-	obj1 = &pb.Goal{
+	obj1 = &okr.Goal{
 		ID:       uuid1,
 		Title:    "obj1",
 		CreateAt: time1,
 	}
 
-	updated1 = &pb.Goal{
+	updated1 = &okr.Goal{
 		ID:       uuid1,
 		Title:    "updated obj1",
 		CreateAt: time1,
@@ -62,13 +62,13 @@ func TestBizSuite(t *testing.T) {
 
 func (s *bizSuite) Test_impl_Create() {
 	type args struct {
-		obj  *pb.Goal
+		obj  *okr.Goal
 		mock func()
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *pb.Goal
+		want    *okr.Goal
 		wantErr bool
 	}{
 		{
@@ -124,7 +124,7 @@ func (s *bizSuite) Test_impl_List() {
 	tests := []struct {
 		name    string
 		args    args
-		want    []*pb.Goal
+		want    []*okr.Goal
 		wantErr bool
 	}{
 		{
@@ -150,9 +150,9 @@ func (s *bizSuite) Test_impl_List() {
 		{
 			name: "1 1 then objs nil",
 			args: args{page: 1, size: 1, mock: func() {
-				s.mock.On("List", mock.Anything, 0, 1).Return([]*pb.Goal{obj1}, nil).Once()
+				s.mock.On("List", mock.Anything, 0, 1).Return([]*okr.Goal{obj1}, nil).Once()
 			}},
-			want:    []*pb.Goal{obj1},
+			want:    []*okr.Goal{obj1},
 			wantErr: false,
 		},
 	}
@@ -283,7 +283,7 @@ func (s *bizSuite) Test_impl_GetByID() {
 	tests := []struct {
 		name    string
 		args    args
-		want    *pb.Goal
+		want    *okr.Goal
 		wantErr bool
 	}{
 		{
@@ -338,7 +338,7 @@ func (s *bizSuite) Test_impl_ModifyTitle() {
 	tests := []struct {
 		name    string
 		args    args
-		wantObj *pb.Goal
+		wantObj *okr.Goal
 		wantErr bool
 	}{
 		{

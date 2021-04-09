@@ -12,7 +12,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/mocks"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
@@ -28,7 +28,7 @@ var (
 
 	email1 = "test@gmail.com"
 
-	user1 = pb.Profile{
+	user1 = user.Profile{
 		ID:          uuid1,
 		AccessToken: token1,
 		Email:       email1,
@@ -79,7 +79,7 @@ func (s *handlerSuite) Test_impl_Signup() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.Profile
+		wantBody *user.Profile
 	}{
 		{
 			name: "profile then 500 error",
@@ -105,7 +105,7 @@ func (s *handlerSuite) Test_impl_Signup() {
 			}
 
 			uri := fmt.Sprintf("/api/v1/users/signup")
-			data, _ := json.Marshal(&pb.Profile{Email: tt.args.email, AccessToken: tt.args.token})
+			data, _ := json.Marshal(&user.Profile{Email: tt.args.email, AccessToken: tt.args.token})
 			req := httptest.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
@@ -114,7 +114,7 @@ func (s *handlerSuite) Test_impl_Signup() {
 			defer got.Body.Close()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *pb.Profile
+			var gotBody *user.Profile
 			_ = json.Unmarshal(body, &gotBody)
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Signup() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
@@ -139,7 +139,7 @@ func (s *handlerSuite) Test_impl_Login() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.Profile
+		wantBody *user.Profile
 	}{
 		{
 			name: "profile then 500 error",
@@ -165,7 +165,7 @@ func (s *handlerSuite) Test_impl_Login() {
 			}
 
 			uri := fmt.Sprintf("/api/v1/users/login")
-			data, _ := json.Marshal(&pb.Profile{Email: tt.args.email, AccessToken: tt.args.token})
+			data, _ := json.Marshal(&user.Profile{Email: tt.args.email, AccessToken: tt.args.token})
 			req := httptest.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
@@ -174,7 +174,7 @@ func (s *handlerSuite) Test_impl_Login() {
 			defer got.Body.Close()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *pb.Profile
+			var gotBody *user.Profile
 			_ = json.Unmarshal(body, &gotBody)
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Signup() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)

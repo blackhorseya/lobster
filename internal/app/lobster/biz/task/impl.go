@@ -6,7 +6,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/task"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
@@ -20,7 +20,7 @@ func NewImpl(repo repo.IRepo) IBiz {
 	return &impl{repo: repo}
 }
 
-func (i *impl) GetByID(ctx contextx.Contextx, id string) (*pb.Task, error) {
+func (i *impl) GetByID(ctx contextx.Contextx, id string) (*task.Task, error) {
 	if _, err := uuid.Parse(id); err != nil {
 		ctx.WithFields(logrus.Fields{"err": err, "id": id}).Errorf("parse id is failure")
 		return nil, er.ErrInvalidID
@@ -39,7 +39,7 @@ func (i *impl) GetByID(ctx contextx.Contextx, id string) (*pb.Task, error) {
 	return ret, nil
 }
 
-func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*pb.Task, error) {
+func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*task.Task, error) {
 	if page <= 0 {
 		ctx.WithField("page", page).Errorf("page is invalid")
 		return nil, er.ErrInvalidPage
@@ -73,7 +73,7 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 	return ret, nil
 }
 
-func (i *impl) Create(ctx contextx.Contextx, task *pb.Task) (*pb.Task, error) {
+func (i *impl) Create(ctx contextx.Contextx, task *task.Task) (*task.Task, error) {
 	if len(task.Title) == 0 {
 		ctx.WithField("title", task.Title).Errorf(er.ErrEmptyTitle.Error())
 		return nil, er.ErrEmptyTitle
@@ -94,7 +94,7 @@ func (i *impl) Create(ctx contextx.Contextx, task *pb.Task) (*pb.Task, error) {
 	return ret, nil
 }
 
-func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) (t *pb.Task, err error) {
+func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, status task.Status) (t *task.Task, err error) {
 	logger := ctx.WithField("id", id)
 
 	_, err = uuid.Parse(id)
@@ -123,7 +123,7 @@ func (i *impl) UpdateStatus(ctx contextx.Contextx, id string, status pb.Status) 
 	return ret, nil
 }
 
-func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (t *pb.Task, err error) {
+func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (t *task.Task, err error) {
 	logger := ctx.WithField("id", id).WithField("title", title)
 
 	_, err = uuid.Parse(id)

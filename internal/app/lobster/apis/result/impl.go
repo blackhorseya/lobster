@@ -7,7 +7,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/result"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
@@ -161,7 +161,7 @@ func (i *impl) Create(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 	logger := ctx.WithField("func", "Create")
 
-	var created *pb.Result
+	var created *okr.Result
 	err := c.ShouldBindJSON(&created)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrCreateKR)
@@ -214,7 +214,7 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 		return
 	}
 
-	var data *pb.Result
+	var data *okr.Result
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		logger.WithError(err).Error(er.ErrUpdateKeyResult)

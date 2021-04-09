@@ -12,7 +12,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/goal/mocks"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
@@ -24,15 +24,15 @@ var (
 
 	time1 = int64(1610548520788105000)
 
-	obj1 = &pb.Goal{
+	obj1 = &okr.Goal{
 		ID:       uuid1,
 		Title:    "obj1",
 		CreateAt: time1,
 	}
 
-	created1 = &pb.Goal{Title: "created obj1"}
+	created1 = &okr.Goal{Title: "created obj1"}
 
-	updated1 = &pb.Goal{Title: "updated obj1"}
+	updated1 = &okr.Goal{Title: "updated obj1"}
 )
 
 type handlerSuite struct {
@@ -131,7 +131,7 @@ func (s *handlerSuite) Test_impl_List() {
 		name     string
 		args     args
 		wantCode int
-		wantBody []*pb.Goal
+		wantBody []*okr.Goal
 	}{
 		{
 			name:     "a 10 then 400 error",
@@ -165,10 +165,10 @@ func (s *handlerSuite) Test_impl_List() {
 			name: "1 1 then 200 error",
 			args: args{page: "1", size: "1", mock: func() {
 				s.mock.On("List", mock.Anything, 1, 1).Return(
-					[]*pb.Goal{obj1}, nil).Once()
+					[]*okr.Goal{obj1}, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: []*pb.Goal{obj1},
+			wantBody: []*okr.Goal{obj1},
 		},
 	}
 	for _, tt := range tests {
@@ -188,7 +188,7 @@ func (s *handlerSuite) Test_impl_List() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody []*pb.Goal
+			var gotBody []*okr.Goal
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -207,18 +207,18 @@ func (s *handlerSuite) Test_impl_Create() {
 	s.r.POST("/api/v1/objectives", s.handler.Create)
 
 	type args struct {
-		created *pb.Goal
+		created *okr.Goal
 		mock    func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.Goal
+		wantBody *okr.Goal
 	}{
 		{
 			name:     "empty title then 400 error",
-			args:     args{created: &pb.Goal{Title: ""}},
+			args:     args{created: &okr.Goal{Title: ""}},
 			wantCode: 400,
 			wantBody: nil,
 		},
@@ -257,7 +257,7 @@ func (s *handlerSuite) Test_impl_Create() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *pb.Goal
+			var gotBody *okr.Goal
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -284,7 +284,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *pb.Goal
+		wantBody *okr.Goal
 	}{
 		{
 			name:     "id then parse id error 400",
@@ -322,7 +322,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 			}
 
 			uri := fmt.Sprintf("/api/v1/goals/%v/title", tt.args.id)
-			data, _ := json.Marshal(&pb.Goal{Title: tt.args.title})
+			data, _ := json.Marshal(&okr.Goal{Title: tt.args.title})
 			req := httptest.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
@@ -333,7 +333,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *pb.Goal
+			var gotBody *okr.Goal
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -19,7 +19,7 @@ var (
 
 	time1 = int64(1611059529208050000)
 
-	kr1 = &pb.Result{
+	kr1 = &okr.Result{
 		ID:       krID1,
 		GoalID:   goalID,
 		Title:    "kr1",
@@ -28,7 +28,7 @@ var (
 		CreateAt: int64(1613114039486249000),
 	}
 
-	kr2 = &pb.Result{
+	kr2 = &okr.Result{
 		ID:       krID2,
 		GoalID:   goalID,
 		Title:    "kr",
@@ -37,7 +37,7 @@ var (
 		CreateAt: int64(1614032353580795000),
 	}
 
-	updated1 = &pb.Result{
+	updated1 = &okr.Result{
 		ID:       krID1,
 		GoalID:   goalID,
 		Title:    "updated kr1",
@@ -64,12 +64,12 @@ func TestRepoSuite(t *testing.T) {
 
 func (s *repoSuite) Test_impl_Create() {
 	type args struct {
-		created *pb.Result
+		created *okr.Result
 	}
 	tests := []struct {
 		name    string
 		args    args
-		wantKr  *pb.Result
+		wantKr  *okr.Result
 		wantErr bool
 	}{
 		{
@@ -100,7 +100,7 @@ func (s *repoSuite) Test_impl_QueryKRByID() {
 	tests := []struct {
 		name    string
 		args    args
-		want    *pb.Result
+		want    *okr.Result
 		wantErr bool
 	}{
 		{
@@ -126,12 +126,12 @@ func (s *repoSuite) Test_impl_QueryKRByID() {
 
 func (s *repoSuite) Test_impl_Update() {
 	type args struct {
-		updated *pb.Result
+		updated *okr.Result
 	}
 	tests := []struct {
 		name    string
 		args    args
-		wantKr  *pb.Result
+		wantKr  *okr.Result
 		wantErr bool
 	}{
 		{
@@ -163,13 +163,13 @@ func (s *repoSuite) Test_impl_QueryList() {
 	tests := []struct {
 		name    string
 		args    args
-		wantKrs []*pb.Result
+		wantKrs []*okr.Result
 		wantErr bool
 	}{
 		{
 			name:    "list then krs nil",
 			args:    args{offset: 0, limit: 1},
-			wantKrs: []*pb.Result{kr1},
+			wantKrs: []*okr.Result{kr1},
 			wantErr: false,
 		},
 	}
@@ -218,13 +218,13 @@ func (s *repoSuite) Test_impl_QueryByGoalID() {
 	tests := []struct {
 		name    string
 		args    args
-		wantKrs []*pb.Result
+		wantKrs []*okr.Result
 		wantErr bool
 	}{
 		{
 			name:    "uuid then krs nil",
 			args:    args{id: goalID},
-			wantKrs: []*pb.Result{kr2, kr1},
+			wantKrs: []*okr.Result{kr2, kr1},
 			wantErr: false,
 		},
 	}

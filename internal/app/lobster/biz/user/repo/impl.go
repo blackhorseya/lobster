@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -17,13 +17,13 @@ func NewImpl(rw *sqlx.DB) IRepo {
 	return &impl{rw: rw}
 }
 
-func (i *impl) QueryInfoByEmail(ctx contextx.Contextx, email string) (info *pb.Profile, err error) {
+func (i *impl) QueryInfoByEmail(ctx contextx.Contextx, email string) (info *user.Profile, err error) {
 	logger := ctx.WithField("email", email)
 
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	ret := pb.Profile{}
+	ret := user.Profile{}
 	stmt := `select sn, access_token, email, signup_at from users where email = ?`
 	err = i.rw.GetContext(timeout, &ret, stmt, email)
 	if err != nil {
@@ -34,7 +34,7 @@ func (i *impl) QueryInfoByEmail(ctx contextx.Contextx, email string) (info *pb.P
 	return &ret, nil
 }
 
-func (i *impl) UserRegister(ctx contextx.Contextx, newUser pb.Profile) (info *pb.Profile, err error) {
+func (i *impl) UserRegister(ctx contextx.Contextx, newUser user.Profile) (info *user.Profile, err error) {
 	logger := ctx.WithField("new user", newUser)
 
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)

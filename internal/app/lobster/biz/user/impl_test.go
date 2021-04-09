@@ -7,7 +7,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/repo/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
@@ -21,7 +21,7 @@ var (
 
 	email1 = "test@gmail.com"
 
-	user1 = pb.Profile{
+	user1 = user.Profile{
 		ID:          uuid1,
 		AccessToken: token1,
 		Email:       email1,
@@ -62,7 +62,7 @@ func (s *bizSuite) Test_impl_GetInfoByEmail() {
 	tests := []struct {
 		name     string
 		args     args
-		wantInfo *pb.Profile
+		wantInfo *user.Profile
 		wantErr  bool
 	}{
 		{
@@ -111,7 +111,7 @@ func (s *bizSuite) Test_impl_Login() {
 	tests := []struct {
 		name     string
 		args     args
-		wantInfo *pb.Profile
+		wantInfo *user.Profile
 		wantErr  bool
 	}{
 		{
@@ -188,7 +188,7 @@ func (s *bizSuite) Test_impl_Signup() {
 	tests := []struct {
 		name     string
 		args     args
-		wantInfo *pb.Profile
+		wantInfo *user.Profile
 		wantErr  bool
 	}{
 		{

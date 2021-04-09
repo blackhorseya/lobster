@@ -6,7 +6,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/google/uuid"
 )
 
@@ -36,12 +36,12 @@ func NewImpl(repo repo.IRepo) IBiz {
 	return &impl{repo: repo}
 }
 
-func (i *impl) GetInfoByID(ctx contextx.Contextx, id string) (info *pb.Profile, err error) {
+func (i *impl) GetInfoByID(ctx contextx.Contextx, id string) (info *user.Profile, err error) {
 	// todo: 2021-02-28|17:31|doggy|implement me
 	panic("implement me")
 }
 
-func (i *impl) GetInfoByEmail(ctx contextx.Contextx, email string) (info *pb.Profile, err error) {
+func (i *impl) GetInfoByEmail(ctx contextx.Contextx, email string) (info *user.Profile, err error) {
 	logger := ctx.WithField("email", email)
 
 	ret, err := i.repo.QueryInfoByEmail(ctx, email)
@@ -53,12 +53,12 @@ func (i *impl) GetInfoByEmail(ctx contextx.Contextx, email string) (info *pb.Pro
 	return ret, nil
 }
 
-func (i *impl) GetInfoByAccessToken(ctx contextx.Contextx, token string) (info *pb.Profile, err error) {
+func (i *impl) GetInfoByAccessToken(ctx contextx.Contextx, token string) (info *user.Profile, err error) {
 	// todo: 2021-02-28|17:31|doggy|implement me
 	panic("implement me")
 }
 
-func (i *impl) Signup(ctx contextx.Contextx, email, token string) (info *pb.Profile, err error) {
+func (i *impl) Signup(ctx contextx.Contextx, email, token string) (info *user.Profile, err error) {
 	logger := ctx.WithField("email", email).WithField("token", token)
 
 	if len(email) == 0 || len(token) == 0 {
@@ -76,7 +76,7 @@ func (i *impl) Signup(ctx contextx.Contextx, email, token string) (info *pb.Prof
 		return nil, ErrUserSignup
 	}
 
-	newUser, err := i.repo.UserRegister(ctx, pb.Profile{
+	newUser, err := i.repo.UserRegister(ctx, user.Profile{
 		ID:          uuid.New().String(),
 		AccessToken: token,
 		Email:       email,
@@ -90,7 +90,7 @@ func (i *impl) Signup(ctx contextx.Contextx, email, token string) (info *pb.Prof
 	return newUser, nil
 }
 
-func (i *impl) Login(ctx contextx.Contextx, email, token string) (info *pb.Profile, err error) {
+func (i *impl) Login(ctx contextx.Contextx, email, token string) (info *user.Profile, err error) {
 	logger := ctx.WithField("email", email).WithField("token", token)
 
 	if len(email) == 0 || len(token) == 0 {
@@ -116,7 +116,7 @@ func (i *impl) Login(ctx contextx.Contextx, email, token string) (info *pb.Profi
 	return exist, nil
 }
 
-func (i *impl) Logout(ctx contextx.Contextx, user *pb.Profile) (err error) {
+func (i *impl) Logout(ctx contextx.Contextx, user *user.Profile) (err error) {
 	// todo: 2021-02-28|17:31|doggy|implement me
 	panic("implement me")
 }

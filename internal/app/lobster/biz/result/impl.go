@@ -6,7 +6,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/result/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
-	"github.com/blackhorseya/lobster/internal/pkg/pb"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
@@ -20,7 +20,7 @@ func NewImpl(repo repo.IRepo) IBiz {
 	return &impl{repo: repo}
 }
 
-func (i *impl) List(ctx contextx.Contextx, page, size int) (krs []*pb.Result, err error) {
+func (i *impl) List(ctx contextx.Contextx, page, size int) (krs []*okr.Result, err error) {
 	if page <= 0 {
 		ctx.WithField("page", page).Error(er.ErrInvalidPage)
 		return nil, er.ErrInvalidPage
@@ -40,7 +40,7 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) (krs []*pb.Result, er
 	return ret, nil
 }
 
-func (i *impl) GetByID(ctx contextx.Contextx, id string) (kr *pb.Result, err error) {
+func (i *impl) GetByID(ctx contextx.Contextx, id string) (kr *okr.Result, err error) {
 	if _, err = uuid.Parse(id); err != nil {
 		ctx.WithError(err).WithField("id", id).Error(er.ErrInvalidID)
 		return nil, er.ErrInvalidID
@@ -59,7 +59,7 @@ func (i *impl) GetByID(ctx contextx.Contextx, id string) (kr *pb.Result, err err
 	return kr, nil
 }
 
-func (i *impl) GetByGoalID(ctx contextx.Contextx, id string) (krs []*pb.Result, err error) {
+func (i *impl) GetByGoalID(ctx contextx.Contextx, id string) (krs []*okr.Result, err error) {
 	logger := ctx.WithField("id", id)
 
 	_, err = uuid.Parse(id)
@@ -77,7 +77,7 @@ func (i *impl) GetByGoalID(ctx contextx.Contextx, id string) (krs []*pb.Result, 
 	return ret, nil
 }
 
-func (i *impl) LinkToGoal(ctx contextx.Contextx, created *pb.Result) (kr *pb.Result, err error) {
+func (i *impl) LinkToGoal(ctx contextx.Contextx, created *okr.Result) (kr *okr.Result, err error) {
 	logger := ctx.WithField("created", created)
 
 	_, err = uuid.Parse(created.GoalID)
@@ -102,7 +102,7 @@ func (i *impl) LinkToGoal(ctx contextx.Contextx, created *pb.Result) (kr *pb.Res
 	return ret, nil
 }
 
-func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (result *pb.Result, err error) {
+func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (result *okr.Result, err error) {
 	logger := ctx.WithField("id", id).WithField("title", title)
 
 	_, err = uuid.Parse(id)
