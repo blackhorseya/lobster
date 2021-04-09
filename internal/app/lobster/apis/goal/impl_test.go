@@ -47,7 +47,6 @@ func (s *handlerSuite) SetupTest() {
 
 	s.r = gin.New()
 	s.r.Use(middlewares.ContextMiddleware())
-	s.r.Use(middlewares.LoggerMiddleware())
 
 	s.mock = new(mocks.IBiz)
 	if handler, err := CreateIHandler(s.mock); err != nil {
