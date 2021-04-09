@@ -68,5 +68,22 @@ type Log struct {
 	Level  string `json:"level" yaml:"level"`
 }
 
+// New serve caller to create a viper.Viper
+func New(path string) (*viper.Viper, error) {
+	var (
+		err error
+		v   = viper.New()
+	)
+
+	v.AddConfigPath(".")
+	v.SetConfigFile(path)
+
+	if err = v.ReadInConfig(); err != nil {
+		return nil, err
+	}
+
+	return v, nil
+}
+
 // ProviderSet is a provider set for wire
-var ProviderSet = wire.NewSet(NewConfig)
+var ProviderSet = wire.NewSet(New, NewConfig)
