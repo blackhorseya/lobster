@@ -6,6 +6,7 @@
 package main
 
 import (
+	"github.com/blackhorseya/lobster/internal/app/lobster"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis"
 	goal2 "github.com/blackhorseya/lobster/internal/app/lobster/apis/goal"
 	health2 "github.com/blackhorseya/lobster/internal/app/lobster/apis/health"
@@ -33,21 +34,25 @@ import (
 
 // Injectors from wire.go:
 
-// CreateInjector serve caller to create an injector
-func CreateInjector(path2 string) (*app.Injector, error) {
+// CreateApp serve caller to create an injector
+func CreateApp(path2 string) (*app.Application, error) {
 	viper, err := config.New(path2)
 	if err != nil {
 		return nil, err
 	}
-	options, err := http.NewOptions(viper)
+	options, err := log.NewOptions(viper)
 	if err != nil {
 		return nil, err
 	}
-	logOptions, err := log.NewOptions(viper)
+	logger, err := log.New(options)
 	if err != nil {
 		return nil, err
 	}
-	logger, err := log.New(logOptions)
+	lobsterOptions, err := lobster.NewOptions(viper, logger)
+	if err != nil {
+		return nil, err
+	}
+	httpOptions, err := http.NewOptions(viper)
 	if err != nil {
 		return nil, err
 	}
@@ -75,11 +80,18 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	userIBiz := user.NewImpl(iRepo4)
 	userIHandler := user2.NewImpl(userIBiz)
 	initHandlers := apis.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, resultIHandler, userIHandler)
-	engine := http.NewRouter(options, logger, initHandlers)
-	injector := app.NewInjector(engine, configConfig)
-	return injector, nil
+	engine := http.NewRouter(httpOptions, logger, initHandlers)
+	server, err := http.New(httpOptions, logger, engine)
+	if err != nil {
+		return nil, err
+	}
+	application, err := lobster.New(lobsterOptions, logger, server)
+	if err != nil {
+		return nil, err
+	}
+	return application, nil
 }
 
 // wire.go:
 
-var providerSet = wire.NewSet(app.ProviderSet, log.ProviderSet, config.ProviderSet, http.ProviderSet, databases.ProviderSet, apis.ProviderSet, biz.ProviderSet)
+var providerSet = wire.NewSet(lobster.ProviderSet, log.ProviderSet, config.ProviderSet, http.ProviderSet, databases.ProviderSet, apis.ProviderSet, biz.ProviderSet)

@@ -2,40 +2,12 @@ package main
 
 import (
 	"flag"
-	"strings"
-
-	"github.com/blackhorseya/lobster/internal/pkg/config"
-	"github.com/sirupsen/logrus"
 )
-
-const timeFormat = "2006-01-02 15:04:05"
 
 var path = flag.String("c", "configs/app.yaml", "set config file path")
 
 func init() {
 	flag.Parse()
-}
-
-func initLogger(cfg *config.Config) {
-	if level, err := logrus.ParseLevel(cfg.Log.Level); err != nil {
-		logrus.SetLevel(logrus.InfoLevel)
-		logrus.Warn(err)
-	} else {
-		logrus.SetLevel(level)
-	}
-
-	switch strings.ToLower(cfg.Log.Format) {
-	case "json":
-		logrus.SetFormatter(&logrus.JSONFormatter{
-			TimestampFormat: timeFormat,
-		})
-	default:
-		logrus.SetFormatter(&logrus.TextFormatter{
-			FullTimestamp:   true,
-			TimestampFormat: timeFormat,
-			DisableQuote:    true,
-		})
-	}
 }
 
 // @title Lobster API
@@ -55,18 +27,14 @@ func initLogger(cfg *config.Config) {
 // @in header
 // @name Authorization
 func main() {
-	injector, err := CreateInjector(*path)
+	app, err := CreateApp(*path)
 	if err != nil {
-		logrus.WithFields(logrus.Fields{"error": err}).Panicf("create an injector is panic")
-	}
-	if injector == nil {
-		return
+		panic(err)
 	}
 
-	initLogger(injector.C)
-
-	err = injector.Engine.Run(injector.C.HTTP.GetAddress())
-	if err != nil {
-		logrus.WithFields(logrus.Fields{"error": err}).Panicf("run engine of app is panic")
+	if err = app.Start(); err != nil {
+		panic(err)
 	}
+
+	app.AwaitSignal()
 }

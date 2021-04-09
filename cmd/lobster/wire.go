@@ -3,6 +3,7 @@
 package main
 
 import (
+	"github.com/blackhorseya/lobster/internal/app/lobster"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz"
 	"github.com/blackhorseya/lobster/internal/pkg/app"
@@ -14,7 +15,7 @@ import (
 )
 
 var providerSet = wire.NewSet(
-	app.ProviderSet,
+	lobster.ProviderSet,
 	log.ProviderSet,
 	config.ProviderSet,
 	http.ProviderSet,
@@ -23,7 +24,7 @@ var providerSet = wire.NewSet(
 	biz.ProviderSet,
 )
 
-// CreateInjector serve caller to create an injector
-func CreateInjector(path string) (*app.Injector, error) {
+// CreateApp serve caller to create an injector
+func CreateApp(path string) (*app.Application, error) {
 	panic(wire.Build(providerSet))
 }
