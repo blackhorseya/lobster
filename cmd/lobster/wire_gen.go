@@ -35,6 +35,22 @@ import (
 
 // CreateInjector serve caller to create an injector
 func CreateInjector(path2 string) (*app.Injector, error) {
+	viper, err := config.New(path2)
+	if err != nil {
+		return nil, err
+	}
+	options, err := http.NewOptions(viper)
+	if err != nil {
+		return nil, err
+	}
+	logOptions, err := log.NewOptions(viper)
+	if err != nil {
+		return nil, err
+	}
+	logger, err := log.New(logOptions)
+	if err != nil {
+		return nil, err
+	}
 	configConfig, err := config.NewConfig(path2)
 	if err != nil {
 		return nil, err
@@ -59,7 +75,7 @@ func CreateInjector(path2 string) (*app.Injector, error) {
 	userIBiz := user.NewImpl(iRepo4)
 	userIHandler := user2.NewImpl(userIBiz)
 	initHandlers := apis.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, resultIHandler, userIHandler)
-	engine := http.NewGinEngine(configConfig, initHandlers)
+	engine := http.NewRouter(options, logger, initHandlers)
 	injector := app.NewInjector(engine, configConfig)
 	return injector, nil
 }
