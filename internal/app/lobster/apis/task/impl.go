@@ -7,18 +7,23 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
-	task2 "github.com/blackhorseya/lobster/internal/pkg/entities/task"
+	taskE "github.com/blackhorseya/lobster/internal/pkg/entities/task"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type impl struct {
-	biz task.IBiz
+	logger *zap.Logger
+	biz    task.IBiz
 }
 
 // NewImpl serve caller to create an IHandler
-func NewImpl(biz task.IBiz) IHandler {
-	return &impl{biz: biz}
+func NewImpl(logger *zap.Logger, biz task.IBiz) IHandler {
+	return &impl{
+		logger: logger.With(zap.String("type", "TaskHandler")),
+		biz:    biz,
+	}
 }
 
 type reqID struct {
@@ -44,18 +49,17 @@ func (i *impl) GetByID(c *gin.Context) {
 		})
 		return
 	}
-	logger := ctx.WithField("func", "task getByID")
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		logger.WithField("err", err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
 	ret, err := i.biz.GetByID(ctx, req.ID)
 	if err != nil {
-		logger.WithField("err", err).Error(er.ErrGetTaskByID)
+		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err))
 		c.JSON(http.StatusOK, gin.H{"error": err})
 		return
 	}
@@ -84,30 +88,29 @@ func (i *impl) List(c *gin.Context) {
 		})
 		return
 	}
-	logger := ctx.WithField("func", "task list")
 
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
-		logger.WithFields(logrus.Fields{"error": err, "page": c.Query("page")}).Error(er.ErrInvalidPage)
+		i.logger.Error(er.ErrInvalidPage.Error(), zap.Error(err), zap.String("page", c.Query("page")))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidPage})
 		return
 	}
 
 	size, err := strconv.Atoi(c.DefaultQuery("size", "10"))
 	if err != nil {
-		logger.WithFields(logrus.Fields{"error": err, "size": c.Query("size")}).Error(er.ErrInvalidSize)
+		i.logger.Error(er.ErrInvalidSize.Error(), zap.Error(err), zap.String("size", c.Query("size")))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidSize})
 		return
 	}
 
 	ret, err := i.biz.List(ctx, page, size)
 	if err != nil {
-		logger.WithField("error", err).Error(er.ErrListTasks)
+		i.logger.Error(er.ErrListTasks.Error(), zap.Error(err))
 		c.JSON(http.StatusOK, gin.H{"error": er.ErrListTasks})
 		return
 	}
 	if len(ret) == 0 {
-		logger.WithError(err).Error(er.ErrTaskNotExists)
+		i.logger.Error(er.ErrTaskNotExists.Error())
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
@@ -136,24 +139,23 @@ func (i *impl) Create(c *gin.Context) {
 		})
 		return
 	}
-	logger := ctx.WithField("func", "task list")
 
-	var task *task2.Task
+	var task *taskE.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
-		logger.WithField("error", err).Error(er.ErrCreateTask)
+		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
 		return
 	}
 
 	if len(task.Title) == 0 {
-		logger.WithField("task", task).Error(er.ErrEmptyTitle)
+		i.logger.Error(er.ErrEmptyTitle.Error(), zap.Any("task", task))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
 		return
 	}
 
 	ret, err := i.biz.Create(ctx, task)
 	if err != nil {
-		logger.WithFields(logrus.Fields{"error": err, "task": task}).Error(er.ErrCreateTask)
+		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err), zap.Any("task", task))
 		c.JSON(http.StatusOK, gin.H{"error": er.ErrCreateTask})
 		return
 	}
@@ -175,25 +177,24 @@ func (i *impl) Create(c *gin.Context) {
 // @Router /v1/tasks/{id}/status [patch]
 func (i *impl) UpdateStatus(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "task update status")
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		logger.WithField("err", err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
 		return
 	}
 
-	var data *task2.Task
+	var data *taskE.Task
 	if err := c.ShouldBindJSON(&data); err != nil {
-		logger.WithField("error", err).Error(er.ErrCreateTask)
+		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
 		return
 	}
 
 	ret, err := i.biz.UpdateStatus(ctx, req.ID, data.Status)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrUpdateTask)
+		i.logger.Error(er.ErrUpdateTask.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateTask})
 		return
 	}
@@ -214,30 +215,29 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 // @Router /v1/tasks/{id}/title [patch]
 func (i *impl) ModifyTitle(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "task modify title")
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		logger.WithField("err", err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
 		return
 	}
 
-	var data *task2.Task
+	var data *taskE.Task
 	if err := c.ShouldBindJSON(&data); err != nil {
-		logger.WithField("error", err).Error(er.ErrCreateTask)
+		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
 		return
 	}
 	if len(data.Title) == 0 {
-		logger.Error(er.ErrEmptyTitle)
+		i.logger.Error(er.ErrEmptyTitle.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
 		return
 	}
 
 	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrUpdateTask)
+		i.logger.Error(er.ErrUpdateTask.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateTask})
 		return
 	}
@@ -265,17 +265,16 @@ func (i *impl) Delete(c *gin.Context) {
 		})
 		return
 	}
-	logger := ctx.WithField("func", "task list")
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		logger.WithField("err", err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
 		return
 	}
 
 	if err := i.biz.Delete(ctx, req.ID); err != nil {
-		logger.WithFields(logrus.Fields{"error": err, "id": req.ID}).Error(er.ErrDeleteTask)
+		i.logger.Error(er.ErrDeleteTask.Error(), zap.Error(err), zap.String("id", req.ID))
 		c.JSON(http.StatusOK, gin.H{"error": er.ErrDeleteTask})
 		return
 	}

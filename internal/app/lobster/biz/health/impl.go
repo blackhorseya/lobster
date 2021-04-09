@@ -4,25 +4,27 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
+	"go.uber.org/zap"
 )
 
 type impl struct {
-	repo repo.IRepo
+	logger *zap.Logger
+	repo   repo.IRepo
 }
 
 // NewImpl serve caller to create an IBiz
-func NewImpl(repo repo.IRepo) IBiz {
-	return &impl{repo: repo}
+func NewImpl(logger *zap.Logger, repo repo.IRepo) IBiz {
+	return &impl{logger: logger, repo: repo}
 }
 
 func (i *impl) Readiness(ctx contextx.Contextx) error {
 	ok, err := i.repo.Ping(ctx)
 	if err != nil {
-		ctx.WithField("err", err).Error(er.ErrDBConnect)
+		i.logger.Error(er.ErrDBConnect.Error())
 		return er.ErrDBConnect
 	}
 	if !ok {
-		ctx.WithField("ok", ok).Error(er.ErrDBConnect)
+		i.logger.Error(er.ErrDBConnect.Error())
 		return er.ErrDBConnect
 	}
 
@@ -32,11 +34,11 @@ func (i *impl) Readiness(ctx contextx.Contextx) error {
 func (i *impl) Liveness(ctx contextx.Contextx) error {
 	ok, err := i.repo.Ping(ctx)
 	if err != nil {
-		ctx.WithField("err", err).Error(er.ErrDBConnect)
+		i.logger.Error(er.ErrDBConnect.Error())
 		return er.ErrDBConnect
 	}
 	if !ok {
-		ctx.WithField("ok", ok).Error(er.ErrDBConnect)
+		i.logger.Error(er.ErrDBConnect.Error())
 		return er.ErrDBConnect
 	}
 

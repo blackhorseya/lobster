@@ -8,6 +8,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 var (
@@ -28,12 +29,16 @@ var (
 )
 
 type impl struct {
-	repo repo.IRepo
+	logger *zap.Logger
+	repo   repo.IRepo
 }
 
 // NewImpl serve caller to create an IBiz
-func NewImpl(repo repo.IRepo) IBiz {
-	return &impl{repo: repo}
+func NewImpl(logger *zap.Logger, repo repo.IRepo) IBiz {
+	return &impl{
+		logger: logger.With(zap.String("type", "UserBiz")),
+		repo:   repo,
+	}
 }
 
 func (i *impl) GetInfoByID(ctx contextx.Contextx, id string) (info *user.Profile, err error) {
@@ -42,11 +47,9 @@ func (i *impl) GetInfoByID(ctx contextx.Contextx, id string) (info *user.Profile
 }
 
 func (i *impl) GetInfoByEmail(ctx contextx.Contextx, email string) (info *user.Profile, err error) {
-	logger := ctx.WithField("email", email)
-
 	ret, err := i.repo.QueryInfoByEmail(ctx, email)
 	if err != nil {
-		logger.WithError(err)
+		i.logger.Error("", zap.Error(err), zap.String("email", email))
 		return nil, err
 	}
 
@@ -59,20 +62,18 @@ func (i *impl) GetInfoByAccessToken(ctx contextx.Contextx, token string) (info *
 }
 
 func (i *impl) Signup(ctx contextx.Contextx, email, token string) (info *user.Profile, err error) {
-	logger := ctx.WithField("email", email).WithField("token", token)
-
 	if len(email) == 0 || len(token) == 0 {
-		logger.Error(ErrEmailOrTokenEmpty)
+		i.logger.Error(ErrEmailOrTokenEmpty.Error(), zap.String("email", email), zap.String("token", token))
 		return nil, ErrEmailOrTokenEmpty
 	}
 
 	exist, err := i.repo.QueryInfoByEmail(ctx, email)
 	if err != nil {
-		logger.WithError(err).Error(ErrQueryInfoByEmail)
+		i.logger.Error(ErrQueryInfoByEmail.Error(), zap.Error(err), zap.String("email", email), zap.String("token", token))
 		return nil, ErrQueryInfoByEmail
 	}
 	if exist != nil {
-		logger.Error("email is exists")
+		i.logger.Error("email is exists", zap.String("email", email), zap.String("token", token))
 		return nil, ErrUserSignup
 	}
 
@@ -83,7 +84,7 @@ func (i *impl) Signup(ctx contextx.Contextx, email, token string) (info *user.Pr
 		SignupAt:    time.Now().UnixNano(),
 	})
 	if err != nil {
-		logger.WithError(err).Error(ErrUserSignup)
+		i.logger.Error(ErrUserSignup.Error(), zap.Error(err), zap.String("email", email), zap.String("token", token))
 		return nil, ErrUserSignup
 	}
 
@@ -91,25 +92,23 @@ func (i *impl) Signup(ctx contextx.Contextx, email, token string) (info *user.Pr
 }
 
 func (i *impl) Login(ctx contextx.Contextx, email, token string) (info *user.Profile, err error) {
-	logger := ctx.WithField("email", email).WithField("token", token)
-
 	if len(email) == 0 || len(token) == 0 {
-		logger.Error(ErrEmailOrTokenEmpty)
+		i.logger.Error(ErrEmailOrTokenEmpty.Error(), zap.String("email", email), zap.String("token", token))
 		return nil, ErrEmailOrTokenEmpty
 	}
 
 	exist, err := i.repo.QueryInfoByEmail(ctx, email)
 	if err != nil {
-		logger.WithError(err).Error(ErrQueryInfoByEmail)
+		i.logger.Error(ErrQueryInfoByEmail.Error(), zap.Error(err), zap.String("email", email), zap.String("token", token))
 		return nil, ErrQueryInfoByEmail
 	}
 	if exist == nil {
-		logger.Error(ErrUserNotExists)
+		i.logger.Error(ErrUserNotExists.Error(), zap.String("email", email), zap.String("token", token))
 		return nil, ErrUserNotExists
 	}
 
 	if exist.AccessToken != token {
-		logger.Error(ErrUserLogin)
+		i.logger.Error(ErrUserLogin.Error(), zap.String("email", email), zap.String("token", token))
 		return nil, ErrUserLogin
 	}
 

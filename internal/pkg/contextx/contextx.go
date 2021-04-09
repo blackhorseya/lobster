@@ -3,14 +3,11 @@ package contextx
 import (
 	"context"
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
 // Contextx extends google's context to support logging methods
 type Contextx struct {
 	context.Context
-	logrus.FieldLogger
 }
 
 // Background returns a non-nil, empty Context. It is never canceled, has no values, and
@@ -18,16 +15,14 @@ type Contextx struct {
 // and as the top-level Context for incoming requests
 func Background() Contextx {
 	return Contextx{
-		Context:     context.Background(),
-		FieldLogger: logrus.StandardLogger(),
+		Context: context.Background(),
 	}
 }
 
 // WithValue returns a copy of parent in which the value associated with key is val.
 func WithValue(parent Contextx, key string, val interface{}) Contextx {
 	return Contextx{
-		Context:     context.WithValue(parent, key, val),
-		FieldLogger: parent.FieldLogger.WithField(key, val),
+		Context: context.WithValue(parent, key, val),
 	}
 }
 
@@ -35,8 +30,7 @@ func WithValue(parent Contextx, key string, val interface{}) Contextx {
 func WithCancel(parent Contextx) (Contextx, context.CancelFunc) {
 	ctx, cancel := context.WithCancel(parent)
 	return Contextx{
-		Context:     ctx,
-		FieldLogger: parent.FieldLogger,
+		Context: ctx,
 	}, cancel
 }
 
@@ -44,7 +38,6 @@ func WithCancel(parent Contextx) (Contextx, context.CancelFunc) {
 func WithTimeout(parent Contextx, d time.Duration) (Contextx, context.CancelFunc) {
 	ctx, cancel := context.WithTimeout(parent, d)
 	return Contextx{
-		Context:     ctx,
-		FieldLogger: parent.FieldLogger,
+		Context: ctx,
 	}, cancel
 }

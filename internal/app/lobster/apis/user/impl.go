@@ -8,6 +8,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	user2 "github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 var (
@@ -19,12 +20,16 @@ var (
 )
 
 type impl struct {
-	biz user.IBiz
+	logger *zap.Logger
+	biz    user.IBiz
 }
 
 // NewImpl serve caller to create an IHandler
-func NewImpl(biz user.IBiz) IHandler {
-	return &impl{biz: biz}
+func NewImpl(logger *zap.Logger, biz user.IBiz) IHandler {
+	return &impl{
+		logger: logger.With(zap.String("type", "UserHandler")),
+		biz:    biz,
+	}
 }
 
 // @Summary Signup
@@ -39,18 +44,17 @@ func NewImpl(biz user.IBiz) IHandler {
 // @Router /v1/users/signup [post]
 func (i *impl) Signup(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "Signup")
 
 	var newUser *user2.Profile
 	if err := c.ShouldBindJSON(&newUser); err != nil {
-		logger.WithError(err).Error(ErrSignup)
+		i.logger.Error(ErrSignup.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrSignup})
 		return
 	}
 
 	ret, err := i.biz.Signup(ctx, newUser.Email, newUser.AccessToken)
 	if err != nil {
-		logger.WithError(err).Error(ErrSignup)
+		i.logger.Error(ErrSignup.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrSignup})
 		return
 	}
@@ -70,18 +74,17 @@ func (i *impl) Signup(c *gin.Context) {
 // @Router /v1/users/login [post]
 func (i *impl) Login(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "Login")
 
 	var data *user2.Profile
 	if err := c.ShouldBindJSON(&data); err != nil {
-		logger.WithError(err).Error(ErrLogin)
+		i.logger.Error(ErrLogin.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrLogin})
 		return
 	}
 
 	ret, err := i.biz.Login(ctx, data.Email, data.AccessToken)
 	if err != nil {
-		logger.WithError(err).Error(ErrLogin)
+		i.logger.Error(ErrLogin.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrLogin})
 		return
 	}
