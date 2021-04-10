@@ -13,15 +13,15 @@ import (
 
 type impl struct {
 	logger *zap.Logger
-	repo repo.IRepo
+	repo   repo.IRepo
 }
 
 // NewImpl serve caller to create an IBiz
 func NewImpl(logger *zap.Logger, repo repo.IRepo) IBiz {
 	return &impl{
 		logger: logger.With(zap.String("type", "GoalBiz")),
-		repo: repo,
-		}
+		repo:   repo,
+	}
 }
 
 func (i *impl) Create(ctx contextx.Contextx, obj *okr.Goal) (*okr.Goal, error) {

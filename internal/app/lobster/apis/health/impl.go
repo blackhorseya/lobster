@@ -7,7 +7,6 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 )
 
@@ -33,14 +32,7 @@ func NewImpl(logger *zap.Logger, biz health.IBiz) IHandler {
 // @Failure 500 {object} string
 // @Router /readiness [get]
 func (i *impl) Readiness(c *gin.Context) {
-	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
-	if !ok {
-		logrus.Error(er.ErrCTX)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": er.ErrCTX.Error(),
-		})
-		return
-	}
+	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	err := i.biz.Readiness(ctx)
 	if err != nil {
@@ -61,14 +53,7 @@ func (i *impl) Readiness(c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /liveness [get]
 func (i *impl) Liveness(c *gin.Context) {
-	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
-	if !ok {
-		logrus.Error(er.ErrCTX)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": er.ErrCTX.Error(),
-		})
-		return
-	}
+	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	err := i.biz.Liveness(ctx)
 	if err != nil {

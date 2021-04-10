@@ -9,7 +9,6 @@ import (
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
 	taskE "github.com/blackhorseya/lobster/internal/pkg/entities/task"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 )
 
@@ -41,14 +40,7 @@ type reqID struct {
 // @Failure 500 {object} string
 // @Router /v1/tasks/{id} [get]
 func (i *impl) GetByID(c *gin.Context) {
-	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
-	if !ok {
-		logrus.Error(er.ErrCTX)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": er.ErrCTX.Error(),
-		})
-		return
-	}
+	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
@@ -80,14 +72,7 @@ func (i *impl) GetByID(c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /v1/tasks [get]
 func (i *impl) List(c *gin.Context) {
-	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
-	if !ok {
-		logrus.Error(er.ErrCTX)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": er.ErrCTX.Error(),
-		})
-		return
-	}
+	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
@@ -131,14 +116,7 @@ func (i *impl) List(c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /v1/tasks [post]
 func (i *impl) Create(c *gin.Context) {
-	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
-	if !ok {
-		logrus.Error(er.ErrCTX)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": er.ErrCTX.Error(),
-		})
-		return
-	}
+	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	var task *taskE.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
@@ -257,14 +235,7 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /v1/tasks/{id} [delete]
 func (i *impl) Delete(c *gin.Context) {
-	ctx, ok := c.MustGet("ctx").(contextx.Contextx)
-	if !ok {
-		logrus.Error(er.ErrCTX)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": er.ErrCTX.Error(),
-		})
-		return
-	}
+	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
