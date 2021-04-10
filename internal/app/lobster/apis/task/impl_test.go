@@ -12,6 +12,8 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task/mocks"
+	errors2 "github.com/blackhorseya/lobster/internal/pkg/entities/errors"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/task"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
@@ -61,11 +63,12 @@ type handlerSuite struct {
 }
 
 func (s *handlerSuite) SetupTest() {
-	logger, _ := zap.NewDevelopment()
+	logger := zap.NewNop()
 
 	gin.SetMode(gin.TestMode)
 	s.r = gin.New()
 	s.r.Use(middlewares.ContextMiddleware())
+	s.r.Use(middlewares.ResponseMiddleware())
 
 	s.mock = new(mocks.IBiz)
 	if handler, err := CreateIHandler(logger, s.mock); err != nil {
@@ -94,7 +97,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *task.Task
+		wantBody *response.Response
 	}{
 		{
 			name:     "id then 400 error",
@@ -103,11 +106,11 @@ func (s *handlerSuite) Test_impl_GetByID() {
 			wantBody: nil,
 		},
 		{
-			name: "uuid then 200 error",
+			name: "uuid then 500 error",
 			args: args{id: uuid1, mock: func() {
-				s.mock.On("GetByID", mock.Anything, uuid1).Return(nil, errors.New("error")).Once()
+				s.mock.On("GetByID", mock.Anything, uuid1).Return(nil, errors2.ErrGetTaskByID).Once()
 			}},
-			wantCode: 200,
+			wantCode: 500,
 			wantBody: nil,
 		},
 		{
@@ -116,7 +119,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 				s.mock.On("GetByID", mock.Anything, uuid1).Return(task1, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: task1,
+			wantBody: &response.Response{Code: 200, Msg: "ok",Data: task1},
 		},
 	}
 	for _, tt := range tests {
@@ -136,14 +139,14 @@ func (s *handlerSuite) Test_impl_GetByID() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *task.Task
+			var gotBody *response.Response
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "GetByID() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("GetByID() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("GetByID() got = %v, wantBody = %v", gotBody, tt.wantBody), "GetByID")
 			}
 
 			s.TearDownTest()
@@ -178,11 +181,11 @@ func (s *handlerSuite) Test_impl_List() {
 			wantBody: nil,
 		},
 		{
-			name: "1 1 then 200 error",
+			name: "1 1 then 500 error",
 			args: args{page: "1", size: "1", mock: func() {
-				s.mock.On("List", mock.Anything, 1, 1).Return(nil, errors.New("error")).Once()
+				s.mock.On("List", mock.Anything, 1, 1).Return(nil, errors2.ErrListTasks).Once()
 			}},
-			wantCode: 200,
+			wantCode: 500,
 			wantBody: nil,
 		},
 		{

@@ -7,6 +7,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
 	taskE "github.com/blackhorseya/lobster/internal/pkg/entities/task"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -29,7 +30,7 @@ type reqID struct {
 	ID string `uri:"id" binding:"required,uuid"`
 }
 
-// @Summary Get a task by id
+// GetByID @Summary Get a task by id
 // @Description Get a task by id
 // @Tags Tasks
 // @Accept application/json
@@ -45,22 +46,22 @@ func (i *impl) GetByID(c *gin.Context) {
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
 		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		c.Error(errors.ErrInvalidID)
 		return
 	}
 
 	ret, err := i.biz.GetByID(ctx, req.ID)
 	if err != nil {
 		i.logger.Error(errors.ErrGetTaskByID.Error(), zap.Error(err))
-		c.JSON(http.StatusOK, gin.H{"error": err})
+		c.Error(errors.ErrGetTaskByID)
 		return
 	}
 
-	c.JSON(http.StatusOK, ret)
+	c.JSON(http.StatusOK, response.OK.WithData(ret))
 	return
 }
 
-// @Summary List all tasks
+// List @Summary List all tasks
 // @Description List all tasks
 // @Tags Tasks
 // @Accept application/json
@@ -77,26 +78,26 @@ func (i *impl) List(c *gin.Context) {
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
 		i.logger.Error(errors.ErrInvalidPage.Error(), zap.Error(err), zap.String("page", c.Query("page")))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidPage})
+		c.Error(errors.ErrInvalidPage)
 		return
 	}
 
 	size, err := strconv.Atoi(c.DefaultQuery("size", "10"))
 	if err != nil {
 		i.logger.Error(errors.ErrInvalidSize.Error(), zap.Error(err), zap.String("size", c.Query("size")))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidSize})
+		c.Error(errors.ErrInvalidSize)
 		return
 	}
 
 	ret, err := i.biz.List(ctx, page, size)
 	if err != nil {
 		i.logger.Error(errors.ErrListTasks.Error(), zap.Error(err))
-		c.JSON(http.StatusOK, gin.H{"error": errors.ErrListTasks})
+		c.Error(errors.ErrListTasks)
 		return
 	}
 	if len(ret) == 0 {
 		i.logger.Error(errors.ErrTaskNotExists.Error())
-		c.JSON(http.StatusNotFound, nil)
+		c.Error(errors.ErrTaskNotExists)
 		return
 	}
 
@@ -104,7 +105,7 @@ func (i *impl) List(c *gin.Context) {
 	return
 }
 
-// @Summary Create a task
+// Create @Summary Create a task
 // @Description Create a task
 // @Tags Tasks
 // @Accept application/json
@@ -118,22 +119,22 @@ func (i *impl) List(c *gin.Context) {
 func (i *impl) Create(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
-	var task *taskE.Task
-	if err := c.ShouldBindJSON(&task); err != nil {
+	var data *taskE.Task
+	if err := c.ShouldBindJSON(&data); err != nil {
 		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrCreateTask})
 		return
 	}
 
-	if len(task.Title) == 0 {
-		i.logger.Error(errors.ErrEmptyTitle.Error(), zap.Any("task", task))
+	if len(data.Title) == 0 {
+		i.logger.Error(errors.ErrEmptyTitle.Error(), zap.Any("created", data))
 		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrEmptyTitle})
 		return
 	}
 
-	ret, err := i.biz.Create(ctx, task)
+	ret, err := i.biz.Create(ctx, data)
 	if err != nil {
-		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err), zap.Any("task", task))
+		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err), zap.Any("created", data))
 		c.JSON(http.StatusOK, gin.H{"error": errors.ErrCreateTask})
 		return
 	}
@@ -142,7 +143,7 @@ func (i *impl) Create(c *gin.Context) {
 	return
 }
 
-// @Summary UpdateStatus a status of task by id
+// UpdateStatus @Summary UpdateStatus a status of task by id
 // @Description UpdateStatus a status of task by id
 // @Tags Tasks
 // @Accept application/json
@@ -180,7 +181,7 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, ret)
 }
 
-// @Summary ModifyTitle a title of task by id
+// ModifyTitle @Summary ModifyTitle a title of task by id
 // @Description ModifyTitle a status of task by id
 // @Tags Tasks
 // @Accept application/json
@@ -223,7 +224,7 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 	c.JSON(http.StatusOK, ret)
 }
 
-// @Summary Delete a task by id
+// Delete @Summary Delete a task by id
 // @Description Delete a task by id
 // @Tags Tasks
 // @Accept application/json
