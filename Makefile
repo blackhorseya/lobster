@@ -10,6 +10,10 @@ clean:
 
 .PHONY: lint
 lint:
+	@golint ./...
+
+.PHONY: report
+report:
 	@curl -XPOST 'https://goreportcard.com/checks' --data 'repo=github.com/blackhorseya/lobster'
 
 .PHONY: test-with-coverage
