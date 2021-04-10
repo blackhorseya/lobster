@@ -10,6 +10,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+	"go.uber.org/zap"
 )
 
 var (
@@ -36,8 +37,10 @@ type bizSuite struct {
 }
 
 func (s *bizSuite) SetupTest() {
+	logger, _ := zap.NewDevelopment()
+
 	s.mock = new(mocks.IRepo)
-	biz, err := CreateIBiz(s.mock)
+	biz, err := CreateIBiz(logger, s.mock)
 	if err != nil {
 		panic(err)
 		return

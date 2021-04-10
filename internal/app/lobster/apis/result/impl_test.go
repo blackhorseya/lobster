@@ -17,6 +17,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+	"go.uber.org/zap"
 )
 
 var (
@@ -53,13 +54,15 @@ type handlerSuite struct {
 }
 
 func (s *handlerSuite) SetupTest() {
+	logger, _ := zap.NewDevelopment()
+
 	gin.SetMode(gin.TestMode)
 
 	s.r = gin.New()
 	s.r.Use(middlewares.ContextMiddleware())
 
 	s.mock = new(mocks.IBiz)
-	handler, err := CreateIHandler(s.mock)
+	handler, err := CreateIHandler(logger, s.mock)
 	if err != nil {
 		panic(err)
 	}

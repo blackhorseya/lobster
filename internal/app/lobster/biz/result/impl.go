@@ -8,32 +8,36 @@ import (
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type impl struct {
-	repo repo.IRepo
+	logger *zap.Logger
+	repo   repo.IRepo
 }
 
 // NewImpl serve caller to create an IBiz
-func NewImpl(repo repo.IRepo) IBiz {
-	return &impl{repo: repo}
+func NewImpl(logger *zap.Logger, repo repo.IRepo) IBiz {
+	return &impl{
+		logger: logger.With(zap.String("type", "ResultBiz")),
+		repo:   repo,
+	}
 }
 
 func (i *impl) List(ctx contextx.Contextx, page, size int) (krs []*okr.Result, err error) {
 	if page <= 0 {
-		ctx.WithField("page", page).Error(er.ErrInvalidPage)
+		i.logger.Error(er.ErrInvalidPage.Error(), zap.Int("page", page))
 		return nil, er.ErrInvalidPage
 	}
 
 	if size <= 0 {
-		ctx.WithField("size", size).Error(er.ErrInvalidSize)
+		i.logger.Error(er.ErrInvalidSize.Error(), zap.Int("size", size))
 		return nil, er.ErrInvalidSize
 	}
 
 	ret, err := i.repo.QueryList(ctx, (page-1)*size, size)
 	if err != nil {
-		ctx.WithError(err).WithFields(logrus.Fields{"page": page, "size": size}).Error(er.ErrListKeyResult)
+		i.logger.Error(er.ErrListKeyResult.Error(), zap.Error(err), zap.Int("page", page), zap.Int("size", size))
 		return nil, er.ErrListKeyResult
 	}
 
@@ -42,17 +46,17 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) (krs []*okr.Result, e
 
 func (i *impl) GetByID(ctx contextx.Contextx, id string) (kr *okr.Result, err error) {
 	if _, err = uuid.Parse(id); err != nil {
-		ctx.WithError(err).WithField("id", id).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err), zap.String("id", id))
 		return nil, er.ErrInvalidID
 	}
 
 	kr, err = i.repo.QueryByID(ctx, id)
 	if err != nil {
-		ctx.WithError(err).WithField("id", id).Error(er.ErrGetKRByID)
+		i.logger.Error(er.ErrGetKRByID.Error(), zap.Error(err), zap.String("id", id))
 		return nil, er.ErrGetKRByID
 	}
 	if kr == nil {
-		ctx.WithField("id", id).Error(er.ErrKRNotExists)
+		i.logger.Error(er.ErrKRNotExists.Error(), zap.String("id", id))
 		return nil, er.ErrKRNotExists
 	}
 
@@ -60,17 +64,15 @@ func (i *impl) GetByID(ctx contextx.Contextx, id string) (kr *okr.Result, err er
 }
 
 func (i *impl) GetByGoalID(ctx contextx.Contextx, id string) (krs []*okr.Result, err error) {
-	logger := ctx.WithField("id", id)
-
 	_, err = uuid.Parse(id)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
 		return nil, err
 	}
 
 	ret, err := i.repo.QueryByGoalID(ctx, id)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrListKeyResult)
+		i.logger.Error(er.ErrListKeyResult.Error(), zap.Error(err))
 		return nil, err
 	}
 
@@ -78,16 +80,14 @@ func (i *impl) GetByGoalID(ctx contextx.Contextx, id string) (krs []*okr.Result,
 }
 
 func (i *impl) LinkToGoal(ctx contextx.Contextx, created *okr.Result) (kr *okr.Result, err error) {
-	logger := ctx.WithField("created", created)
-
 	_, err = uuid.Parse(created.GoalID)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
 		return nil, er.ErrInvalidID
 	}
 
 	if len(created.Title) == 0 {
-		logger.Error(er.ErrEmptyTitle)
+		i.logger.Error(er.ErrEmptyTitle.Error())
 		return nil, er.ErrEmptyTitle
 	}
 
@@ -95,7 +95,7 @@ func (i *impl) LinkToGoal(ctx contextx.Contextx, created *okr.Result) (kr *okr.R
 	created.CreateAt = time.Now().UnixNano()
 	ret, err := i.repo.Create(ctx, created)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrCreateKR)
+		i.logger.Error(er.ErrCreateKR.Error(), zap.Error(err))
 		return nil, er.ErrCreateKR
 	}
 
@@ -103,33 +103,31 @@ func (i *impl) LinkToGoal(ctx contextx.Contextx, created *okr.Result) (kr *okr.R
 }
 
 func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (result *okr.Result, err error) {
-	logger := ctx.WithField("id", id).WithField("title", title)
-
 	_, err = uuid.Parse(id)
 	if err != nil {
-		logger.Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error())
 		return nil, er.ErrInvalidID
 	}
 
 	if len(title) == 0 {
-		logger.Error(er.ErrEmptyTitle)
+		i.logger.Error(er.ErrEmptyTitle.Error())
 		return nil, er.ErrEmptyTitle
 	}
 
 	exist, err := i.repo.QueryByID(ctx, id)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrGetKRByID)
+		i.logger.Error(er.ErrGetKRByID.Error(), zap.Error(err))
 		return nil, er.ErrGetKRByID
 	}
 	if exist == nil {
-		logger.Error(er.ErrKRNotExists)
+		i.logger.Error(er.ErrKRNotExists.Error())
 		return nil, er.ErrKRNotExists
 	}
 
 	exist.Title = title
 	ret, err := i.repo.Update(ctx, exist)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrUpdateKeyResult)
+		i.logger.Error(er.ErrUpdateKeyResult.Error(), zap.Error(err))
 		return nil, er.ErrUpdateKeyResult
 	}
 
@@ -139,13 +137,13 @@ func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (result *okr
 func (i *impl) Delete(ctx contextx.Contextx, id string) (err error) {
 	_, err = uuid.Parse(id)
 	if err != nil {
-		ctx.WithError(err).WithField("id", id).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err), zap.String("id", id))
 		return er.ErrInvalidID
 	}
 
 	err = i.repo.Delete(ctx, id)
 	if err != nil {
-		ctx.WithError(err).WithField("id", id).Error(er.ErrDeleteKeyResult)
+		i.logger.Error(er.ErrDeleteKeyResult.Error(), zap.Error(err), zap.String("id", id))
 		return er.ErrDeleteKeyResult
 	}
 

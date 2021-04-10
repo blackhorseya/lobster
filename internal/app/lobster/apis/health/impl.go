@@ -8,15 +8,20 @@ import (
 	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type impl struct {
-	biz health.IBiz
+	logger *zap.Logger
+	biz    health.IBiz
 }
 
 // NewImpl serve caller to create an IHandler
-func NewImpl(biz health.IBiz) IHandler {
-	return &impl{biz: biz}
+func NewImpl(logger *zap.Logger, biz health.IBiz) IHandler {
+	return &impl{
+		logger: logger.With(zap.String("type", "HealthHandler")),
+		biz:    biz,
+	}
 }
 
 // @Summary Readiness
@@ -36,11 +41,10 @@ func (i *impl) Readiness(c *gin.Context) {
 		})
 		return
 	}
-	logger := ctx.WithField("func", "task getByID")
 
 	err := i.biz.Readiness(ctx)
 	if err != nil {
-		logger.WithField("err", err).Error(er.ErrReadiness)
+		i.logger.Error(er.ErrReadiness.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrReadiness.Error()})
 		return
 	}
@@ -65,11 +69,10 @@ func (i *impl) Liveness(c *gin.Context) {
 		})
 		return
 	}
-	logger := ctx.WithField("func", "task getByID")
 
 	err := i.biz.Liveness(ctx)
 	if err != nil {
-		logger.WithField("err", err).Error(er.ErrReadiness)
+		i.logger.Error(er.ErrReadiness.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrReadiness.Error()})
 		return
 	}

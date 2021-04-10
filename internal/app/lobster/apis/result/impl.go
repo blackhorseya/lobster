@@ -10,16 +10,20 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type impl struct {
-	biz result.IBiz
+	logger *zap.Logger
+	biz    result.IBiz
 }
 
 // NewImpl serve caller to create an IHandler
-func NewImpl(biz result.IBiz) IHandler {
-	return &impl{biz: biz}
+func NewImpl(logger *zap.Logger, biz result.IBiz) IHandler {
+	return &impl{
+		logger: logger.With(zap.String("type", "ResultHandler")),
+		biz:    biz,
+	}
 }
 
 type reqID struct {
@@ -39,23 +43,22 @@ type reqID struct {
 // @Router /v1/results/{id} [get]
 func (i *impl) GetByID(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "GetByID")
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		logger.WithField("err", err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
 	ret, err := i.biz.GetByID(ctx, req.ID)
 	if err != nil {
-		logger.WithError(err).WithField("id", req.ID).Error(er.ErrGetKRByID)
+		i.logger.Error(er.ErrGetKRByID.Error(), zap.Error(err), zap.String("id", req.ID))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrGetKRByID})
 		return
 	}
 	if ret == nil {
-		logger.WithField("id", req.ID).Error(er.ErrKRNotExists)
+		i.logger.Error(er.ErrKRNotExists.Error(), zap.String("id", req.ID))
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
@@ -76,23 +79,22 @@ func (i *impl) GetByID(c *gin.Context) {
 // @Router /v1/goals/{id}/results [get]
 func (i *impl) GetByGoalID(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "GetByGoalID")
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		logger.WithField("err", err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
 	ret, err := i.biz.GetByGoalID(ctx, req.ID)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrListKeyResult)
+		i.logger.Error(er.ErrListKeyResult.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 	if len(ret) == 0 {
-		logger.Error(er.ErrKRNotExists)
+		i.logger.Error(er.ErrKRNotExists.Error())
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
@@ -114,32 +116,29 @@ func (i *impl) GetByGoalID(c *gin.Context) {
 // @Router /v1/results [get]
 func (i *impl) List(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "List")
 
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
-		logger.WithFields(logrus.Fields{"error": err, "page": c.Query("page")}).Error(er.ErrInvalidPage)
+		i.logger.Error(er.ErrInvalidPage.Error(), zap.Error(err), zap.String("page", c.Query("page")))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidPage})
 		return
 	}
 
 	size, err := strconv.Atoi(c.DefaultQuery("size", "10"))
 	if err != nil {
-		logger.WithFields(logrus.Fields{"error": err, "size": c.Query("size")}).Error(er.ErrInvalidSize)
+		i.logger.Error(er.ErrInvalidPage.Error(), zap.Error(err), zap.String("size", c.Query("size")))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidSize})
 		return
 	}
 
-	logger = logger.WithFields(logrus.Fields{"page": page, "size": size})
-
 	ret, err := i.biz.List(ctx, page, size)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrListKeyResult)
+		i.logger.Error(er.ErrListKeyResult.Error(), zap.Error(err), zap.String("size", c.Query("size")))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrListKeyResult})
 		return
 	}
 	if len(ret) == 0 {
-		logger.Error(er.ErrKRNotExists)
+		i.logger.Error(er.ErrKRNotExists.Error(), zap.String("size", c.Query("size")))
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
@@ -159,32 +158,30 @@ func (i *impl) List(c *gin.Context) {
 // @Router /v1/results [post]
 func (i *impl) Create(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "Create")
 
 	var created *okr.Result
 	err := c.ShouldBindJSON(&created)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrCreateKR)
+		i.logger.Error(er.ErrCreateKR.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, er.ErrCreateKR)
 		return
 	}
-	logger = logger.WithField("created", created)
 
 	if len(created.Title) == 0 {
-		logger.Error(er.ErrEmptyTitle)
+		i.logger.Error(er.ErrEmptyTitle.Error(), zap.Any("created", created))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
 		return
 	}
 	_, err = uuid.Parse(created.GoalID)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err), zap.Any("created", created))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
 		return
 	}
 
 	ret, err := i.biz.LinkToGoal(ctx, created)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrCreateKR)
+		i.logger.Error(er.ErrCreateKR.Error(), zap.Error(err), zap.Any("created", created))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrCreateKR})
 		return
 	}
@@ -205,11 +202,10 @@ func (i *impl) Create(c *gin.Context) {
 // @Router /v1/results/{id}/title [patch]
 func (i *impl) ModifyTitle(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "ModifyTitle")
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		logger.WithField("err", err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
 		return
 	}
@@ -217,19 +213,19 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 	var data *okr.Result
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrUpdateKeyResult)
+		i.logger.Error(er.ErrUpdateKeyResult.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, er.ErrUpdateKeyResult)
 		return
 	}
 	if len(data.Title) == 0 {
-		logger.Error(er.ErrEmptyTitle)
+		i.logger.Error(er.ErrEmptyTitle.Error())
 		c.JSON(http.StatusBadRequest, er.ErrEmptyTitle)
 		return
 	}
 
 	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrUpdateKeyResult)
+		i.logger.Error(er.ErrUpdateKeyResult.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, er.ErrUpdateKeyResult)
 		return
 	}
@@ -250,20 +246,17 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 // @Router /v1/results/{id} [delete]
 func (i *impl) Delete(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
-	logger := ctx.WithField("func", "Delete")
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		logger.WithField("err", err).Error(er.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
-	logger = logger.WithField("id", req.ID)
-
 	err := i.biz.Delete(ctx, req.ID)
 	if err != nil {
-		logger.WithError(err).Error(er.ErrDeleteKeyResult)
+		i.logger.Error(er.ErrDeleteKeyResult.Error(), zap.Error(err), zap.String("id", req.ID))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrDeleteKeyResult})
 		return
 	}

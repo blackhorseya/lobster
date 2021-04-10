@@ -25,7 +25,6 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*okr.Result, error) 
 	stmt := `select id, goal_id, title, target, actual, create_at from keyresults where id = ?`
 	err := i.rw.GetContext(timeout, &kr, stmt, id)
 	if err != nil {
-		ctx.WithError(err).Errorln("query key result by id is failure")
 		return nil, err
 	}
 
@@ -40,7 +39,6 @@ func (i *impl) QueryByGoalID(ctx contextx.Contextx, id string) (krs []*okr.Resul
 	stmt := `select id, goal_id, title, target, actual, create_at from keyresults where goal_id = ? order by create_at desc`
 	err = i.rw.SelectContext(timeout, &ret, stmt, id)
 	if err != nil {
-		ctx.WithError(err).Errorln("query by goal id is failure")
 		return nil, err
 	}
 
@@ -55,7 +53,6 @@ func (i *impl) Create(ctx contextx.Contextx, created *okr.Result) (kr *okr.Resul
 values (:id, :goal_id, :title, :target, :actual, :create_at)`
 	_, err = i.rw.NamedExecContext(timeout, stmt, created)
 	if err != nil {
-		ctx.WithError(err).WithField("created", created).Errorln("insert key result is failure")
 		return nil, err
 	}
 
@@ -69,7 +66,6 @@ func (i *impl) Update(ctx contextx.Contextx, updated *okr.Result) (kr *okr.Resul
 	stmt := `update keyresults set goal_id=:goal_id, title=:title, target=:target, actual=:actual where id = :id`
 	_, err = i.rw.NamedExecContext(timeout, stmt, updated)
 	if err != nil {
-		ctx.WithError(err).WithField("updated", updated).Errorln("update key result is failure")
 		return nil, err
 	}
 
@@ -84,7 +80,6 @@ func (i *impl) QueryList(ctx contextx.Contextx, offset, limit int) (krs []*okr.R
 	stmt := `select id, goal_id, title, target, actual, create_at from keyresults limit ? offset ?`
 	err = i.rw.SelectContext(timeout, &ret, stmt, limit, offset)
 	if err != nil {
-		ctx.WithError(err).Errorln("list all key results by limit and offset is failure")
 		return nil, err
 	}
 
