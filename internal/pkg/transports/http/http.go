@@ -62,6 +62,8 @@ func NewRouter(o *Options, logger *zap.Logger, init InitHandlers) *gin.Engine {
 	r.Use(ginzap.Ginzap(logger, time.RFC3339, true))
 	r.Use(ginzap.RecoveryWithZap(logger, true))
 
+	r.Use(middlewares.ResponseMiddleware())
+
 	init(r)
 
 	return r
