@@ -6,7 +6,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
 	taskE "github.com/blackhorseya/lobster/internal/pkg/entities/task"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -44,14 +44,14 @@ func (i *impl) GetByID(c *gin.Context) {
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
+		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
 	ret, err := i.biz.GetByID(ctx, req.ID)
 	if err != nil {
-		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err))
+		i.logger.Error(errors.ErrGetTaskByID.Error(), zap.Error(err))
 		c.JSON(http.StatusOK, gin.H{"error": err})
 		return
 	}
@@ -76,26 +76,26 @@ func (i *impl) List(c *gin.Context) {
 
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
-		i.logger.Error(er.ErrInvalidPage.Error(), zap.Error(err), zap.String("page", c.Query("page")))
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidPage})
+		i.logger.Error(errors.ErrInvalidPage.Error(), zap.Error(err), zap.String("page", c.Query("page")))
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidPage})
 		return
 	}
 
 	size, err := strconv.Atoi(c.DefaultQuery("size", "10"))
 	if err != nil {
-		i.logger.Error(er.ErrInvalidSize.Error(), zap.Error(err), zap.String("size", c.Query("size")))
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidSize})
+		i.logger.Error(errors.ErrInvalidSize.Error(), zap.Error(err), zap.String("size", c.Query("size")))
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidSize})
 		return
 	}
 
 	ret, err := i.biz.List(ctx, page, size)
 	if err != nil {
-		i.logger.Error(er.ErrListTasks.Error(), zap.Error(err))
-		c.JSON(http.StatusOK, gin.H{"error": er.ErrListTasks})
+		i.logger.Error(errors.ErrListTasks.Error(), zap.Error(err))
+		c.JSON(http.StatusOK, gin.H{"error": errors.ErrListTasks})
 		return
 	}
 	if len(ret) == 0 {
-		i.logger.Error(er.ErrTaskNotExists.Error())
+		i.logger.Error(errors.ErrTaskNotExists.Error())
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
@@ -120,21 +120,21 @@ func (i *impl) Create(c *gin.Context) {
 
 	var task *taskE.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
-		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
+		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrCreateTask})
 		return
 	}
 
 	if len(task.Title) == 0 {
-		i.logger.Error(er.ErrEmptyTitle.Error(), zap.Any("task", task))
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
+		i.logger.Error(errors.ErrEmptyTitle.Error(), zap.Any("task", task))
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrEmptyTitle})
 		return
 	}
 
 	ret, err := i.biz.Create(ctx, task)
 	if err != nil {
-		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err), zap.Any("task", task))
-		c.JSON(http.StatusOK, gin.H{"error": er.ErrCreateTask})
+		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err), zap.Any("task", task))
+		c.JSON(http.StatusOK, gin.H{"error": errors.ErrCreateTask})
 		return
 	}
 
@@ -158,22 +158,22 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidID})
 		return
 	}
 
 	var data *taskE.Task
 	if err := c.ShouldBindJSON(&data); err != nil {
-		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
+		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrCreateTask})
 		return
 	}
 
 	ret, err := i.biz.UpdateStatus(ctx, req.ID, data.Status)
 	if err != nil {
-		i.logger.Error(er.ErrUpdateTask.Error(), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateTask})
+		i.logger.Error(errors.ErrUpdateTask.Error(), zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrUpdateTask})
 		return
 	}
 
@@ -196,27 +196,27 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidID})
 		return
 	}
 
 	var data *taskE.Task
 	if err := c.ShouldBindJSON(&data); err != nil {
-		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrCreateTask})
+		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrCreateTask})
 		return
 	}
 	if len(data.Title) == 0 {
-		i.logger.Error(er.ErrEmptyTitle.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrEmptyTitle})
+		i.logger.Error(errors.ErrEmptyTitle.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrEmptyTitle})
 		return
 	}
 
 	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
 	if err != nil {
-		i.logger.Error(er.ErrUpdateTask.Error(), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrUpdateTask})
+		i.logger.Error(errors.ErrUpdateTask.Error(), zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrUpdateTask})
 		return
 	}
 
@@ -239,14 +239,14 @@ func (i *impl) Delete(c *gin.Context) {
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": er.ErrInvalidID})
+		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidID})
 		return
 	}
 
 	if err := i.biz.Delete(ctx, req.ID); err != nil {
-		i.logger.Error(er.ErrDeleteTask.Error(), zap.Error(err), zap.String("id", req.ID))
-		c.JSON(http.StatusOK, gin.H{"error": er.ErrDeleteTask})
+		i.logger.Error(errors.ErrDeleteTask.Error(), zap.Error(err), zap.String("id", req.ID))
+		c.JSON(http.StatusOK, gin.H{"error": errors.ErrDeleteTask})
 		return
 	}
 

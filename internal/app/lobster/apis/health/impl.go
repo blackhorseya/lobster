@@ -5,7 +5,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	er "github.com/blackhorseya/lobster/internal/pkg/entities/error"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -36,8 +36,8 @@ func (i *impl) Readiness(c *gin.Context) {
 
 	err := i.biz.Readiness(ctx)
 	if err != nil {
-		i.logger.Error(er.ErrReadiness.Error(), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrReadiness.Error()})
+		i.logger.Error(errors.ErrReadiness.Error(), zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrReadiness.Error()})
 		return
 	}
 
@@ -57,8 +57,8 @@ func (i *impl) Liveness(c *gin.Context) {
 
 	err := i.biz.Liveness(ctx)
 	if err != nil {
-		i.logger.Error(er.ErrReadiness.Error(), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": er.ErrReadiness.Error()})
+		i.logger.Error(errors.ErrReadiness.Error(), zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrReadiness.Error()})
 		return
 	}
 
