@@ -60,7 +60,7 @@ var (
 	ErrGetKRByID = newAPPError(http.StatusInternalServerError, 50040, "get a key result by id is failure")
 
 	// ErrKRNotExists means key result not exists
-	ErrKRNotExists = newAPPError(http.StatusInternalServerError, 50041, "key result not exists")
+	ErrKRNotExists = newAPPError(http.StatusNotFound, 50041, "key result not exists")
 
 	// ErrListKR means list all key results is failure
 	ErrListKR = newAPPError(http.StatusInternalServerError, 50042, "list all key results is failure")

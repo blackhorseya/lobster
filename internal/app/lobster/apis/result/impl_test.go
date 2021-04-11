@@ -13,6 +13,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/result/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
@@ -60,6 +61,7 @@ func (s *handlerSuite) SetupTest() {
 
 	s.r = gin.New()
 	s.r.Use(middlewares.ContextMiddleware())
+	s.r.Use(middlewares.ResponseMiddleware())
 
 	s.mock = new(mocks.IBiz)
 	handler, err := CreateIHandler(logger, s.mock)
@@ -89,7 +91,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *okr.Result
+		wantBody *response.Response
 	}{
 		{
 			name:     "id then 400 error",
@@ -119,7 +121,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 				s.mock.On("GetByID", mock.Anything, krID).Return(kr1, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: kr1,
+			wantBody: response.OK.WithData(kr1),
 		},
 	}
 	for _, tt := range tests {
@@ -136,7 +138,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 			got := w.Result()
 			defer got.Body.Close()
 
-			var gotBody *okr.Result
+			var gotBody *response.Response
 			body, _ := ioutil.ReadAll(got.Body)
 			err := json.Unmarshal(body, &gotBody)
 			if err != nil {
@@ -145,7 +147,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "GetByID() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("GetByID() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("GetByID() got = %v, wantBody = %v", gotBody, tt.wantBody), "GetByID")
 			}
 
 			s.TearDownTest()
@@ -165,7 +167,7 @@ func (s *handlerSuite) Test_impl_List() {
 		name     string
 		args     args
 		wantCode int
-		wantBody []*okr.Result
+		wantBody *response.Response
 	}{
 		{
 			name:     "a 10 then 400 error",
@@ -201,7 +203,7 @@ func (s *handlerSuite) Test_impl_List() {
 				s.mock.On("List", mock.Anything, 1, 1).Return([]*okr.Result{kr1}, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: []*okr.Result{kr1},
+			wantBody: response.OK.WithData([]*okr.Result{kr1}),
 		},
 	}
 	for _, tt := range tests {
@@ -227,7 +229,7 @@ func (s *handlerSuite) Test_impl_List() {
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "List() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("List() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("List() got = %v, wantBody = %v", gotBody, tt.wantBody), "List")
 			}
 
 			s.TearDownTest()
@@ -246,7 +248,7 @@ func (s *handlerSuite) Test_impl_Create() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *okr.Result
+		wantBody *response.Response
 	}{
 		{
 			name:     "missing title then 400 error",
@@ -274,7 +276,7 @@ func (s *handlerSuite) Test_impl_Create() {
 				s.mock.On("LinkToGoal", mock.Anything, created1).Return(kr1, nil).Once()
 			}},
 			wantCode: 201,
-			wantBody: kr1,
+			wantBody: response.OK.WithData(kr1),
 		},
 	}
 	for _, tt := range tests {
@@ -292,7 +294,7 @@ func (s *handlerSuite) Test_impl_Create() {
 			got := w.Result()
 			defer got.Body.Close()
 
-			var gotBody *okr.Result
+			var gotBody *response.Response
 			body, _ := ioutil.ReadAll(got.Body)
 			err := json.Unmarshal(body, &gotBody)
 			if err != nil {
@@ -301,7 +303,7 @@ func (s *handlerSuite) Test_impl_Create() {
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Create() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("Create() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("Create() got = %v, wantBody = %v", gotBody, tt.wantBody), "Create")
 			}
 
 			s.TearDownTest()
@@ -373,7 +375,7 @@ func (s *handlerSuite) Test_impl_GetByGoalID() {
 		name     string
 		args     args
 		wantCode int
-		wantBody []*okr.Result
+		wantBody *response.Response
 	}{
 		{
 			name:     "id then 400 error",
@@ -403,7 +405,7 @@ func (s *handlerSuite) Test_impl_GetByGoalID() {
 				s.mock.On("GetByGoalID", mock.Anything, goalID).Return([]*okr.Result{kr1}, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: []*okr.Result{kr1},
+			wantBody: response.OK.WithData([]*okr.Result{kr1}),
 		},
 	}
 	for _, tt := range tests {
@@ -420,7 +422,7 @@ func (s *handlerSuite) Test_impl_GetByGoalID() {
 			got := w.Result()
 			defer got.Body.Close()
 
-			var gotBody []*okr.Result
+			var gotBody *response.Response
 			body, _ := ioutil.ReadAll(got.Body)
 			err := json.Unmarshal(body, &gotBody)
 			if err != nil {
@@ -429,7 +431,7 @@ func (s *handlerSuite) Test_impl_GetByGoalID() {
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "QueryByGoalID() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("QueryByGoalID() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("QueryByGoalID() got = %v, wantBody = %v", gotBody, tt.wantBody), "")
 			}
 
 			s.TearDownTest()
@@ -449,7 +451,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *okr.Result
+		wantBody *response.Response
 	}{
 		{
 			name:     "id then parse id error 400",
@@ -477,7 +479,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 				s.mock.On("ModifyTitle", mock.Anything, krID, "updated kr1").Return(kr1, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: kr1,
+			wantBody: response.OK.WithData(kr1),
 		},
 	}
 	for _, tt := range tests {
@@ -495,7 +497,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 			got := w.Result()
 			defer got.Body.Close()
 
-			var gotBody *okr.Result
+			var gotBody *response.Response
 			body, _ := ioutil.ReadAll(got.Body)
 			err := json.Unmarshal(body, &gotBody)
 			if err != nil {
@@ -504,7 +506,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "ModifyTitle() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("ModifyTitle() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("ModifyTitle() got = %v, wantBody = %v", gotBody, tt.wantBody), "ModifyTitle")
 			}
 
 			s.TearDownTest()
