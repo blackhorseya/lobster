@@ -6,6 +6,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -23,7 +24,7 @@ func NewImpl(logger *zap.Logger, biz health.IBiz) IHandler {
 	}
 }
 
-// @Summary Readiness
+// Readiness @Summary Readiness
 // @Description Show application was ready to start accepting traffic
 // @Tags Health
 // @Accept application/json
@@ -37,14 +38,14 @@ func (i *impl) Readiness(c *gin.Context) {
 	err := i.biz.Readiness(ctx)
 	if err != nil {
 		i.logger.Error(errors.ErrReadiness.Error(), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrReadiness.Error()})
+		c.Error(errors.ErrReadiness)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"msg": "ok"})
+	c.JSON(http.StatusOK, response.OK)
 }
 
-// @Summary Liveness
+// Liveness @Summary Liveness
 // @Description to know when to restart an application
 // @Tags Health
 // @Accept application/json
@@ -58,9 +59,9 @@ func (i *impl) Liveness(c *gin.Context) {
 	err := i.biz.Liveness(ctx)
 	if err != nil {
 		i.logger.Error(errors.ErrReadiness.Error(), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrReadiness.Error()})
+		c.Error(errors.ErrLiveness)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"msg": "ok"})
+	c.JSON(http.StatusOK, response.OK)
 }

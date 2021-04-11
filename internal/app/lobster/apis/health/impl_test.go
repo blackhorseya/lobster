@@ -28,6 +28,7 @@ func (s *handlerSuite) SetupTest() {
 	gin.SetMode(gin.TestMode)
 	s.r = gin.New()
 	s.r.Use(middlewares.ContextMiddleware())
+	s.r.Use(middlewares.ResponseMiddleware())
 
 	s.mock = new(mocks.IBiz)
 	if handler, err := CreateIHandler(logger, s.mock); err != nil {
