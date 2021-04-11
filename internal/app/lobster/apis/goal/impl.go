@@ -8,6 +8,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -29,7 +30,7 @@ type reqID struct {
 	ID string `uri:"id" binding:"required,uuid"`
 }
 
-// @Summary Get a objective by id
+// GetByID @Summary Get a objective by id
 // @Description Get a objective by id
 // @Tags Goals
 // @Accept application/json
@@ -46,26 +47,26 @@ func (i *impl) GetByID(c *gin.Context) {
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
 		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidID})
+		c.Error(errors.ErrInvalidID)
 		return
 	}
 
 	ret, err := i.biz.GetByID(ctx, req.ID)
 	if err != nil {
 		i.logger.Error(errors.ErrGetObjByID.Error(), zap.Error(err), zap.String("id", req.ID))
-		c.JSON(http.StatusOK, gin.H{"error": errors.ErrGetObjByID})
+		c.Error(errors.ErrGetObjByID)
 		return
 	}
 	if ret == nil {
 		i.logger.Error(errors.ErrObjNotExists.Error(), zap.String("id", req.ID))
-		c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrObjNotExists})
+		c.Error(errors.ErrObjNotExists)
 		return
 	}
 
-	c.JSON(http.StatusOK, ret)
+	c.JSON(http.StatusOK, response.OK.WithData(ret))
 }
 
-// @Summary List all objectives
+// List @Summary List all objectives
 // @Description List all objectives
 // @Tags Goals
 // @Accept application/json
@@ -83,33 +84,33 @@ func (i *impl) List(c *gin.Context) {
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
 		i.logger.Error(errors.ErrInvalidPage.Error(), zap.Error(err), zap.String("page", c.Query("page")))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidPage})
+		c.Error(errors.ErrInvalidPage)
 		return
 	}
 
 	size, err := strconv.Atoi(c.DefaultQuery("size", "10"))
 	if err != nil {
 		i.logger.Error(errors.ErrInvalidSize.Error(), zap.Error(err), zap.String("size", c.Query("size")))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidSize})
+		c.Error(errors.ErrInvalidSize)
 		return
 	}
 
 	ret, err := i.biz.List(ctx, page, size)
 	if err != nil {
 		i.logger.Error(errors.ErrListObj.Error(), zap.Error(err), zap.Int("page", page), zap.Int("size", size))
-		c.JSON(http.StatusOK, gin.H{"error": errors.ErrListObj})
+		c.Error(errors.ErrListObj)
 		return
 	}
 	if len(ret) == 0 {
 		i.logger.Error(errors.ErrObjNotExists.Error(), zap.Int("page", page), zap.Int("size", size))
-		c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrObjNotExists})
+		c.Error(errors.ErrObjNotExists)
 		return
 	}
 
-	c.JSON(http.StatusOK, ret)
+	c.JSON(http.StatusOK, response.OK.WithData(ret))
 }
 
-// @Summary Create a objective
+// Create @Summary Create a objective
 // @Description Create a objective
 // @Tags Goals
 // @Accept application/json
@@ -125,27 +126,27 @@ func (i *impl) Create(c *gin.Context) {
 	var created *okr.Goal
 	if err := c.ShouldBindJSON(&created); err != nil {
 		i.logger.Error(errors.ErrCreateObj.Error(), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrCreateObj})
+		c.Error(errors.ErrCreateObj)
 		return
 	}
 
 	if len(created.Title) == 0 {
 		i.logger.Error(errors.ErrEmptyTitle.Error(), zap.Any("created", created))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrEmptyTitle})
+		c.Error(errors.ErrEmptyTitle)
 		return
 	}
 
 	ret, err := i.biz.Create(ctx, created)
 	if err != nil {
 		i.logger.Error(errors.ErrCreateObj.Error(), zap.Error(err), zap.Any("created", created))
-		c.JSON(http.StatusOK, gin.H{"error": errors.ErrCreateObj})
+		c.Error(errors.ErrCreateObj)
 		return
 	}
 
-	c.JSON(http.StatusCreated, ret)
+	c.JSON(http.StatusCreated, response.OK.WithData(ret))
 }
 
-// @Summary Modify title of goal
+// ModifyTitle @Summary Modify title of goal
 // @Description Modify title of goal
 // @Tags Goals
 // @Accept application/json
@@ -162,33 +163,33 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
 		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidID})
+		c.Error(errors.ErrInvalidID)
 		return
 	}
 
 	var data *okr.Goal
 	if err := c.ShouldBindJSON(&data); err != nil {
 		i.logger.Error(errors.ErrUpdateObj.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrUpdateObj})
+		c.Error(errors.ErrUpdateObj)
 		return
 	}
 	if len(data.Title) == 0 {
 		i.logger.Error(errors.ErrEmptyTitle.Error(), zap.Any("data", data))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrEmptyTitle})
+		c.Error(errors.ErrEmptyTitle)
 		return
 	}
 
 	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
 	if err != nil {
 		i.logger.Error(errors.ErrUpdateObj.Error(), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrUpdateObj})
+		c.Error(errors.ErrUpdateObj)
 		return
 	}
 
-	c.JSON(http.StatusOK, ret)
+	c.JSON(http.StatusOK, response.OK.WithData(ret))
 }
 
-// @Summary Get a objective by id
+// Delete @Summary Get a objective by id
 // @Description Get a objective by id
 // @Tags Goals
 // @Accept application/json
@@ -204,14 +205,14 @@ func (i *impl) Delete(c *gin.Context) {
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
 		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidID})
+		c.Error(errors.ErrInvalidID)
 		return
 	}
 
 	err := i.biz.Delete(ctx, req.ID)
 	if err != nil {
 		i.logger.Error(errors.ErrDeleteObj.Error(), zap.Error(err), zap.String("id", req.ID))
-		c.JSON(http.StatusOK, gin.H{"error": errors.ErrDeleteObj})
+		c.Error(errors.ErrDeleteObj)
 		return
 	}
 

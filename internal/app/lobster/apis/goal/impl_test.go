@@ -13,6 +13,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/goal/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
@@ -50,6 +51,7 @@ func (s *handlerSuite) SetupTest() {
 
 	s.r = gin.New()
 	s.r.Use(middlewares.ContextMiddleware())
+	s.r.Use(middlewares.ResponseMiddleware())
 
 	s.mock = new(mocks.IBiz)
 	if handler, err := CreateIHandler(logger, s.mock); err != nil {
@@ -85,11 +87,11 @@ func (s *handlerSuite) Test_impl_GetByID() {
 			wantCode: 400,
 		},
 		{
-			name: "uuid then 200 error",
+			name: "uuid then 500 error",
 			args: args{id: uuid1, mock: func() {
 				s.mock.On("GetByID", mock.Anything, uuid1).Return(nil, errors.New("error")).Once()
 			}},
-			wantCode: 200,
+			wantCode: 500,
 		},
 		{
 			name: "uuid then 200 obj",
@@ -134,7 +136,7 @@ func (s *handlerSuite) Test_impl_List() {
 		name     string
 		args     args
 		wantCode int
-		wantBody []*okr.Goal
+		wantBody *response.Response
 	}{
 		{
 			name:     "a 10 then 400 error",
@@ -149,11 +151,11 @@ func (s *handlerSuite) Test_impl_List() {
 			wantBody: nil,
 		},
 		{
-			name: "1 1 then 200 error",
+			name: "1 1 then 500 error",
 			args: args{page: "1", size: "1", mock: func() {
 				s.mock.On("List", mock.Anything, 1, 1).Return(nil, errors.New("error")).Once()
 			}},
-			wantCode: 200,
+			wantCode: 500,
 			wantBody: nil,
 		},
 		{
@@ -171,7 +173,7 @@ func (s *handlerSuite) Test_impl_List() {
 					[]*okr.Goal{obj1}, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: []*okr.Goal{obj1},
+			wantBody: response.OK.WithData([]*okr.Goal{obj1}),
 		},
 	}
 	for _, tt := range tests {
@@ -191,14 +193,14 @@ func (s *handlerSuite) Test_impl_List() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody []*okr.Goal
+			var gotBody *response.Response
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "List() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("List() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("List() got = %v, wantBody = %v", gotBody, tt.wantBody), "List")
 			}
 
 			s.TearDownTest()
@@ -217,7 +219,7 @@ func (s *handlerSuite) Test_impl_Create() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *okr.Goal
+		wantBody *response.Response
 	}{
 		{
 			name:     "empty title then 400 error",
@@ -226,11 +228,11 @@ func (s *handlerSuite) Test_impl_Create() {
 			wantBody: nil,
 		},
 		{
-			name: "created then 200 error",
+			name: "created then 500 error",
 			args: args{created: created1, mock: func() {
 				s.mock.On("Create", mock.Anything, created1).Return(nil, errors.New("error")).Once()
 			}},
-			wantCode: 200,
+			wantCode: 500,
 			wantBody: nil,
 		},
 		{
@@ -239,7 +241,7 @@ func (s *handlerSuite) Test_impl_Create() {
 				s.mock.On("Create", mock.Anything, created1).Return(obj1, nil).Once()
 			}},
 			wantCode: 201,
-			wantBody: obj1,
+			wantBody: response.OK.WithData(obj1),
 		},
 	}
 	for _, tt := range tests {
@@ -267,7 +269,7 @@ func (s *handlerSuite) Test_impl_Create() {
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Create() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("Create() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("Create() got = %v, wantBody = %v", gotBody, tt.wantBody), "Create")
 			}
 
 			s.TearDownTest()
@@ -369,11 +371,11 @@ func (s *handlerSuite) Test_impl_Delete() {
 			wantCode: 400,
 		},
 		{
-			name: "uuid then 200 error",
+			name: "uuid then 500 error",
 			args: args{id: uuid1, mock: func() {
 				s.mock.On("Delete", mock.Anything, uuid1).Return(errors.New("error")).Once()
 			}},
-			wantCode: 200,
+			wantCode: 500,
 		},
 		{
 			name: "uuid then 204 nil",

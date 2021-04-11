@@ -20,7 +20,7 @@ var (
 	ErrListObj = newAPPError(http.StatusInternalServerError, 50021, "list all objectives is failure")
 
 	// ErrObjNotExists means objective not exists
-	ErrObjNotExists = newAPPError(http.StatusInternalServerError, 50022, "objective not exists")
+	ErrObjNotExists = newAPPError(http.StatusNotFound, 50022, "objective not exists")
 
 	// ErrCountObj means count all objectives is failure
 	ErrCountObj = newAPPError(http.StatusInternalServerError, 50023, "count objective is failure")
