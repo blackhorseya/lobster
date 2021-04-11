@@ -37,10 +37,10 @@ type reqID struct {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of key result"
-// @Success 200 {object} pb.Result
-// @Failure 400 {object} string
-// @Failure 404 {object} string
-// @Failure 500 {object} string
+// @Success 200 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 404 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/results/{id} [get]
 func (i *impl) GetByID(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -73,10 +73,10 @@ func (i *impl) GetByID(c *gin.Context) {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of goal"
-// @Success 200 {array} pb.Result
-// @Failure 400 {object} string
-// @Failure 404 {object} string
-// @Failure 500 {object} string
+// @Success 200 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 404 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/goals/{id}/results [get]
 func (i *impl) GetByGoalID(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -110,10 +110,10 @@ func (i *impl) GetByGoalID(c *gin.Context) {
 // @Produce application/json
 // @Param page query integer false "page" default(1)
 // @Param size query integer false "size of page" default(10)
-// @Success 200 {array} pb.Result
-// @Failure 400 {object} string
-// @Failure 404 {object} string
-// @Failure 500 {object} string
+// @Success 200 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 404 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/results [get]
 func (i *impl) List(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -152,10 +152,10 @@ func (i *impl) List(c *gin.Context) {
 // @Tags Results
 // @Accept application/json
 // @Produce application/json
-// @Param created body pb.Result true "created key result"
-// @Success 201 {object} pb.Result
-// @Failure 400 {object} string
-// @Failure 500 {object} string
+// @Param created body okr.Result true "created key result"
+// @Success 201 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/results [post]
 func (i *impl) Create(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -196,10 +196,10 @@ func (i *impl) Create(c *gin.Context) {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of result"
-// @Param updated body pb.Result true "updated result"
-// @Success 200 {object} pb.Result
-// @Failure 400 {object} string
-// @Failure 500 {object} string
+// @Param updated body okr.Result true "updated result"
+// @Success 200 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/results/{id}/title [patch]
 func (i *impl) ModifyTitle(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -241,9 +241,9 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 // @Produce application/json
 // @Param id path string true "ID of key result"
 // @Success 204 {object} string
-// @Failure 400 {object} string
-// @Failure 404 {object} string
-// @Failure 500 {object} string
+// @Failure 400 {object} errors.APPError
+// @Failure 404 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/results/{id} [delete]
 func (i *impl) Delete(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)

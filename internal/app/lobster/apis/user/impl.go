@@ -30,10 +30,10 @@ func NewImpl(logger *zap.Logger, biz user.IBiz) IHandler {
 // @Tags Users
 // @Accept application/json
 // @Produce application/json
-// @Param newUser body pb.Profile true "new user profile"
-// @Success 201 {object} string
-// @Failure 400 {object} string
-// @Failure 500 {object} string
+// @Param newUser body user.Profile true "new user profile"
+// @Success 201 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/users/signup [post]
 func (i *impl) Signup(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -60,10 +60,10 @@ func (i *impl) Signup(c *gin.Context) {
 // @Tags Users
 // @Accept application/json
 // @Produce application/json
-// @Param user body pb.Profile true "user profile"
-// @Success 201 {object} string
-// @Failure 400 {object} string
-// @Failure 500 {object} string
+// @Param user body user.Profile true "user profile"
+// @Success 201 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/users/login [post]
 func (i *impl) Login(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)

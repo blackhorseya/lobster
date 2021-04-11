@@ -36,9 +36,9 @@ type reqID struct {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of task"
-// @Success 200 {object} string
-// @Failure 400 {object} string
-// @Failure 500 {object} string
+// @Success 200 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/tasks/{id} [get]
 func (i *impl) GetByID(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -67,9 +67,9 @@ func (i *impl) GetByID(c *gin.Context) {
 // @Produce application/json
 // @Param page query integer false "page" default(1)
 // @Param size query integer false "size of page" default(10)
-// @Success 200 {object} string
-// @Failure 400 {object} string
-// @Failure 500 {object} string
+// @Success 200 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/tasks [get]
 func (i *impl) List(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -108,11 +108,10 @@ func (i *impl) List(c *gin.Context) {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
-// @Param created body pb.Task true "created task"
-// @Success 200 {object} string
-// @Success 201 {object} string
-// @Failure 400 {object} string
-// @Failure 500 {object} string
+// @Param created body task.Task true "created task"
+// @Success 201 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/tasks [post]
 func (i *impl) Create(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -146,10 +145,10 @@ func (i *impl) Create(c *gin.Context) {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of task"
-// @Param updated body pb.Task true "updated task"
-// @Success 200 {object} string
-// @Failure 400 {object} string
-// @Failure 500 {object} string
+// @Param updated body task.Task true "updated task"
+// @Success 200 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/tasks/{id}/status [patch]
 func (i *impl) UpdateStatus(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -184,10 +183,10 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of task"
-// @Param updated body pb.Task true "updated task"
-// @Success 200 {object} string
-// @Failure 400 {object} string
-// @Failure 500 {object} string
+// @Param updated body task.Task true "updated task"
+// @Success 200 {object} response.Response
+// @Failure 400 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/tasks/{id}/title [patch]
 func (i *impl) ModifyTitle(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -227,10 +226,9 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 // @Accept application/json
 // @Produce application/json
 // @Param id path string true "ID of task"
-// @Success 200 {object} string
 // @Success 204 {object} string
-// @Failure 400 {object} string
-// @Failure 500 {object} string
+// @Failure 400 {object} errors.APPError
+// @Failure 500 {object} errors.APPError
 // @Router /v1/tasks/{id} [delete]
 func (i *impl) Delete(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)

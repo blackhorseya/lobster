@@ -29,8 +29,8 @@ func NewImpl(logger *zap.Logger, biz health.IBiz) IHandler {
 // @Tags Health
 // @Accept application/json
 // @Produce application/json
-// @Success 200 {object} string
-// @Failure 500 {object} string
+// @Success 200 {object} response.Response
+// @Failure 500 {object} errors.APPError
 // @Router /readiness [get]
 func (i *impl) Readiness(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -50,8 +50,8 @@ func (i *impl) Readiness(c *gin.Context) {
 // @Tags Health
 // @Accept application/json
 // @Produce application/json
-// @Success 200 {object} string
-// @Failure 500 {object} string
+// @Success 200 {object} response.Response
+// @Failure 500 {object} errors.APPError
 // @Router /liveness [get]
 func (i *impl) Liveness(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)

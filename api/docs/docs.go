@@ -44,18 +44,17 @@ var doc = `{
                 "tags": [
                     "Health"
                 ],
-                "summary": "Liveness",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -73,18 +72,17 @@ var doc = `{
                 "tags": [
                     "Health"
                 ],
-                "summary": "Readiness",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -102,7 +100,6 @@ var doc = `{
                 "tags": [
                     "Goals"
                 ],
-                "summary": "List all objectives",
                 "parameters": [
                     {
                         "type": "integer",
@@ -123,28 +120,25 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/pb.Goal"
-                            }
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -160,7 +154,6 @@ var doc = `{
                 "tags": [
                     "Goals"
                 ],
-                "summary": "Create a objective",
                 "parameters": [
                     {
                         "description": "created goal",
@@ -168,7 +161,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Goal"
+                            "$ref": "#/definitions/okr.Goal"
                         }
                     }
                 ],
@@ -176,19 +169,19 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/pb.Goal"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -206,7 +199,6 @@ var doc = `{
                 "tags": [
                     "Goals"
                 ],
-                "summary": "Get a objective by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -220,25 +212,25 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/pb.Goal"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -254,7 +246,6 @@ var doc = `{
                 "tags": [
                     "Goals"
                 ],
-                "summary": "Get a objective by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -274,13 +265,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -298,7 +289,6 @@ var doc = `{
                 "tags": [
                     "Results"
                 ],
-                "summary": "Get key result by goal id",
                 "parameters": [
                     {
                         "type": "string",
@@ -312,28 +302,25 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/pb.Result"
-                            }
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -351,7 +338,6 @@ var doc = `{
                 "tags": [
                     "Goals"
                 ],
-                "summary": "Modify title of goal",
                 "parameters": [
                     {
                         "type": "string",
@@ -366,7 +352,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Goal"
+                            "$ref": "#/definitions/okr.Goal"
                         }
                     }
                 ],
@@ -374,19 +360,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/pb.Goal"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -404,7 +390,6 @@ var doc = `{
                 "tags": [
                     "Results"
                 ],
-                "summary": "List all key results",
                 "parameters": [
                     {
                         "type": "integer",
@@ -425,28 +410,25 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/pb.Result"
-                            }
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -462,7 +444,6 @@ var doc = `{
                 "tags": [
                     "Results"
                 ],
-                "summary": "Create a key result",
                 "parameters": [
                     {
                         "description": "created key result",
@@ -470,7 +451,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Result"
+                            "$ref": "#/definitions/okr.Result"
                         }
                     }
                 ],
@@ -478,19 +459,19 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/pb.Result"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -508,7 +489,6 @@ var doc = `{
                 "tags": [
                     "Results"
                 ],
-                "summary": "Get a key result by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -522,25 +502,25 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/pb.Result"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -556,7 +536,6 @@ var doc = `{
                 "tags": [
                     "Results"
                 ],
-                "summary": "Delete a key result by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -576,19 +555,19 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -606,7 +585,6 @@ var doc = `{
                 "tags": [
                     "Results"
                 ],
-                "summary": "Modify title of result",
                 "parameters": [
                     {
                         "type": "string",
@@ -621,7 +599,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Result"
+                            "$ref": "#/definitions/okr.Result"
                         }
                     }
                 ],
@@ -629,19 +607,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/pb.Result"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -659,7 +637,6 @@ var doc = `{
                 "tags": [
                     "Tasks"
                 ],
-                "summary": "List all tasks",
                 "parameters": [
                     {
                         "type": "integer",
@@ -680,19 +657,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -708,7 +685,6 @@ var doc = `{
                 "tags": [
                     "Tasks"
                 ],
-                "summary": "Create a task",
                 "parameters": [
                     {
                         "description": "created task",
@@ -716,33 +692,27 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Task"
+                            "$ref": "#/definitions/task.Task"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -760,7 +730,6 @@ var doc = `{
                 "tags": [
                     "Tasks"
                 ],
-                "summary": "Get a task by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -774,19 +743,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -802,7 +771,6 @@ var doc = `{
                 "tags": [
                     "Tasks"
                 ],
-                "summary": "Delete a task by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -813,12 +781,6 @@ var doc = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     "204": {
                         "description": "No Content",
                         "schema": {
@@ -828,13 +790,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -852,7 +814,6 @@ var doc = `{
                 "tags": [
                     "Tasks"
                 ],
-                "summary": "UpdateStatus a status of task by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -867,7 +828,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Task"
+                            "$ref": "#/definitions/task.Task"
                         }
                     }
                 ],
@@ -875,19 +836,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -905,7 +866,6 @@ var doc = `{
                 "tags": [
                     "Tasks"
                 ],
-                "summary": "ModifyTitle a title of task by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -920,7 +880,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Task"
+                            "$ref": "#/definitions/task.Task"
                         }
                     }
                 ],
@@ -928,19 +888,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -958,7 +918,6 @@ var doc = `{
                 "tags": [
                     "Users"
                 ],
-                "summary": "Login",
                 "parameters": [
                     {
                         "description": "user profile",
@@ -966,7 +925,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Profile"
+                            "$ref": "#/definitions/user.Profile"
                         }
                     }
                 ],
@@ -974,19 +933,19 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -1004,7 +963,6 @@ var doc = `{
                 "tags": [
                     "Users"
                 ],
-                "summary": "Signup",
                 "parameters": [
                     {
                         "description": "new user profile",
@@ -1012,7 +970,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.Profile"
+                            "$ref": "#/definitions/user.Profile"
                         }
                     }
                 ],
@@ -1020,19 +978,19 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/errors.APPError"
                         }
                     }
                 }
@@ -1040,7 +998,18 @@ var doc = `{
         }
     },
     "definitions": {
-        "pb.Goal": {
+        "errors.APPError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "okr.Goal": {
             "type": "object",
             "properties": {
                 "create_at": {
@@ -1059,7 +1028,7 @@ var doc = `{
                     "description": "KeyResults describe key results of objective",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/pb.Result"
+                        "$ref": "#/definitions/okr.Result"
                     }
                 },
                 "start_at": {
@@ -1072,20 +1041,7 @@ var doc = `{
                 }
             }
         },
-        "pb.Profile": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "description": "AccessToken describe this user's accessToken",
-                    "type": "string"
-                },
-                "email": {
-                    "description": "Email describe user's email to login system",
-                    "type": "string"
-                }
-            }
-        },
-        "pb.Result": {
+        "okr.Result": {
             "type": "object",
             "properties": {
                 "actual": {
@@ -1114,7 +1070,21 @@ var doc = `{
                 }
             }
         },
-        "pb.Task": {
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "task.Task": {
             "type": "object",
             "properties": {
                 "completed": {
@@ -1139,6 +1109,19 @@ var doc = `{
                 },
                 "title": {
                     "description": "Title describe the title of task",
+                    "type": "string"
+                }
+            }
+        },
+        "user.Profile": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "description": "AccessToken describe this user's accessToken",
+                    "type": "string"
+                },
+                "email": {
+                    "description": "Email describe user's email to login system",
                     "type": "string"
                 }
             }
