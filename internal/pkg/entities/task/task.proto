@@ -1,0 +1,10 @@
+syntax = "proto3";
+package task;
+option go_package = "./task;task";
+
+enum Status {
+  BACKLOG = 0;
+  TODO = 1;
+  INPROGRESS = 2;
+  DONE = 3;
+}

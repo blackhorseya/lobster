@@ -37,7 +37,7 @@ jobs:
         - echo "execute integration test..."
     - name: Lint
       script:
-        - make lint
+        - make report
     - stage: Deploy
       services:
         - docker

@@ -10,6 +10,10 @@ clean:
 
 .PHONY: lint
 lint:
+	@golint ./...
+
+.PHONY: report
+report:
 	@curl -XPOST 'https://goreportcard.com/checks' --data 'repo=github.com/blackhorseya/lobster'
 
 .PHONY: test-with-coverage
@@ -65,8 +69,8 @@ gen-wire:
 
 .PHONY: gen-pb
 gen-pb:
-	@protoc --go_out=plugins=grpc:./internal/pkg/pb ./internal/pkg/pb/*.proto
+	@protoc --go_out=plugins=grpc:./internal/pkg/entities ./internal/pkg/entities/**/*.proto
 
 .PHONY: gen-swagger
 gen-swagger:
-	@swag init -g cmd/$(APP_NAME)/main.go --parseInternal -o internal/apis/restful/docs
+	@swag init -g cmd/$(APP_NAME)/main.go --parseInternal -o api/docs
