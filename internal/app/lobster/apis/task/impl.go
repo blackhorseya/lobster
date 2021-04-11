@@ -58,7 +58,6 @@ func (i *impl) GetByID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.OK.WithData(ret))
-	return
 }
 
 // List @Summary List all tasks
@@ -102,7 +101,6 @@ func (i *impl) List(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, ret)
-	return
 }
 
 // Create @Summary Create a task
@@ -122,25 +120,24 @@ func (i *impl) Create(c *gin.Context) {
 	var data *taskE.Task
 	if err := c.ShouldBindJSON(&data); err != nil {
 		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrCreateTask})
+		c.Error(errors.ErrCreateTask)
 		return
 	}
 
 	if len(data.Title) == 0 {
 		i.logger.Error(errors.ErrEmptyTitle.Error(), zap.Any("created", data))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrEmptyTitle})
+		c.Error(errors.ErrEmptyTitle)
 		return
 	}
 
 	ret, err := i.biz.Create(ctx, data)
 	if err != nil {
 		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err), zap.Any("created", data))
-		c.JSON(http.StatusOK, gin.H{"error": errors.ErrCreateTask})
+		c.Error(errors.ErrCreateTask)
 		return
 	}
 
-	c.JSON(http.StatusCreated, ret)
-	return
+	c.JSON(http.StatusCreated, response.OK.WithData(ret))
 }
 
 // UpdateStatus @Summary UpdateStatus a status of task by id
@@ -160,25 +157,25 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
 		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidID})
+		c.Error(errors.ErrInvalidID)
 		return
 	}
 
 	var data *taskE.Task
 	if err := c.ShouldBindJSON(&data); err != nil {
 		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrCreateTask})
+		c.Error(errors.ErrUpdateTask)
 		return
 	}
 
 	ret, err := i.biz.UpdateStatus(ctx, req.ID, data.Status)
 	if err != nil {
 		i.logger.Error(errors.ErrUpdateTask.Error(), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrUpdateTask})
+		c.Error(errors.ErrUpdateTask)
 		return
 	}
 
-	c.JSON(http.StatusOK, ret)
+	c.JSON(http.StatusOK, response.OK.WithData(ret))
 }
 
 // ModifyTitle @Summary ModifyTitle a title of task by id
@@ -198,30 +195,30 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
 		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidID})
+		c.Error(errors.ErrInvalidID)
 		return
 	}
 
 	var data *taskE.Task
 	if err := c.ShouldBindJSON(&data); err != nil {
 		i.logger.Error(errors.ErrCreateTask.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrCreateTask})
+		c.Error(errors.ErrUpdateTask)
 		return
 	}
 	if len(data.Title) == 0 {
 		i.logger.Error(errors.ErrEmptyTitle.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrEmptyTitle})
+		c.Error(errors.ErrEmptyTitle)
 		return
 	}
 
 	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
 	if err != nil {
 		i.logger.Error(errors.ErrUpdateTask.Error(), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrUpdateTask})
+		c.Error(errors.ErrUpdateTask)
 		return
 	}
 
-	c.JSON(http.StatusOK, ret)
+	c.JSON(http.StatusOK, response.OK.WithData(ret))
 }
 
 // Delete @Summary Delete a task by id
@@ -241,13 +238,13 @@ func (i *impl) Delete(c *gin.Context) {
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
 		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidID})
+		c.Error(errors.ErrInvalidID)
 		return
 	}
 
 	if err := i.biz.Delete(ctx, req.ID); err != nil {
 		i.logger.Error(errors.ErrDeleteTask.Error(), zap.Error(err), zap.String("id", req.ID))
-		c.JSON(http.StatusOK, gin.H{"error": errors.ErrDeleteTask})
+		c.Error(errors.ErrDeleteTask)
 		return
 	}
 

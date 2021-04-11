@@ -119,7 +119,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 				s.mock.On("GetByID", mock.Anything, uuid1).Return(task1, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: &response.Response{Code: 200, Msg: "ok",Data: task1},
+			wantBody: &response.Response{Code: 200, Msg: "ok", Data: task1},
 		},
 	}
 	for _, tt := range tests {
@@ -255,11 +255,11 @@ func (s *handlerSuite) Test_impl_Create() {
 			wantBody: nil,
 		},
 		{
-			name: "task then 200 error",
+			name: "task then 500 error",
 			args: args{task: created1, mock: func() {
 				s.mock.On("Create", mock.Anything, created1).Return(nil, errors.New("error")).Once()
 			}},
-			wantCode: 200,
+			wantCode: 500,
 			wantBody: nil,
 		},
 		{
@@ -268,7 +268,7 @@ func (s *handlerSuite) Test_impl_Create() {
 				s.mock.On("Create", mock.Anything, created1).Return(task1, nil).Once()
 			}},
 			wantCode: 201,
-			wantBody: task1,
+			wantBody: nil,
 		},
 	}
 	for _, tt := range tests {
@@ -322,11 +322,11 @@ func (s *handlerSuite) Test_impl_Delete() {
 			wantCode: 400,
 		},
 		{
-			name: "uuid then 200 error",
+			name: "uuid then 500 error",
 			args: args{id: uuid1, mock: func() {
 				s.mock.On("Delete", mock.Anything, uuid1).Return(errors.New("error")).Once()
 			}},
-			wantCode: 200,
+			wantCode: 500,
 		},
 		{
 			name: "uuid then 204 nil",
@@ -371,7 +371,7 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *task.Task
+		wantBody *response.Response
 	}{
 		{
 			name:     "id then 400 error",
@@ -391,7 +391,7 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 				s.mock.On("UpdateStatus", mock.Anything, uuid1, task.Status_INPROGRESS).Return(updated2, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: updated2,
+			wantBody: response.OK.WithData(updated2),
 		},
 	}
 	for _, tt := range tests {
@@ -415,7 +415,7 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Delete() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("Update() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("Update() got = %v, wantBody = %v", gotBody, tt.wantBody), "Update")
 			}
 
 			s.TearDownTest()
@@ -435,7 +435,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *task.Task
+		wantBody *response.Response
 	}{
 		{
 			name:     "id title then parse id error",
@@ -463,7 +463,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 				s.mock.On("ModifyTitle", mock.Anything, uuid1, "title").Return(task1, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: task1,
+			wantBody: response.OK.WithData(task1),
 		},
 	}
 	for _, tt := range tests {
@@ -487,7 +487,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "ModifyTitle() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("ModifyTitle() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("ModifyTitle() got = %v, wantBody = %v", gotBody, tt.wantBody), "ModifyTitle")
 			}
 
 			s.TearDownTest()
