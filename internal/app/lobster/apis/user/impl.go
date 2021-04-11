@@ -1,22 +1,15 @@
 package user
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user"
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
 	user2 "github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-)
-
-var (
-	// ErrSignup means user signup is failure
-	ErrSignup = fmt.Errorf("user signup is failure")
-
-	// ErrLogin means user login is failure
-	ErrLogin = fmt.Errorf("user login is failure")
 )
 
 type impl struct {
@@ -32,7 +25,7 @@ func NewImpl(logger *zap.Logger, biz user.IBiz) IHandler {
 	}
 }
 
-// @Summary Signup
+// Signup @Summary Signup
 // @Description Signup
 // @Tags Users
 // @Accept application/json
@@ -47,22 +40,22 @@ func (i *impl) Signup(c *gin.Context) {
 
 	var newUser *user2.Profile
 	if err := c.ShouldBindJSON(&newUser); err != nil {
-		i.logger.Error(ErrSignup.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrSignup})
+		i.logger.Error(errors.ErrSignup.Error())
+		c.Error(errors.ErrSignup)
 		return
 	}
 
 	ret, err := i.biz.Signup(ctx, newUser.Email, newUser.AccessToken)
 	if err != nil {
-		i.logger.Error(ErrSignup.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrSignup})
+		i.logger.Error(errors.ErrSignup.Error())
+		c.Error(errors.ErrSignup)
 		return
 	}
 
-	c.JSON(http.StatusCreated, ret)
+	c.JSON(http.StatusCreated, response.OK.WithData(ret))
 }
 
-// @Summary Login
+// Login @Summary Login
 // @Description Login
 // @Tags Users
 // @Accept application/json
@@ -77,17 +70,17 @@ func (i *impl) Login(c *gin.Context) {
 
 	var data *user2.Profile
 	if err := c.ShouldBindJSON(&data); err != nil {
-		i.logger.Error(ErrLogin.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrLogin})
+		i.logger.Error(errors.ErrLogin.Error())
+		c.Error(errors.ErrLogin)
 		return
 	}
 
 	ret, err := i.biz.Login(ctx, data.Email, data.AccessToken)
 	if err != nil {
-		i.logger.Error(ErrLogin.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrLogin})
+		i.logger.Error(errors.ErrLogin.Error())
+		c.Error(errors.ErrLogin)
 		return
 	}
 
-	c.JSON(http.StatusCreated, ret)
+	c.JSON(http.StatusCreated, response.OK.WithData(ret))
 }

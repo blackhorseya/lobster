@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/mocks"
+	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
@@ -51,6 +52,7 @@ func (s *handlerSuite) SetupTest() {
 
 	s.r = gin.New()
 	s.r.Use(middlewares.ContextMiddleware())
+	s.r.Use(middlewares.ResponseMiddleware())
 
 	s.mock = new(mocks.IBiz)
 	handler, err := CreateIHandler(logger, s.mock)
@@ -82,7 +84,7 @@ func (s *handlerSuite) Test_impl_Signup() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *user.Profile
+		wantBody *response.Response
 	}{
 		{
 			name: "profile then 500 error",
@@ -98,7 +100,7 @@ func (s *handlerSuite) Test_impl_Signup() {
 				s.mock.On("Signup", mock.Anything, email1, token1).Return(&user1, nil).Once()
 			}},
 			wantCode: 201,
-			wantBody: nil,
+			wantBody: response.OK.WithData(&user1),
 		},
 	}
 	for _, tt := range tests {
@@ -117,12 +119,12 @@ func (s *handlerSuite) Test_impl_Signup() {
 			defer got.Body.Close()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *user.Profile
+			var gotBody *response.Response
 			_ = json.Unmarshal(body, &gotBody)
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Signup() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("Signup() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("Signup() got = %v, wantBody = %v", gotBody, tt.wantBody), "Signup")
 			}
 
 			s.TearDownTest()
@@ -142,7 +144,7 @@ func (s *handlerSuite) Test_impl_Login() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *user.Profile
+		wantBody *response.Response
 	}{
 		{
 			name: "profile then 500 error",
@@ -158,7 +160,7 @@ func (s *handlerSuite) Test_impl_Login() {
 				s.mock.On("Login", mock.Anything, email1, token1).Return(&user1, nil).Once()
 			}},
 			wantCode: 201,
-			wantBody: nil,
+			wantBody: response.OK.WithData(&user1),
 		},
 	}
 	for _, tt := range tests {
@@ -177,12 +179,12 @@ func (s *handlerSuite) Test_impl_Login() {
 			defer got.Body.Close()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *user.Profile
+			var gotBody *response.Response
 			_ = json.Unmarshal(body, &gotBody)
 
-			s.EqualValuesf(tt.wantCode, got.StatusCode, "Signup() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Login() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.T().Errorf("Signup() got = %v, wantBody = %v", gotBody, tt.wantBody)
+				s.Errorf(fmt.Errorf("Login() got = %v, wantBody = %v", gotBody, tt.wantBody), "Login")
 			}
 
 			s.TearDownTest()

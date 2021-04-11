@@ -74,3 +74,11 @@ var (
 	// ErrCreateKR means create a key result is failure
 	ErrCreateKR = newAPPError(http.StatusInternalServerError, 50045, "create a key result is failure")
 )
+
+var (
+	// ErrSignup means user signup is failure
+	ErrSignup = newAPPError(http.StatusInternalServerError, 50050, "user signup is failure")
+
+	// ErrLogin means user login is failure
+	ErrLogin = newAPPError(http.StatusInternalServerError, 50051, "user login is failure")
+)
