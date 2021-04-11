@@ -5,6 +5,11 @@ import (
 )
 
 var (
+	// ErrRateLimit means too many requests
+	ErrRateLimit = newAPPError(http.StatusTooManyRequests, 42900, "too many requests")
+)
+
+var (
 	// ErrInvalidID means given id is invalid
 	ErrInvalidID = newAPPError(http.StatusBadRequest, 40001, "invalid id")
 

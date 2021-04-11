@@ -7,6 +7,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
+	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares/rate"
 	"github.com/blackhorseya/lobster/internal/pkg/utils/netutil"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -63,6 +64,7 @@ func NewRouter(o *Options, logger *zap.Logger, init InitHandlers) *gin.Engine {
 	r.Use(ginzap.RecoveryWithZap(logger, true))
 
 	r.Use(middlewares.ResponseMiddleware())
+	r.Use(rate.IPRateLimitMiddleware(1, 60))
 
 	init(r)
 
