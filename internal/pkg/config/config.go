@@ -86,4 +86,4 @@ func New(path string) (*viper.Viper, error) {
 }
 
 // ProviderSet is a provider set for wire
-var ProviderSet = wire.NewSet(New, NewConfig)
+var ProviderSet = wire.NewSet(New)
