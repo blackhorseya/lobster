@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/pkg/config"
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"

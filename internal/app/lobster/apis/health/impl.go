@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health"
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
+	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )

@@ -2,8 +2,8 @@ package user
 
 import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/repo"
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
+	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
 	"github.com/google/wire"
 )
 

@@ -2,8 +2,8 @@ package health
 
 import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health/repo"
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
+	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
 	"go.uber.org/zap"
 )
 

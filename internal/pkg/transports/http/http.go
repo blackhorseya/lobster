@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
 	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares/rate"
+	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/utils/netutil"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"

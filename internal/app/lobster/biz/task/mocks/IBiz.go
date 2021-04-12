@@ -3,8 +3,8 @@
 package mocks
 
 import (
-	contextx "github.com/blackhorseya/lobster/internal/pkg/contextx"
 	entitiestask "github.com/blackhorseya/lobster/internal/pkg/entities/task"
+	contextx "github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
 
 	mock "github.com/stretchr/testify/mock"
 )

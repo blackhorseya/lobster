@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/utils/trace"
 	"github.com/gin-gonic/gin"
 )

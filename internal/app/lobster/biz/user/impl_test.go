@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/repo/mocks"
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
+	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 	"go.uber.org/zap"

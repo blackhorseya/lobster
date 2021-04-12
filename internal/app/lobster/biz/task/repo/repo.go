@@ -1,8 +1,8 @@
 package repo
 
 import (
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/task"
+	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
 	"github.com/google/wire"
 )
 
