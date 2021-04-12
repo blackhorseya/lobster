@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
@@ -65,6 +66,8 @@ func NewRouter(o *Options, logger *zap.Logger, init InitHandlers) *gin.Engine {
 
 	r.Use(middlewares.ResponseMiddleware())
 	r.Use(rate.IPRateLimitMiddleware(1, 60))
+
+	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	init(r)
 
