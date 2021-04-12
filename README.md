@@ -7,8 +7,8 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/blackhorseya/lobster)](https://pkg.go.dev/github.com/blackhorseya/lobster)
 [![GitHub license](https://img.shields.io/github/license/blackhorseya/lobster)](https://github.com/blackhorseya/lobster/blob/main/LICENSE)
 
-[Lobster](https://lobster.seancheng.space/api/docs/index.html) is a tool which integrate todo list, OKRs, sprint
-board, pomodoro and report etc. functional
+[Lobster](https://lobster.seancheng.space/api/docs/index.html) is a tool which integrates todo list, OKRs, sprint
+board, pomodoro and report function, etc.
 
 ## Concept
 
