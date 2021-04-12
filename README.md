@@ -7,12 +7,12 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/blackhorseya/lobster)](https://pkg.go.dev/github.com/blackhorseya/lobster)
 [![GitHub license](https://img.shields.io/github/license/blackhorseya/lobster)](https://github.com/blackhorseya/lobster/blob/main/LICENSE)
 
-[Lobster](https://lobster.seancheng.space/api/docs/index.html) is a tool which integrates todo list, OKRs, sprint
-board, pomodoro and report function, etc.
+[Lobster](https://lobster.seancheng.space/api/docs/index.html) is a tool which integrates functions of todo list, OKRs, sprint
+board, pomodoro, report, etc.
 
 ## Concept
 
-I benefit a lot from OKRs and Agile in my work as many others do. I believe these concepts can also be applied in our daily life to help individuals to set goals and tract progresses. This project aims to break long-term goals into tasks and sprint tasks. The sprint tasks are presented via Sprint board. I use [Lobster-CLI](https://github.com/blackhorseya/lobster-cli) for controling the API.
+I benefit a lot from OKRs and Agile in my work as many others do. I believe these concepts can also be applied in our daily life to help individuals to set goals and tract progresses. This project aims to break long-term goals into small, measurable tasks. The tasks are then presented in Sprint board. I use [Lobster-CLI](https://github.com/blackhorseya/lobster-cli) for controling the API.
 
 ## Tech
 
