@@ -3,16 +3,16 @@
 package repo
 
 import (
-	"github.com/blackhorseya/lobster/internal/pkg/config"
-	"github.com/blackhorseya/lobster/internal/pkg/databases"
-	"github.com/blackhorseya/lobster/internal/pkg/log"
+	config2 "github.com/blackhorseya/lobster/internal/pkg/entity/config"
+	databases2 "github.com/blackhorseya/lobster/internal/pkg/infra/databases"
+	log2 "github.com/blackhorseya/lobster/internal/pkg/infra/log"
 	"github.com/google/wire"
 )
 
 var testProviderSet = wire.NewSet(
-	log.ProviderSet,
-	config.ProviderSet,
-	databases.ProviderSet,
+	log2.ProviderSet,
+	config2.ProviderSet,
+	databases2.ProviderSet,
 	NewImpl,
 )
 

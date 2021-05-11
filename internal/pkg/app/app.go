@@ -5,7 +5,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )

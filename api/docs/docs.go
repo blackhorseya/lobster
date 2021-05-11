@@ -54,7 +54,7 @@ var doc = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -82,7 +82,7 @@ var doc = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -126,19 +126,19 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -175,13 +175,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -218,19 +218,19 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -265,13 +265,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -308,19 +308,19 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -366,13 +366,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -416,19 +416,19 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -465,13 +465,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -508,19 +508,19 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -555,19 +555,19 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -613,13 +613,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -663,13 +663,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -706,13 +706,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -749,13 +749,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -790,13 +790,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -842,13 +842,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -894,13 +894,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -939,13 +939,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -984,13 +984,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errors.APPError"
+                            "$ref": "#/definitions/er.APPError"
                         }
                     }
                 }
@@ -998,7 +998,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "errors.APPError": {
+        "er.APPError": {
             "type": "object",
             "properties": {
                 "code": {

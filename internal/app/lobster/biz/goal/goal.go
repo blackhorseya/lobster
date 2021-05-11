@@ -2,8 +2,8 @@ package goal
 
 import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/goal/repo"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
-	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/okr"
 	"github.com/google/wire"
 )
 

@@ -3,8 +3,8 @@
 package mocks
 
 import (
-	entitiestask "github.com/blackhorseya/lobster/internal/pkg/entities/task"
-	contextx "github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
+	contextx "github.com/blackhorseya/lobster/internal/pkg/base/contextx"
+	entitytask "github.com/blackhorseya/lobster/internal/pkg/entity/task"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -36,20 +36,20 @@ func (_m *IBiz) Count(ctx contextx.Contextx) (int, error) {
 }
 
 // Create provides a mock function with given fields: ctx, _a1
-func (_m *IBiz) Create(ctx contextx.Contextx, _a1 *entitiestask.Task) (*entitiestask.Task, error) {
+func (_m *IBiz) Create(ctx contextx.Contextx, _a1 *entitytask.Task) (*entitytask.Task, error) {
 	ret := _m.Called(ctx, _a1)
 
-	var r0 *entitiestask.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, *entitiestask.Task) *entitiestask.Task); ok {
+	var r0 *entitytask.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *entitytask.Task) *entitytask.Task); ok {
 		r0 = rf(ctx, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entitiestask.Task)
+			r0 = ret.Get(0).(*entitytask.Task)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, *entitiestask.Task) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *entitytask.Task) error); ok {
 		r1 = rf(ctx, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -73,15 +73,15 @@ func (_m *IBiz) Delete(ctx contextx.Contextx, id string) error {
 }
 
 // GetByID provides a mock function with given fields: ctx, id
-func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*entitiestask.Task, error) {
+func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*entitytask.Task, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 *entitiestask.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *entitiestask.Task); ok {
+	var r0 *entitytask.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string) *entitytask.Task); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entitiestask.Task)
+			r0 = ret.Get(0).(*entitytask.Task)
 		}
 	}
 
@@ -96,15 +96,15 @@ func (_m *IBiz) GetByID(ctx contextx.Contextx, id string) (*entitiestask.Task, e
 }
 
 // List provides a mock function with given fields: ctx, page, size
-func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*entitiestask.Task, error) {
+func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*entitytask.Task, error) {
 	ret := _m.Called(ctx, page, size)
 
-	var r0 []*entitiestask.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*entitiestask.Task); ok {
+	var r0 []*entitytask.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*entitytask.Task); ok {
 		r0 = rf(ctx, page, size)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*entitiestask.Task)
+			r0 = ret.Get(0).([]*entitytask.Task)
 		}
 	}
 
@@ -119,15 +119,15 @@ func (_m *IBiz) List(ctx contextx.Contextx, page int, size int) ([]*entitiestask
 }
 
 // ModifyTitle provides a mock function with given fields: ctx, id, title
-func (_m *IBiz) ModifyTitle(ctx contextx.Contextx, id string, title string) (*entitiestask.Task, error) {
+func (_m *IBiz) ModifyTitle(ctx contextx.Contextx, id string, title string) (*entitytask.Task, error) {
 	ret := _m.Called(ctx, id, title)
 
-	var r0 *entitiestask.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, string) *entitiestask.Task); ok {
+	var r0 *entitytask.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, string) *entitytask.Task); ok {
 		r0 = rf(ctx, id, title)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entitiestask.Task)
+			r0 = ret.Get(0).(*entitytask.Task)
 		}
 	}
 
@@ -142,20 +142,20 @@ func (_m *IBiz) ModifyTitle(ctx contextx.Contextx, id string, title string) (*en
 }
 
 // UpdateStatus provides a mock function with given fields: ctx, id, status
-func (_m *IBiz) UpdateStatus(ctx contextx.Contextx, id string, status entitiestask.Status) (*entitiestask.Task, error) {
+func (_m *IBiz) UpdateStatus(ctx contextx.Contextx, id string, status entitytask.Status) (*entitytask.Task, error) {
 	ret := _m.Called(ctx, id, status)
 
-	var r0 *entitiestask.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, entitiestask.Status) *entitiestask.Task); ok {
+	var r0 *entitytask.Task
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, entitytask.Status) *entitytask.Task); ok {
 		r0 = rf(ctx, id, status)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entitiestask.Task)
+			r0 = ret.Get(0).(*entitytask.Task)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, string, entitiestask.Status) error); ok {
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, string, entitytask.Status) error); ok {
 		r1 = rf(ctx, id, status)
 	} else {
 		r1 = ret.Error(1)

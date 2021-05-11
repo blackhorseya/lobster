@@ -5,10 +5,10 @@ import (
 	"strconv"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/result"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
-	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/response"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -38,29 +38,29 @@ type reqID struct {
 // @Produce application/json
 // @Param id path string true "ID of key result"
 // @Success 200 {object} response.Response
-// @Failure 400 {object} errors.APPError
-// @Failure 404 {object} errors.APPError
-// @Failure 500 {object} errors.APPError
+// @Failure 400 {object} er.APPError
+// @Failure 404 {object} er.APPError
+// @Failure 500 {object} er.APPError
 // @Router /v1/results/{id} [get]
 func (i *impl) GetByID(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.Error(errors.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
+		c.Error(er.ErrInvalidID)
 		return
 	}
 
 	ret, err := i.biz.GetByID(ctx, req.ID)
 	if err != nil {
-		i.logger.Error(errors.ErrGetKRByID.Error(), zap.Error(err), zap.String("id", req.ID))
-		c.Error(errors.ErrGetKRByID)
+		i.logger.Error(er.ErrGetKRByID.Error(), zap.Error(err), zap.String("id", req.ID))
+		c.Error(er.ErrGetKRByID)
 		return
 	}
 	if ret == nil {
-		i.logger.Error(errors.ErrKRNotExists.Error(), zap.String("id", req.ID))
-		c.Error(errors.ErrKRNotExists)
+		i.logger.Error(er.ErrKRNotExists.Error(), zap.String("id", req.ID))
+		c.Error(er.ErrKRNotExists)
 		return
 	}
 
@@ -74,29 +74,29 @@ func (i *impl) GetByID(c *gin.Context) {
 // @Produce application/json
 // @Param id path string true "ID of goal"
 // @Success 200 {object} response.Response
-// @Failure 400 {object} errors.APPError
-// @Failure 404 {object} errors.APPError
-// @Failure 500 {object} errors.APPError
+// @Failure 400 {object} er.APPError
+// @Failure 404 {object} er.APPError
+// @Failure 500 {object} er.APPError
 // @Router /v1/goals/{id}/results [get]
 func (i *impl) GetByGoalID(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.Error(errors.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
+		c.Error(er.ErrInvalidID)
 		return
 	}
 
 	ret, err := i.biz.GetByGoalID(ctx, req.ID)
 	if err != nil {
-		i.logger.Error(errors.ErrListKR.Error(), zap.Error(err))
-		c.Error(errors.ErrListKR)
+		i.logger.Error(er.ErrListKR.Error(), zap.Error(err))
+		c.Error(er.ErrListKR)
 		return
 	}
 	if len(ret) == 0 {
-		i.logger.Error(errors.ErrKRNotExists.Error())
-		c.Error(errors.ErrKRNotExists)
+		i.logger.Error(er.ErrKRNotExists.Error())
+		c.Error(er.ErrKRNotExists)
 		return
 	}
 
@@ -111,36 +111,36 @@ func (i *impl) GetByGoalID(c *gin.Context) {
 // @Param page query integer false "page" default(1)
 // @Param size query integer false "size of page" default(10)
 // @Success 200 {object} response.Response
-// @Failure 400 {object} errors.APPError
-// @Failure 404 {object} errors.APPError
-// @Failure 500 {object} errors.APPError
+// @Failure 400 {object} er.APPError
+// @Failure 404 {object} er.APPError
+// @Failure 500 {object} er.APPError
 // @Router /v1/results [get]
 func (i *impl) List(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
-		i.logger.Error(errors.ErrInvalidPage.Error(), zap.Error(err), zap.String("page", c.Query("page")))
-		c.Error(errors.ErrInvalidPage)
+		i.logger.Error(er.ErrInvalidPage.Error(), zap.Error(err), zap.String("page", c.Query("page")))
+		c.Error(er.ErrInvalidPage)
 		return
 	}
 
 	size, err := strconv.Atoi(c.DefaultQuery("size", "10"))
 	if err != nil {
-		i.logger.Error(errors.ErrInvalidPage.Error(), zap.Error(err), zap.String("size", c.Query("size")))
-		c.Error(errors.ErrInvalidSize)
+		i.logger.Error(er.ErrInvalidPage.Error(), zap.Error(err), zap.String("size", c.Query("size")))
+		c.Error(er.ErrInvalidSize)
 		return
 	}
 
 	ret, err := i.biz.List(ctx, page, size)
 	if err != nil {
-		i.logger.Error(errors.ErrListKR.Error(), zap.Error(err), zap.String("size", c.Query("size")))
-		c.Error(errors.ErrListKR)
+		i.logger.Error(er.ErrListKR.Error(), zap.Error(err), zap.String("size", c.Query("size")))
+		c.Error(er.ErrListKR)
 		return
 	}
 	if len(ret) == 0 {
-		i.logger.Error(errors.ErrKRNotExists.Error(), zap.String("size", c.Query("size")))
-		c.Error(errors.ErrKRNotExists)
+		i.logger.Error(er.ErrKRNotExists.Error(), zap.String("size", c.Query("size")))
+		c.Error(er.ErrKRNotExists)
 		return
 	}
 
@@ -154,8 +154,8 @@ func (i *impl) List(c *gin.Context) {
 // @Produce application/json
 // @Param created body okr.Result true "created key result"
 // @Success 201 {object} response.Response
-// @Failure 400 {object} errors.APPError
-// @Failure 500 {object} errors.APPError
+// @Failure 400 {object} er.APPError
+// @Failure 500 {object} er.APPError
 // @Router /v1/results [post]
 func (i *impl) Create(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
@@ -163,27 +163,27 @@ func (i *impl) Create(c *gin.Context) {
 	var created *okr.Result
 	err := c.ShouldBindJSON(&created)
 	if err != nil {
-		i.logger.Error(errors.ErrCreateKR.Error(), zap.Error(err))
-		c.Error(errors.ErrCreateKR)
+		i.logger.Error(er.ErrCreateKR.Error(), zap.Error(err))
+		c.Error(er.ErrCreateKR)
 		return
 	}
 
 	if len(created.Title) == 0 {
-		i.logger.Error(errors.ErrEmptyTitle.Error(), zap.Any("created", created))
-		c.Error(errors.ErrEmptyTitle)
+		i.logger.Error(er.ErrEmptyTitle.Error(), zap.Any("created", created))
+		c.Error(er.ErrEmptyTitle)
 		return
 	}
 	_, err = uuid.Parse(created.GoalID)
 	if err != nil {
-		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err), zap.Any("created", created))
-		c.Error(errors.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err), zap.Any("created", created))
+		c.Error(er.ErrInvalidID)
 		return
 	}
 
 	ret, err := i.biz.LinkToGoal(ctx, created)
 	if err != nil {
-		i.logger.Error(errors.ErrCreateKR.Error(), zap.Error(err), zap.Any("created", created))
-		c.Error(errors.ErrCreateKR)
+		i.logger.Error(er.ErrCreateKR.Error(), zap.Error(err), zap.Any("created", created))
+		c.Error(er.ErrCreateKR)
 		return
 	}
 
@@ -198,36 +198,36 @@ func (i *impl) Create(c *gin.Context) {
 // @Param id path string true "ID of result"
 // @Param updated body okr.Result true "updated result"
 // @Success 200 {object} response.Response
-// @Failure 400 {object} errors.APPError
-// @Failure 500 {object} errors.APPError
+// @Failure 400 {object} er.APPError
+// @Failure 500 {object} er.APPError
 // @Router /v1/results/{id}/title [patch]
 func (i *impl) ModifyTitle(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.Error(errors.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
+		c.Error(er.ErrInvalidID)
 		return
 	}
 
 	var data *okr.Result
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		i.logger.Error(errors.ErrUpdateKR.Error(), zap.Error(err))
-		c.Error(errors.ErrUpdateKR)
+		i.logger.Error(er.ErrUpdateKR.Error(), zap.Error(err))
+		c.Error(er.ErrUpdateKR)
 		return
 	}
 	if len(data.Title) == 0 {
-		i.logger.Error(errors.ErrEmptyTitle.Error())
-		c.Error(errors.ErrEmptyTitle)
+		i.logger.Error(er.ErrEmptyTitle.Error())
+		c.Error(er.ErrEmptyTitle)
 		return
 	}
 
 	ret, err := i.biz.ModifyTitle(ctx, req.ID, data.Title)
 	if err != nil {
-		i.logger.Error(errors.ErrUpdateKR.Error(), zap.Error(err))
-		c.Error(errors.ErrUpdateKR)
+		i.logger.Error(er.ErrUpdateKR.Error(), zap.Error(err))
+		c.Error(er.ErrUpdateKR)
 		return
 	}
 
@@ -241,24 +241,24 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 // @Produce application/json
 // @Param id path string true "ID of key result"
 // @Success 204 {object} string
-// @Failure 400 {object} errors.APPError
-// @Failure 404 {object} errors.APPError
-// @Failure 500 {object} errors.APPError
+// @Failure 400 {object} er.APPError
+// @Failure 404 {object} er.APPError
+// @Failure 500 {object} er.APPError
 // @Router /v1/results/{id} [delete]
 func (i *impl) Delete(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
 	var req reqID
 	if err := c.ShouldBindUri(&req); err != nil {
-		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err))
-		c.Error(errors.ErrInvalidID)
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
+		c.Error(er.ErrInvalidID)
 		return
 	}
 
 	err := i.biz.Delete(ctx, req.ID)
 	if err != nil {
-		i.logger.Error(errors.ErrDeleteKR.Error(), zap.Error(err), zap.String("id", req.ID))
-		c.Error(errors.ErrDeleteKR)
+		i.logger.Error(er.ErrDeleteKR.Error(), zap.Error(err), zap.String("id", req.ID))
+		c.Error(er.ErrDeleteKR)
 		return
 	}
 

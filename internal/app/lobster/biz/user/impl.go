@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/repo"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
-	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )

@@ -7,19 +7,19 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz"
 	"github.com/blackhorseya/lobster/internal/pkg/app"
-	"github.com/blackhorseya/lobster/internal/pkg/config"
-	"github.com/blackhorseya/lobster/internal/pkg/databases"
-	"github.com/blackhorseya/lobster/internal/pkg/log"
-	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
+	config2 "github.com/blackhorseya/lobster/internal/pkg/entity/config"
+	databases2 "github.com/blackhorseya/lobster/internal/pkg/infra/databases"
+	log2 "github.com/blackhorseya/lobster/internal/pkg/infra/log"
+	http2 "github.com/blackhorseya/lobster/internal/pkg/infra/transports/http"
 	"github.com/google/wire"
 )
 
 var providerSet = wire.NewSet(
 	lobster.ProviderSet,
-	log.ProviderSet,
-	config.ProviderSet,
-	http.ProviderSet,
-	databases.ProviderSet,
+	log2.ProviderSet,
+	config2.ProviderSet,
+	http2.ProviderSet,
+	databases2.ProviderSet,
 	apis.ProviderSet,
 	biz.ProviderSet,
 )

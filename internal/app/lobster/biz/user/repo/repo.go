@@ -1,17 +1,17 @@
 package repo
 
 import (
-	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
-	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
 	"github.com/google/wire"
 )
 
 // IRepo declare user repo service function
 type IRepo interface {
-	// QueryInfoByEmail
+	// QueryInfoByEmail serve caller to given email to get profile
 	QueryInfoByEmail(ctx contextx.Contextx, email string) (info *user.Profile, err error)
 
-	// UserRegister
+	// UserRegister serve caller to register a user
 	UserRegister(ctx contextx.Contextx, newUser user.Profile) (info *user.Profile, err error)
 }
 

@@ -12,9 +12,9 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/mocks"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
-	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/response"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"

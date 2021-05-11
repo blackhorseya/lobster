@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
+	contextx "github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
-	"github.com/blackhorseya/lobster/internal/pkg/utils/contextx"
 	"github.com/stretchr/testify/suite"
 )
 

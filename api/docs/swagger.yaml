@@ -1,6 +1,6 @@
 basePath: /api
 definitions:
-  errors.APPError:
+  er.APPError:
     properties:
       code:
         type: integer
@@ -117,7 +117,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Health
   /readiness:
@@ -135,7 +135,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Health
   /v1/goals:
@@ -164,15 +164,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Goals
     post:
@@ -196,11 +196,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Goals
   /v1/goals/{id}:
@@ -224,11 +224,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Goals
     get:
@@ -251,15 +251,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Goals
   /v1/goals/{id}/results:
@@ -283,15 +283,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Results
   /v1/goals/{id}/title:
@@ -321,11 +321,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Goals
   /v1/results:
@@ -354,15 +354,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Results
     post:
@@ -386,11 +386,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Results
   /v1/results/{id}:
@@ -414,15 +414,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Results
     get:
@@ -445,15 +445,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Results
   /v1/results/{id}/title:
@@ -483,11 +483,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Results
   /v1/tasks:
@@ -516,11 +516,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Tasks
     post:
@@ -544,11 +544,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Tasks
   /v1/tasks/{id}:
@@ -572,11 +572,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Tasks
     get:
@@ -599,11 +599,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Tasks
   /v1/tasks/{id}/status:
@@ -633,11 +633,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Tasks
   /v1/tasks/{id}/title:
@@ -667,11 +667,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Tasks
   /v1/users/login:
@@ -696,11 +696,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Users
   /v1/users/signup:
@@ -725,11 +725,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.APPError'
+            $ref: '#/definitions/er.APPError'
       tags:
       - Users
 securityDefinitions:

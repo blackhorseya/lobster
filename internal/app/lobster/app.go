@@ -2,7 +2,7 @@ package lobster
 
 import (
 	"github.com/blackhorseya/lobster/internal/pkg/app"
-	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http"
 	"github.com/google/wire"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
