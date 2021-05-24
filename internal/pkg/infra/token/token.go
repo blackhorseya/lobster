@@ -10,7 +10,8 @@ import (
 	"go.uber.org/zap"
 )
 
-type jwtTokenClaims struct {
+// JwtTokenClaims declare custom claims
+type JwtTokenClaims struct {
 	ID    int64  `json:"id"`
 	Email string `json:"email"`
 	jwt.StandardClaims
@@ -56,7 +57,7 @@ func New(o *Options, logger *zap.Logger) (*Factory, error) {
 func (f *Factory) NewToken(id int64, email string) (string, error) {
 	loc, _ := time.LoadLocation("UTC")
 
-	claims := jwtTokenClaims{
+	claims := JwtTokenClaims{
 		ID:    id,
 		Email: email,
 		StandardClaims: jwt.StandardClaims{
@@ -75,15 +76,15 @@ func (f *Factory) NewToken(id int64, email string) (string, error) {
 }
 
 // ValidateToken serve caller to given signed token to validate token
-func (f *Factory) ValidateToken(signedToken string) (*jwtTokenClaims, error) {
-	token, err := jwt.ParseWithClaims(signedToken, &jwtTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+func (f *Factory) ValidateToken(signedToken string) (claims *JwtTokenClaims, err error) {
+	token, err := jwt.ParseWithClaims(signedToken, &JwtTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(f.o.Signature), nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	claims, ok := token.Claims.(*jwtTokenClaims)
+	claims, ok := token.Claims.(*JwtTokenClaims)
 	if !ok || !token.Valid {
 		return nil, er.ErrValidateToken
 	}
