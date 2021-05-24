@@ -14,7 +14,7 @@ import (
 
 // Injectors from wire.go:
 
-func CreateRepo(path string) (IRepo, error) {
+func CreateIRepo(path string) (IRepo, error) {
 	viper, err := config.New(path)
 	if err != nil {
 		return nil, err
@@ -35,10 +35,10 @@ func CreateRepo(path string) (IRepo, error) {
 	if err != nil {
 		return nil, err
 	}
-	iRepo := NewImpl(db)
+	iRepo := NewImpl(logger, db)
 	return iRepo, nil
 }
 
 // wire.go:
 
-var testProviderSet = wire.NewSet(log.ProviderSet, config.ProviderSet, databases.ProviderSet, NewImpl)
+var testProviderSet = wire.NewSet(log.ProviderSet, databases.ProviderSet, config.ProviderSet, NewImpl)

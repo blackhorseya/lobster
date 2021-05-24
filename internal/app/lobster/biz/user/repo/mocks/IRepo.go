@@ -14,8 +14,8 @@ type IRepo struct {
 	mock.Mock
 }
 
-// QueryInfoByEmail provides a mock function with given fields: ctx, email
-func (_m *IRepo) QueryInfoByEmail(ctx contextx.Contextx, email string) (*user.Profile, error) {
+// GetByEmail provides a mock function with given fields: ctx, email
+func (_m *IRepo) GetByEmail(ctx contextx.Contextx, email string) (*user.Profile, error) {
 	ret := _m.Called(ctx, email)
 
 	var r0 *user.Profile
@@ -37,13 +37,13 @@ func (_m *IRepo) QueryInfoByEmail(ctx contextx.Contextx, email string) (*user.Pr
 	return r0, r1
 }
 
-// UserRegister provides a mock function with given fields: ctx, newUser
-func (_m *IRepo) UserRegister(ctx contextx.Contextx, newUser user.Profile) (*user.Profile, error) {
-	ret := _m.Called(ctx, newUser)
+// Register provides a mock function with given fields: ctx, email, password
+func (_m *IRepo) Register(ctx contextx.Contextx, email string, password string) (*user.Profile, error) {
+	ret := _m.Called(ctx, email, password)
 
 	var r0 *user.Profile
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, user.Profile) *user.Profile); ok {
-		r0 = rf(ctx, newUser)
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, string) *user.Profile); ok {
+		r0 = rf(ctx, email, password)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*user.Profile)
@@ -51,8 +51,31 @@ func (_m *IRepo) UserRegister(ctx contextx.Contextx, newUser user.Profile) (*use
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, user.Profile) error); ok {
-		r1 = rf(ctx, newUser)
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, string, string) error); ok {
+		r1 = rf(ctx, email, password)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateToken provides a mock function with given fields: ctx, updated
+func (_m *IRepo) UpdateToken(ctx contextx.Contextx, updated *user.Profile) (*user.Profile, error) {
+	ret := _m.Called(ctx, updated)
+
+	var r0 *user.Profile
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *user.Profile) *user.Profile); ok {
+		r0 = rf(ctx, updated)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*user.Profile)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *user.Profile) error); ok {
+		r1 = rf(ctx, updated)
 	} else {
 		r1 = ret.Error(1)
 	}

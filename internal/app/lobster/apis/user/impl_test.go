@@ -22,8 +22,6 @@ import (
 )
 
 var (
-	uuid1 = "d76f4f51-f141-41ba-ba57-c4749319586b"
-
 	time1 = int64(1610548520788105000)
 
 	token1 = "b54c851b9d9e030f2afd6f6119b9c84e59f02590"
@@ -31,10 +29,9 @@ var (
 	email1 = "test@gmail.com"
 
 	user1 = user.Profile{
-		ID:          uuid1,
+		ID:          1,
 		AccessToken: token1,
 		Email:       email1,
-		SignupAt:    time1,
 	}
 )
 

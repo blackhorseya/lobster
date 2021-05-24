@@ -3,7 +3,7 @@ package user
 // Profile declare a user basic information
 type Profile struct {
 	// ID describe the unique identify code of user
-	ID string `json:"-" db:"sn"`
+	ID int64 `json:"-" db:"sn"`
 
 	// AccessToken describe this user's accessToken
 	AccessToken string `json:"access_token" db:"access_token"`
@@ -13,7 +13,4 @@ type Profile struct {
 
 	// Email describe user's email to login system
 	Email string `json:"email" db:"email"`
-
-	// SignupAt describe user signup platform milliseconds
-	SignupAt int64 `json:"-" db:"signup_at"`
 }

@@ -28,6 +28,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/entity/config"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/databases"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/log"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/token"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http"
 	"github.com/google/wire"
 )
@@ -75,8 +76,16 @@ func CreateApp(path2 string) (*app.Application, error) {
 	iRepo3 := repo4.NewImpl(db)
 	resultIBiz := result.NewImpl(logger, iRepo3)
 	resultIHandler := result2.NewImpl(logger, resultIBiz)
-	iRepo4 := repo5.NewImpl(db)
-	userIBiz := user.NewImpl(logger, iRepo4)
+	iRepo4 := repo5.NewImpl(logger, db)
+	tokenOptions, err := token.NewOptions(viper)
+	if err != nil {
+		return nil, err
+	}
+	factory, err := token.New(tokenOptions, logger)
+	if err != nil {
+		return nil, err
+	}
+	userIBiz := user.NewImpl(logger, iRepo4, factory)
 	userIHandler := user2.NewImpl(logger, userIBiz)
 	initHandlers := apis.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, resultIHandler, userIHandler)
 	engine := http.NewRouter(httpOptions, logger, initHandlers)
@@ -93,4 +102,4 @@ func CreateApp(path2 string) (*app.Application, error) {
 
 // wire.go:
 
-var providerSet = wire.NewSet(lobster.ProviderSet, log.ProviderSet, config.ProviderSet, http.ProviderSet, databases.ProviderSet, apis.ProviderSet, biz.ProviderSet)
+var providerSet = wire.NewSet(lobster.ProviderSet, log.ProviderSet, config.ProviderSet, http.ProviderSet, databases.ProviderSet, token.ProviderSet, apis.ProviderSet, biz.ProviderSet)

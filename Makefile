@@ -16,8 +16,8 @@ lint:
 report:
 	@curl -XPOST 'https://goreportcard.com/checks' --data 'repo=github.com/blackhorseya/lobster'
 
-.PHONY: test-with-coverage
-test-with-coverage:
+.PHONY: test-unit
+test-unit:
 	@sh $(shell pwd)/scripts/go.test.sh
 
 .PHONY: download-mod
