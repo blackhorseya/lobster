@@ -1,12 +1,21 @@
 import {Route, Switch} from 'react-router';
 import React from 'react';
-import {AppBar, Button, Toolbar, Typography} from '@material-ui/core';
+import {
+  AppBar,
+  Button,
+  IconButton,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 import {connect} from 'react-redux';
 import {push} from 'connected-react-router';
 import {routeConstants} from '../_constants';
+import {AccountCircle} from '@material-ui/icons';
 
 class Routes extends React.Component {
   render() {
+    const {user} = this.props;
+
     return (
         <React.Fragment>
           <AppBar position="static">
@@ -17,6 +26,22 @@ class Routes extends React.Component {
                   Lobster
                 </Typography>
               </Button>
+              {user.logged === false && (
+                  <Button color="inherit" onClick={() => this.props.push(
+                      routeConstants.Login)}>Login</Button>
+              )}
+              {user.logged && (
+                  <div>
+                    <IconButton
+                        aria-label="account of current user"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        color="inherit"
+                    >
+                      <AccountCircle/>
+                    </IconButton>
+                  </div>
+              )}
             </Toolbar>
           </AppBar>
 
@@ -31,7 +56,8 @@ class Routes extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return {};
+  const {user} = state;
+  return {user};
 }
 
 const actionCreators = {
