@@ -3,7 +3,7 @@ package repo
 import (
 	"time"
 
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/jmoiron/sqlx"
 )
 

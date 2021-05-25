@@ -12,10 +12,10 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task/mocks"
-	errors2 "github.com/blackhorseya/lobster/internal/pkg/entities/errors"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/task"
-	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/response"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/task"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
@@ -108,7 +108,7 @@ func (s *handlerSuite) Test_impl_GetByID() {
 		{
 			name: "uuid then 500 error",
 			args: args{id: uuid1, mock: func() {
-				s.mock.On("GetByID", mock.Anything, uuid1).Return(nil, errors2.ErrGetTaskByID).Once()
+				s.mock.On("GetByID", mock.Anything, uuid1).Return(nil, er.ErrGetTaskByID).Once()
 			}},
 			wantCode: 500,
 			wantBody: nil,
@@ -183,7 +183,7 @@ func (s *handlerSuite) Test_impl_List() {
 		{
 			name: "1 1 then 500 error",
 			args: args{page: "1", size: "1", mock: func() {
-				s.mock.On("List", mock.Anything, 1, 1).Return(nil, errors2.ErrListTasks).Once()
+				s.mock.On("List", mock.Anything, 1, 1).Return(nil, er.ErrListTasks).Once()
 			}},
 			wantCode: 500,
 			wantBody: nil,

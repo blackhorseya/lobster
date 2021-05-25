@@ -1,7 +1,7 @@
 package repo
 
 import (
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/google/wire"
 )
 

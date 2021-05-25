@@ -16,8 +16,8 @@ lint:
 report:
 	@curl -XPOST 'https://goreportcard.com/checks' --data 'repo=github.com/blackhorseya/lobster'
 
-.PHONY: test-with-coverage
-test-with-coverage:
+.PHONY: test-unit
+test-unit:
 	@sh $(shell pwd)/scripts/go.test.sh
 
 .PHONY: download-mod
@@ -69,7 +69,7 @@ gen-wire:
 
 .PHONY: gen-pb
 gen-pb:
-	@protoc --go_out=plugins=grpc:./internal/pkg/entities ./internal/pkg/entities/**/*.proto
+	@protoc --go_out=plugins=grpc:./internal/pkg/entity ./internal/pkg/entity/**/*.proto
 
 .PHONY: gen-swagger
 gen-swagger:

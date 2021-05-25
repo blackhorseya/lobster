@@ -12,9 +12,9 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/mocks"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/response"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
-	"github.com/blackhorseya/lobster/internal/pkg/transports/http/middlewares"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/response"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
@@ -22,8 +22,6 @@ import (
 )
 
 var (
-	uuid1 = "d76f4f51-f141-41ba-ba57-c4749319586b"
-
 	time1 = int64(1610548520788105000)
 
 	token1 = "b54c851b9d9e030f2afd6f6119b9c84e59f02590"
@@ -31,10 +29,9 @@ var (
 	email1 = "test@gmail.com"
 
 	user1 = user.Profile{
-		ID:          uuid1,
+		ID:          1,
 		AccessToken: token1,
 		Email:       email1,
-		SignupAt:    time1,
 	}
 )
 

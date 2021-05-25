@@ -8,7 +8,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/result"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/task"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/user"
-	"github.com/blackhorseya/lobster/internal/pkg/transports/http"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	swaggerFiles "github.com/swaggo/files"
@@ -61,10 +61,10 @@ func CreateInitHandlerFn(
 					results.DELETE(":id", resultH.Delete)
 				}
 
-				users := v1.Group("users")
+				authG := v1.Group("auth")
 				{
-					users.POST("signup", userH.Signup)
-					users.POST("login", userH.Login)
+					authG.POST("signup", userH.Signup)
+					authG.POST("login", userH.Login)
 				}
 			}
 		}

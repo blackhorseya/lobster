@@ -6,26 +6,20 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/user"
+	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/base/encrypt"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
 	"github.com/stretchr/testify/suite"
 )
 
 var (
-	uuid1 = "d76f4f51-f141-41ba-ba57-c4749319586b"
-
-	time1 = int64(1610548520788105000)
-
-	token1 = "b54c851b9d9e030f2afd6f6119b9c84e59f02590"
-
 	email1 = "test@gmail.com"
 
-	user1 = user.Profile{
-		ID:          uuid1,
-		AccessToken: token1,
-		Email:       email1,
-		SignupAt:    time1,
-	}
+	password1 = "password"
+
+	encPWD, _ = encrypt.HashAndSalt(password1)
+
+	user1 = &user.Profile{ID: 1, Email: email1, Password: encPWD, AccessToken: ""}
 )
 
 type repoSuite struct {
@@ -34,20 +28,22 @@ type repoSuite struct {
 }
 
 func (s *repoSuite) SetupTest() {
-	if repo, err := CreateRepo("../../../../configs/app.yaml"); err != nil {
+	repo, err := CreateIRepo("../../../../../../configs/app.yaml")
+	if err != nil {
 		panic(err)
-	} else {
-		s.repo = repo
 	}
+
+	s.repo = repo
 }
 
 func TestRepoSuite(t *testing.T) {
 	suite.Run(t, new(repoSuite))
 }
 
-func (s *repoSuite) Test_impl_UserRegister() {
+func (s *repoSuite) Test_impl_Register() {
 	type args struct {
-		newUser user.Profile
+		email    string
+		password string
 	}
 	tests := []struct {
 		name     string
@@ -56,27 +52,27 @@ func (s *repoSuite) Test_impl_UserRegister() {
 		wantErr  bool
 	}{
 		{
-			name:     "profile then profile nil",
-			args:     args{newUser: user1},
-			wantInfo: &user1,
+			name:     "register then success",
+			args:     args{email: email1, password: encPWD},
+			wantInfo: user1,
 			wantErr:  false,
 		},
 	}
 	for _, tt := range tests {
 		s.T().Run(tt.name, func(t *testing.T) {
-			gotInfo, err := s.repo.UserRegister(contextx.Background(), tt.args.newUser)
+			gotInfo, err := s.repo.Register(contextx.Background(), tt.args.email, tt.args.password)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("UserRegister() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Register() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
-				t.Errorf("UserRegister() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
+				t.Errorf("Register() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
 			}
 		})
 	}
 }
 
-func (s *repoSuite) Test_impl_QueryInfoByEmail() {
+func (s *repoSuite) Test_impl_GetByEmail() {
 	type args struct {
 		email string
 	}
@@ -87,21 +83,52 @@ func (s *repoSuite) Test_impl_QueryInfoByEmail() {
 		wantErr  bool
 	}{
 		{
-			name:     "email then profile nil",
+			name:     "get by email then success",
 			args:     args{email: email1},
-			wantInfo: &user1,
+			wantInfo: user1,
 			wantErr:  false,
 		},
 	}
 	for _, tt := range tests {
 		s.T().Run(tt.name, func(t *testing.T) {
-			gotInfo, err := s.repo.QueryInfoByEmail(contextx.Background(), tt.args.email)
+			gotInfo, err := s.repo.GetByEmail(contextx.Background(), tt.args.email)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("QueryInfoByEmail() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("GetByEmail() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
-				t.Errorf("QueryInfoByEmail() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
+				t.Errorf("GetByEmail() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
+			}
+		})
+	}
+}
+
+func (s *repoSuite) Test_impl_UpdateToken() {
+	type args struct {
+		updated *user.Profile
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantInfo *user.Profile
+		wantErr  bool
+	}{
+		{
+			name:     "update token then success",
+			args:     args{updated: user1},
+			wantInfo: user1,
+			wantErr:  false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			gotInfo, err := s.repo.UpdateToken(contextx.Background(), tt.args.updated)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UpdateToken() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
+				t.Errorf("UpdateToken() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
 			}
 		})
 	}

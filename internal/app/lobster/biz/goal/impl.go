@@ -4,9 +4,9 @@ import (
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/goal/repo"
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/okr"
+	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/okr"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
@@ -26,8 +26,8 @@ func NewImpl(logger *zap.Logger, repo repo.IRepo) IBiz {
 
 func (i *impl) Create(ctx contextx.Contextx, obj *okr.Goal) (*okr.Goal, error) {
 	if len(obj.Title) == 0 {
-		i.logger.Error(errors.ErrEmptyTitle.Error(), zap.String("title", obj.Title))
-		return nil, errors.ErrEmptyTitle
+		i.logger.Error(er.ErrEmptyTitle.Error(), zap.String("title", obj.Title))
+		return nil, er.ErrEmptyTitle
 	}
 
 	obj.ID = uuid.New().String()
@@ -35,8 +35,8 @@ func (i *impl) Create(ctx contextx.Contextx, obj *okr.Goal) (*okr.Goal, error) {
 
 	ret, err := i.repo.Create(ctx, obj)
 	if err != nil {
-		i.logger.Error(errors.ErrCreateObj.Error())
-		return nil, errors.ErrCreateObj
+		i.logger.Error(er.ErrCreateObj.Error())
+		return nil, er.ErrCreateObj
 	}
 
 	return ret, nil
@@ -44,19 +44,19 @@ func (i *impl) Create(ctx contextx.Contextx, obj *okr.Goal) (*okr.Goal, error) {
 
 func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*okr.Goal, error) {
 	if page <= 0 {
-		i.logger.Error(errors.ErrInvalidPage.Error(), zap.Int("page", page))
-		return nil, errors.ErrInvalidPage
+		i.logger.Error(er.ErrInvalidPage.Error(), zap.Int("page", page))
+		return nil, er.ErrInvalidPage
 	}
 
 	if size <= 0 {
-		i.logger.Error(errors.ErrInvalidSize.Error(), zap.Int("size", size))
-		return nil, errors.ErrInvalidSize
+		i.logger.Error(er.ErrInvalidSize.Error(), zap.Int("size", size))
+		return nil, er.ErrInvalidSize
 	}
 
 	ret, err := i.repo.List(ctx, (page-1)*size, size)
 	if err != nil {
-		i.logger.Error(errors.ErrListObj.Error(), zap.Error(err))
-		return nil, errors.ErrListObj
+		i.logger.Error(er.ErrListObj.Error(), zap.Error(err))
+		return nil, er.ErrListObj
 	}
 
 	return ret, nil
@@ -64,14 +64,14 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*okr.Goal, error) 
 
 func (i *impl) GetByID(ctx contextx.Contextx, id string) (*okr.Goal, error) {
 	if _, err := uuid.Parse(id); err != nil {
-		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err), zap.String("id", id))
-		return nil, errors.ErrInvalidID
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err), zap.String("id", id))
+		return nil, er.ErrInvalidID
 	}
 
 	ret, err := i.repo.QueryByID(ctx, id)
 	if err != nil {
-		i.logger.Error(errors.ErrGetObjByID.Error(), zap.Error(err), zap.String("id", id))
-		return nil, errors.ErrGetObjByID
+		i.logger.Error(er.ErrGetObjByID.Error(), zap.Error(err), zap.String("id", id))
+		return nil, er.ErrGetObjByID
 	}
 
 	return ret, nil
@@ -80,8 +80,8 @@ func (i *impl) GetByID(ctx contextx.Contextx, id string) (*okr.Goal, error) {
 func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 	ret, err := i.repo.Count(ctx)
 	if err != nil {
-		i.logger.Error(errors.ErrCountObj.Error(), zap.Error(err))
-		return 0, errors.ErrCountObj
+		i.logger.Error(er.ErrCountObj.Error(), zap.Error(err))
+		return 0, er.ErrCountObj
 	}
 
 	return ret, nil
@@ -90,29 +90,29 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (obj *okr.Goal, err error) {
 	_, err = uuid.Parse(id)
 	if err != nil {
-		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err), zap.String("id", id), zap.String("title", title))
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err), zap.String("id", id), zap.String("title", title))
 		return nil, err
 	}
 
 	if len(title) == 0 {
-		i.logger.Error(errors.ErrEmptyTitle.Error(), zap.String("id", id), zap.String("title", title))
-		return nil, errors.ErrEmptyTitle
+		i.logger.Error(er.ErrEmptyTitle.Error(), zap.String("id", id), zap.String("title", title))
+		return nil, er.ErrEmptyTitle
 	}
 
 	exist, err := i.repo.QueryByID(ctx, id)
 	if err != nil {
-		i.logger.Error(errors.ErrGetObjByID.Error(), zap.Error(err), zap.String("id", id), zap.String("title", title))
+		i.logger.Error(er.ErrGetObjByID.Error(), zap.Error(err), zap.String("id", id), zap.String("title", title))
 		return nil, err
 	}
 	if exist == nil {
-		i.logger.Error(errors.ErrObjNotExists.Error(), zap.String("id", id), zap.String("title", title))
-		return nil, errors.ErrObjNotExists
+		i.logger.Error(er.ErrObjNotExists.Error(), zap.String("id", id), zap.String("title", title))
+		return nil, er.ErrObjNotExists
 	}
 
 	exist.Title = title
 	ret, err := i.repo.Update(ctx, exist)
 	if err != nil {
-		i.logger.Error(errors.ErrUpdateObj.Error(), zap.Error(err), zap.String("id", id), zap.String("title", title))
+		i.logger.Error(er.ErrUpdateObj.Error(), zap.Error(err), zap.String("id", id), zap.String("title", title))
 		return nil, err
 	}
 
@@ -121,18 +121,18 @@ func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (obj *okr.Go
 
 func (i *impl) Delete(ctx contextx.Contextx, id string) error {
 	if _, err := uuid.Parse(id); err != nil {
-		i.logger.Error(errors.ErrInvalidID.Error(), zap.Error(err), zap.String("id", id))
-		return errors.ErrInvalidID
+		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err), zap.String("id", id))
+		return er.ErrInvalidID
 	}
 
 	ret, err := i.repo.Delete(ctx, id)
 	if err != nil {
-		i.logger.Error(errors.ErrDeleteObj.Error(), zap.Error(err), zap.String("id", id))
-		return errors.ErrDeleteObj
+		i.logger.Error(er.ErrDeleteObj.Error(), zap.Error(err), zap.String("id", id))
+		return er.ErrDeleteObj
 	}
 	if ret == 0 {
-		i.logger.Error(errors.ErrObjNotExists.Error(), zap.String("id", id))
-		return errors.ErrObjNotExists
+		i.logger.Error(er.ErrObjNotExists.Error(), zap.String("id", id))
+		return er.ErrObjNotExists
 	}
 
 	return nil

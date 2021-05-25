@@ -2,8 +2,8 @@ package health
 
 import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health/repo"
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entities/errors"
+	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
 	"go.uber.org/zap"
 )
 
@@ -20,12 +20,12 @@ func NewImpl(logger *zap.Logger, repo repo.IRepo) IBiz {
 func (i *impl) Readiness(ctx contextx.Contextx) error {
 	ok, err := i.repo.Ping(ctx)
 	if err != nil {
-		i.logger.Error(errors.ErrDBConnect.Error())
-		return errors.ErrDBConnect
+		i.logger.Error(er.ErrDBConnect.Error())
+		return er.ErrDBConnect
 	}
 	if !ok {
-		i.logger.Error(errors.ErrDBConnect.Error())
-		return errors.ErrDBConnect
+		i.logger.Error(er.ErrDBConnect.Error())
+		return er.ErrDBConnect
 	}
 
 	return nil
@@ -34,12 +34,12 @@ func (i *impl) Readiness(ctx contextx.Contextx) error {
 func (i *impl) Liveness(ctx contextx.Contextx) error {
 	ok, err := i.repo.Ping(ctx)
 	if err != nil {
-		i.logger.Error(errors.ErrDBConnect.Error())
-		return errors.ErrDBConnect
+		i.logger.Error(er.ErrDBConnect.Error())
+		return er.ErrDBConnect
 	}
 	if !ok {
-		i.logger.Error(errors.ErrDBConnect.Error())
-		return errors.ErrDBConnect
+		i.logger.Error(er.ErrDBConnect.Error())
+		return er.ErrDBConnect
 	}
 
 	return nil

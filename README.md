@@ -7,21 +7,18 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/blackhorseya/lobster)](https://pkg.go.dev/github.com/blackhorseya/lobster)
 [![GitHub license](https://img.shields.io/github/license/blackhorseya/lobster)](https://github.com/blackhorseya/lobster/blob/main/LICENSE)
 
-[Lobster](https://lobster.seancheng.space/api/docs/index.html) is a tool which integration todo list, OKRs, sprint
-board, pomodoro and report etc. functional
+[Lobster](https://lobster.seancheng.space/api/docs/index.html) is a tool which integrates functions of todo list, OKRs, sprint
+board, pomodoro, report, etc.
 
 ## Concept
 
-I very like concept of OKR and Agile, so I want to bring this mind to my life for self growth. The project wish to set
-goals for long term using concept of OKR then divide to task And sprint tasks via Sprint board, finally achieve that
-goal. I don't like develop front-end so using [Lobster-CLI](https://github.com/blackhorseya/lobster-cli) for control
-the API.
+I benefit a lot from OKRs and Agile in my work as many others do. I believe these concepts can also be applied in our daily life to help individuals to set goals and tract progresses. This project aims to break long-term goals into small, measurable tasks. The tasks are then presented in Sprint board. I use [Lobster-CLI](https://github.com/blackhorseya/lobster-cli) for controling the API.
 
 ## Tech
 
 ### WorkFlow
 
-using [Trunk-based development](https://blog.seancheng.space/posts/what-is-trunk-based-development)
+Using [Trunk-based development](https://blog.seancheng.space/posts/what-is-trunk-based-development)
 Reference [official documents](https://cloud.google.com/solutions/devops/devops-tech-trunk-based-development)
 
 ### Dependencies
@@ -38,7 +35,7 @@ Reference [official documents](https://cloud.google.com/solutions/devops/devops-
 ### CI/CD
 
 - [Travis-CI](https://travis-ci.com/blackhorseya/lobster) for CI/CD
-- [Helm 3](https://helm.sh/) for manage deployment to Kubernetes
+- [Helm 3](https://helm.sh/) for managing deployment to Kubernetes
 
 ### Infrastructure
 

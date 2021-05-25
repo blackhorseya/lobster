@@ -2,7 +2,7 @@ package health
 
 import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health/repo"
-	"github.com/blackhorseya/lobster/internal/pkg/contextx"
+	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/google/wire"
 )
 

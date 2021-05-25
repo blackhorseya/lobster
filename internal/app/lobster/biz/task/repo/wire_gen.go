@@ -6,19 +6,32 @@
 package repo
 
 import (
-	"github.com/blackhorseya/lobster/internal/pkg/config"
-	"github.com/blackhorseya/lobster/internal/pkg/databases"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/config"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/databases"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/log"
 	"github.com/google/wire"
 )
 
 // Injectors from wire.go:
 
 func CreateRepo(path string) (IRepo, error) {
-	configConfig, err := config.NewConfig(path)
+	viper, err := config.New(path)
 	if err != nil {
 		return nil, err
 	}
-	db, err := databases.NewMariaDB(configConfig)
+	options, err := log.NewOptions(viper)
+	if err != nil {
+		return nil, err
+	}
+	logger, err := log.New(options)
+	if err != nil {
+		return nil, err
+	}
+	databasesOptions, err := databases.NewOptions(viper, logger)
+	if err != nil {
+		return nil, err
+	}
+	db, err := databases.NewMariaDB(databasesOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -28,4 +41,4 @@ func CreateRepo(path string) (IRepo, error) {
 
 // wire.go:
 
-var testProviderSet = wire.NewSet(config.ProviderSet, databases.ProviderSet, NewImpl)
+var testProviderSet = wire.NewSet(log.ProviderSet, config.ProviderSet, databases.ProviderSet, NewImpl)
