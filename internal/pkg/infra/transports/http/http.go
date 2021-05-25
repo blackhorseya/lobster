@@ -10,6 +10,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http/middlewares"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http/middlewares/rate"
 	ginzap "github.com/gin-contrib/zap"
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/pkg/errors"
@@ -67,6 +68,7 @@ func NewRouter(o *Options, logger *zap.Logger, init InitHandlers) *gin.Engine {
 	r.Use(middlewares.ResponseMiddleware())
 	r.Use(rate.IPRateLimitMiddleware(1, 60))
 
+	r.Use(static.Serve("/", static.LocalFile("./web/build", true)))
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	init(r)
