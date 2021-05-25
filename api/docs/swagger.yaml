@@ -138,6 +138,66 @@ paths:
             $ref: '#/definitions/er.APPError'
       tags:
       - Health
+  /v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: user profile
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.Profile'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/er.APPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/er.APPError'
+      summary: Login
+      tags:
+      - Auth
+  /v1/auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Signup
+      parameters:
+      - description: new user profile
+        in: body
+        name: newUser
+        required: true
+        schema:
+          $ref: '#/definitions/user.Profile'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/er.APPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/er.APPError'
+      summary: Signup
+      tags:
+      - Auth
   /v1/goals:
     get:
       consumes:
@@ -674,64 +734,6 @@ paths:
             $ref: '#/definitions/er.APPError'
       tags:
       - Tasks
-  /v1/users/login:
-    post:
-      consumes:
-      - application/json
-      description: Login
-      parameters:
-      - description: user profile
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/user.Profile'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Users
-  /v1/users/signup:
-    post:
-      consumes:
-      - application/json
-      description: Signup
-      parameters:
-      - description: new user profile
-        in: body
-        name: newUser
-        required: true
-        schema:
-          $ref: '#/definitions/user.Profile'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Users
 securityDefinitions:
   ApiKeyAuth:
     in: header

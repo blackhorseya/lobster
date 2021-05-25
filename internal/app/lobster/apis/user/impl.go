@@ -25,16 +25,17 @@ func NewImpl(logger *zap.Logger, biz user.IBiz) IHandler {
 	}
 }
 
-// Signup @Summary Signup
+// Signup
+// @Summary Signup
 // @Description Signup
-// @Tags Users
+// @Tags Auth
 // @Accept application/json
 // @Produce application/json
 // @Param newUser body user.Profile true "new user profile"
 // @Success 201 {object} response.Response
 // @Failure 400 {object} er.APPError
 // @Failure 500 {object} er.APPError
-// @Router /v1/users/signup [post]
+// @Router /v1/auth/signup [post]
 func (i *impl) Signup(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
@@ -55,16 +56,17 @@ func (i *impl) Signup(c *gin.Context) {
 	c.JSON(http.StatusCreated, response.OK.WithData(ret))
 }
 
-// Login @Summary Login
+// Login
+// @Summary Login
 // @Description Login
-// @Tags Users
+// @Tags Auth
 // @Accept application/json
 // @Produce application/json
 // @Param user body user.Profile true "user profile"
 // @Success 201 {object} response.Response
 // @Failure 400 {object} er.APPError
 // @Failure 500 {object} er.APPError
-// @Router /v1/users/login [post]
+// @Router /v1/auth/login [post]
 func (i *impl) Login(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 

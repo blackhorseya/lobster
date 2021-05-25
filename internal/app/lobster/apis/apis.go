@@ -61,10 +61,10 @@ func CreateInitHandlerFn(
 					results.DELETE(":id", resultH.Delete)
 				}
 
-				users := v1.Group("users")
+				authG := v1.Group("auth")
 				{
-					users.POST("signup", userH.Signup)
-					users.POST("login", userH.Login)
+					authG.POST("signup", userH.Signup)
+					authG.POST("login", userH.Login)
 				}
 			}
 		}
