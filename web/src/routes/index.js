@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 import {push} from 'connected-react-router';
 import {routeConstants} from '../_constants';
 import {AccountCircle} from '@material-ui/icons';
+import {Login} from '../components/user';
 
 class Routes extends React.Component {
   render() {
@@ -48,6 +49,7 @@ class Routes extends React.Component {
           <Switch>
             <Route exact path={routeConstants.Root}
                    render={() => (<div>Root Page</div>)}/>
+            <Route path={routeConstants.Login} component={Login}/>
             <Route render={() => (<div>No Match</div>)}/>
           </Switch>
         </React.Fragment>
