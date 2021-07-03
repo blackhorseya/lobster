@@ -8,7 +8,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task/repo/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entity/task"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/todo"
 	"github.com/bwmarrin/snowflake"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
@@ -20,23 +20,23 @@ var (
 
 	time1 = time.Now().UnixNano()
 
-	task1 = &task.Task{
+	task1 = &todo.Task{
 		ID:        uuid1,
 		Title:     "task1",
-		Status:    task.Status_BACKLOG,
+		Status:    todo.Status_BACKLOG,
 		CreatedAt: time1,
 	}
 
-	updated1 = &task.Task{
+	updated1 = &todo.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
 		CreatedAt: time1,
 	}
 
-	updateStatus = &task.Task{
+	updateStatus = &todo.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
-		Status:    task.Status_INPROGRESS,
+		Status:    todo.Status_INPROGRESS,
 		CreatedAt: time1,
 	}
 )
@@ -75,7 +75,7 @@ func (s *bizSuite) Test_impl_GetByID() {
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *todo.Task
 		wantErr bool
 	}{
 		{
@@ -134,7 +134,7 @@ func (s *bizSuite) Test_impl_List() {
 	tests := []struct {
 		name    string
 		args    args
-		want    []*task.Task
+		want    []*todo.Task
 		wantErr bool
 	}{
 		{
@@ -162,9 +162,9 @@ func (s *bizSuite) Test_impl_List() {
 			name: "1 1 then tasks nil",
 			args: args{page: 1, size: 1, mock: func() {
 				s.mock.On("List", mock.Anything, 0, 1).Return(
-					[]*task.Task{task1}, nil).Once()
+					[]*todo.Task{task1}, nil).Once()
 			}},
-			want: []*task.Task{
+			want: []*todo.Task{
 				task1,
 			},
 			wantErr: false,
@@ -253,7 +253,7 @@ func (s *bizSuite) Test_impl_Create() {
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *todo.Task
 		wantErr bool
 	}{
 		{
@@ -351,13 +351,13 @@ func (s *bizSuite) Test_impl_Delete() {
 func (s *bizSuite) Test_impl_UpdateStatus() {
 	type args struct {
 		id     int64
-		status task.Status
+		status todo.Status
 		mock   func()
 	}
 	tests := []struct {
 		name    string
 		args    args
-		wantT   *task.Task
+		wantT   *todo.Task
 		wantErr bool
 	}{
 		{
@@ -378,7 +378,7 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 		},
 		{
 			name: "uuid then update error",
-			args: args{id: uuid1, status: task.Status_INPROGRESS, mock: func() {
+			args: args{id: uuid1, status: todo.Status_INPROGRESS, mock: func() {
 				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
 				s.mock.On("Update", mock.Anything, updateStatus).Return(nil, errors.New("error")).Once()
 			}},
@@ -387,7 +387,7 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 		},
 		{
 			name: "uuid then updated nil",
-			args: args{id: uuid1, status: task.Status_INPROGRESS, mock: func() {
+			args: args{id: uuid1, status: todo.Status_INPROGRESS, mock: func() {
 				s.mock.On("QueryByID", mock.Anything, uuid1).Return(task1, nil).Once()
 				s.mock.On("Update", mock.Anything, updateStatus).Return(updateStatus, nil).Once()
 			}},
@@ -424,7 +424,7 @@ func (s *bizSuite) Test_impl_ModifyTitle() {
 	tests := []struct {
 		name    string
 		args    args
-		wantT   *task.Task
+		wantT   *todo.Task
 		wantErr bool
 	}{
 		{

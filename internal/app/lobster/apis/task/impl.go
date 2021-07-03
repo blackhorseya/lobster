@@ -8,7 +8,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/response"
-	taskE "github.com/blackhorseya/lobster/internal/pkg/entity/task"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/todo"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -144,7 +144,7 @@ func (i *impl) Create(c *gin.Context) {
 }
 
 type reqStatus struct {
-	Status taskE.Status `json:"status" binding:"required"`
+	Status todo.Status `json:"status" binding:"required"`
 }
 
 // UpdateStatus

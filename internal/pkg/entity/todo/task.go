@@ -1,4 +1,4 @@
-package task
+package todo
 
 // Task declare a task basic information
 type Task struct {

@@ -4,7 +4,7 @@ package mocks
 
 import (
 	contextx "github.com/blackhorseya/lobster/internal/pkg/base/contextx"
-	entitytask "github.com/blackhorseya/lobster/internal/pkg/entity/task"
+	entitytask "github.com/blackhorseya/lobster/internal/pkg/entity/todo"
 
 	mock "github.com/stretchr/testify/mock"
 )

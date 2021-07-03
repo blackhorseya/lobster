@@ -4,7 +4,7 @@
 // 	protoc        v3.17.3
 // source: internal/pkg/entity/task/task.proto
 
-package task
+package todo
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

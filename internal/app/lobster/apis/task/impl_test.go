@@ -14,7 +14,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/response"
-	"github.com/blackhorseya/lobster/internal/pkg/entity/task"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/todo"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
@@ -27,25 +27,25 @@ var (
 
 	time1 = int64(1610548520788105000)
 
-	task1 = &task.Task{
+	task1 = &todo.Task{
 		ID:        uuid1,
 		Title:     "task1",
 		CreatedAt: time1,
 	}
 
-	created1 = &task.Task{
+	created1 = &todo.Task{
 		Title: "create task1",
 	}
 
-	updated1 = &task.Task{
+	updated1 = &todo.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
 		CreatedAt: time1,
 	}
 
-	updated2 = &task.Task{
+	updated2 = &todo.Task{
 		ID:        uuid1,
-		Status:    task.Status_INPROGRESS,
+		Status:    todo.Status_INPROGRESS,
 		Title:     "task1",
 		CreatedAt: time1,
 	}
@@ -156,7 +156,7 @@ func (s *handlerSuite) Test_impl_List() {
 		name     string
 		args     args
 		wantCode int
-		wantBody []*task.Task
+		wantBody []*todo.Task
 	}{
 		{
 			name:     "a 10 then 400 error",
@@ -189,10 +189,10 @@ func (s *handlerSuite) Test_impl_List() {
 		{
 			name: "1 1 then 200",
 			args: args{page: "1", size: "1", mock: func() {
-				s.mock.On("List", mock.Anything, 1, 1).Return([]*task.Task{task1}, nil).Once()
+				s.mock.On("List", mock.Anything, 1, 1).Return([]*todo.Task{task1}, nil).Once()
 			}},
 			wantCode: 200,
-			wantBody: []*task.Task{task1},
+			wantBody: []*todo.Task{task1},
 		},
 	}
 	for _, tt := range tests {
@@ -212,7 +212,7 @@ func (s *handlerSuite) Test_impl_List() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody []*task.Task
+			var gotBody []*todo.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -236,7 +236,7 @@ func (s *handlerSuite) Test_impl_Create() {
 		name     string
 		args     args
 		wantCode int
-		wantBody *task.Task
+		wantBody *todo.Task
 	}{
 		{
 			name:     "empty title then 400 error",
@@ -268,7 +268,7 @@ func (s *handlerSuite) Test_impl_Create() {
 			}
 
 			uri := fmt.Sprintf("/api/v1/tasks")
-			data, _ := json.Marshal(&task.Task{Title: tt.args.title})
+			data, _ := json.Marshal(&todo.Task{Title: tt.args.title})
 			req := httptest.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
@@ -279,7 +279,7 @@ func (s *handlerSuite) Test_impl_Create() {
 			}()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *task.Task
+			var gotBody *todo.Task
 			if err := json.Unmarshal(body, &gotBody); err != nil {
 				s.Errorf(err, "unmarshal response body is failure")
 			}
@@ -349,7 +349,7 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 
 	type args struct {
 		id     int64
-		status task.Status
+		status todo.Status
 		mock   func()
 	}
 	tests := []struct {
@@ -360,15 +360,15 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 	}{
 		{
 			name: "uuid then 500 error",
-			args: args{id: uuid1, status: task.Status_INPROGRESS, mock: func() {
-				s.mock.On("UpdateStatus", mock.Anything, uuid1, task.Status_INPROGRESS).Return(nil, errors.New("error")).Once()
+			args: args{id: uuid1, status: todo.Status_INPROGRESS, mock: func() {
+				s.mock.On("UpdateStatus", mock.Anything, uuid1, todo.Status_INPROGRESS).Return(nil, errors.New("error")).Once()
 			}},
 			wantCode: 500,
 		},
 		{
 			name: "uuid status then 200 task",
-			args: args{id: uuid1, status: task.Status_INPROGRESS, mock: func() {
-				s.mock.On("UpdateStatus", mock.Anything, uuid1, task.Status_INPROGRESS).Return(updated2, nil).Once()
+			args: args{id: uuid1, status: todo.Status_INPROGRESS, mock: func() {
+				s.mock.On("UpdateStatus", mock.Anything, uuid1, todo.Status_INPROGRESS).Return(updated2, nil).Once()
 			}},
 			wantCode: 200,
 			wantBody: response.OK.WithData(updated2),
@@ -381,7 +381,7 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 			}
 
 			uri := fmt.Sprintf("/api/v1/tasks/%v/status", tt.args.id)
-			data, _ := json.Marshal(&task.Task{Status: tt.args.status})
+			data, _ := json.Marshal(&todo.Task{Status: tt.args.status})
 			req := httptest.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
@@ -390,7 +390,7 @@ func (s *handlerSuite) Test_impl_UpdateStatus() {
 			defer got.Body.Close()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *task.Task
+			var gotBody *todo.Task
 			_ = json.Unmarshal(body, &gotBody)
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Delete() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
@@ -447,7 +447,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 			}
 
 			uri := fmt.Sprintf("/api/v1/tasks/%v/title", tt.args.id)
-			data, _ := json.Marshal(&task.Task{ID: tt.args.id, Title: tt.args.title})
+			data, _ := json.Marshal(&todo.Task{ID: tt.args.id, Title: tt.args.title})
 			req := httptest.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(data))
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
@@ -456,7 +456,7 @@ func (s *handlerSuite) Test_impl_ModifyTitle() {
 			defer got.Body.Close()
 
 			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *task.Task
+			var gotBody *todo.Task
 			_ = json.Unmarshal(body, &gotBody)
 
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "ModifyTitle() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)

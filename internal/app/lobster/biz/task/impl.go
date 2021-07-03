@@ -6,7 +6,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
-	"github.com/blackhorseya/lobster/internal/pkg/entity/task"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/todo"
 	"github.com/bwmarrin/snowflake"
 	"go.uber.org/zap"
 )
@@ -26,7 +26,7 @@ func NewImpl(logger *zap.Logger, repo repo.IRepo, node *snowflake.Node) IBiz {
 	}
 }
 
-func (i *impl) GetByID(ctx contextx.Contextx, id int64) (*task.Task, error) {
+func (i *impl) GetByID(ctx contextx.Contextx, id int64) (*todo.Task, error) {
 	ret, err := i.repo.QueryByID(ctx, id)
 	if err != nil {
 		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err), zap.Int64("id", id))
@@ -40,7 +40,7 @@ func (i *impl) GetByID(ctx contextx.Contextx, id int64) (*task.Task, error) {
 	return ret, nil
 }
 
-func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*task.Task, error) {
+func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error) {
 	if page <= 0 {
 		i.logger.Error(er.ErrInvalidPage.Error(), zap.Int("page", page))
 		return nil, er.ErrInvalidPage
@@ -74,13 +74,13 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 	return ret, nil
 }
 
-func (i *impl) Create(ctx contextx.Contextx, title string) (*task.Task, error) {
+func (i *impl) Create(ctx contextx.Contextx, title string) (*todo.Task, error) {
 	if len(title) == 0 {
 		i.logger.Error(er.ErrEmptyTitle.Error(), zap.String("title", title))
 		return nil, er.ErrEmptyTitle
 	}
 
-	created := &task.Task{
+	created := &todo.Task{
 		ID:        i.node.Generate().Int64(),
 		Title:     title,
 		Status:    0,
@@ -96,7 +96,7 @@ func (i *impl) Create(ctx contextx.Contextx, title string) (*task.Task, error) {
 	return ret, nil
 }
 
-func (i *impl) UpdateStatus(ctx contextx.Contextx, id int64, status task.Status) (t *task.Task, err error) {
+func (i *impl) UpdateStatus(ctx contextx.Contextx, id int64, status todo.Status) (t *todo.Task, err error) {
 	exist, err := i.repo.QueryByID(ctx, id)
 	if err != nil {
 		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err), zap.Int64("id", id))
@@ -117,7 +117,7 @@ func (i *impl) UpdateStatus(ctx contextx.Contextx, id int64, status task.Status)
 	return ret, nil
 }
 
-func (i *impl) ModifyTitle(ctx contextx.Contextx, id int64, title string) (t *task.Task, err error) {
+func (i *impl) ModifyTitle(ctx contextx.Contextx, id int64, title string) (t *todo.Task, err error) {
 	if len(title) == 0 {
 		i.logger.Error(er.ErrEmptyTitle.Error(), zap.Int64("id", id), zap.String("title", title))
 		return nil, er.ErrEmptyTitle
