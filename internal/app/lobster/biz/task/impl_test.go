@@ -23,14 +23,12 @@ var (
 		ID:        uuid1,
 		Title:     "task1",
 		Status:    task.Status_BACKLOG,
-		Completed: false,
 		CreatedAt: time1,
 	}
 
 	updated1 = &task.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
-		Completed: false,
 		CreatedAt: time1,
 	}
 
@@ -38,7 +36,6 @@ var (
 		ID:        uuid1,
 		Title:     "updated task1",
 		Status:    task.Status_INPROGRESS,
-		Completed: false,
 		CreatedAt: time1,
 	}
 )
@@ -254,8 +251,8 @@ func (s *bizSuite) Test_impl_Count() {
 
 func (s *bizSuite) Test_impl_Create() {
 	type args struct {
-		task *task.Task
-		mock func()
+		title string
+		mock  func()
 	}
 	tests := []struct {
 		name    string
@@ -265,13 +262,13 @@ func (s *bizSuite) Test_impl_Create() {
 	}{
 		{
 			name:    "missing title then nil error",
-			args:    args{task: &task.Task{Title: ""}},
+			args:    args{title: ""},
 			want:    nil,
 			wantErr: true,
 		},
 		{
 			name: "task then nil error",
-			args: args{task: &task.Task{Title: "task1"}, mock: func() {
+			args: args{title: "task1", mock: func() {
 				s.mock.On("Create", mock.Anything, mock.Anything).Return(
 					nil, errors.New("err")).Once()
 			}},
@@ -280,7 +277,7 @@ func (s *bizSuite) Test_impl_Create() {
 		},
 		{
 			name: "task then task nil",
-			args: args{task: &task.Task{Title: "task1"}, mock: func() {
+			args: args{title: "task1", mock: func() {
 				s.mock.On("Create", mock.Anything, mock.Anything).Return(
 					task1, nil).Once()
 			}},
@@ -294,7 +291,7 @@ func (s *bizSuite) Test_impl_Create() {
 				tt.args.mock()
 			}
 
-			got, err := s.biz.Create(contextx.Background(), tt.args.task)
+			got, err := s.biz.Create(contextx.Background(), tt.args.title)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
 				return

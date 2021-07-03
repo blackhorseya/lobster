@@ -129,7 +129,7 @@ func (i *impl) Create(c *gin.Context) {
 		return
 	}
 
-	ret, err := i.biz.Create(ctx, data)
+	ret, err := i.biz.Create(ctx, data.Title)
 	if err != nil {
 		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err), zap.Any("created", data))
 		c.Error(er.ErrCreateTask)

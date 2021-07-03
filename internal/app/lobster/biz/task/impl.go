@@ -77,18 +77,21 @@ func (i *impl) Count(ctx contextx.Contextx) (int, error) {
 	return ret, nil
 }
 
-func (i *impl) Create(ctx contextx.Contextx, task *task.Task) (*task.Task, error) {
-	if len(task.Title) == 0 {
-		i.logger.Error(er.ErrEmptyTitle.Error(), zap.String("title", task.Title))
+func (i *impl) Create(ctx contextx.Contextx, title string) (*task.Task, error) {
+	if len(title) == 0 {
+		i.logger.Error(er.ErrEmptyTitle.Error(), zap.String("title", title))
 		return nil, er.ErrEmptyTitle
 	}
 
-	task.ID = uuid.New().String()
-	task.CreatedAt = time.Now().UnixNano()
+	created := &task.Task{
+		Title:     title,
+		Status:    0,
+		CreatedAt: time.Now().UnixNano(),
+	}
 
-	ret, err := i.repo.Create(ctx, task)
+	ret, err := i.repo.Create(ctx, created)
 	if err != nil {
-		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err), zap.Any("created", task))
+		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err), zap.Any("created", created))
 		return nil, er.ErrCreateTask
 	}
 

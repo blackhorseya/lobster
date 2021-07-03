@@ -19,7 +19,7 @@ type IBiz interface {
 	Count(ctx contextx.Contextx) (int, error)
 
 	// Create serve user to create a task
-	Create(ctx contextx.Contextx, task *task.Task) (*task.Task, error)
+	Create(ctx contextx.Contextx, title string) (*task.Task, error)
 
 	// ModifyTitle serve user to modify title of task
 	ModifyTitle(ctx contextx.Contextx, id, title string) (t *task.Task, err error)

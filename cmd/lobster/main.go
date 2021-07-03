@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"math/rand"
 )
 
 var path = flag.String("c", "configs/app.yaml", "set config file path")
@@ -27,7 +28,7 @@ func init() {
 // @in header
 // @name Authorization
 func main() {
-	app, err := CreateApp(*path)
+	app, err := CreateApp(*path, rand.Int63n(100))
 	if err != nil {
 		panic(err)
 	}
