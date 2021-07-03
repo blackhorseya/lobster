@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
@@ -25,6 +26,10 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id int64) (*todo.Task, error) {
 	cmd := "SELECT id, title, status, created_at FROM tasks WHERE id = ?"
 	err := i.rw.GetContext(timeout, &ret, cmd, id)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
 		return nil, err
 	}
 

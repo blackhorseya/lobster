@@ -53,7 +53,7 @@ func (i *impl) GetByID(c *gin.Context) {
 	ret, err := i.biz.GetByID(ctx, req.ID)
 	if err != nil {
 		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err))
-		c.Error(er.ErrGetTaskByID)
+		c.Error(err)
 		return
 	}
 
