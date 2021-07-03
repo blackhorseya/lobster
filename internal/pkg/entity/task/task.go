@@ -20,8 +20,8 @@ type Task struct {
 	// Status describe the status of task
 	Status Status `json:"status" db:"status"`
 
-	// CreateAt describe the task create milliseconds
-	CreateAt int64 `json:"create_at" db:"create_at"`
+	// CreatedAt describe the task create milliseconds
+	CreatedAt int64 `json:"created_at" db:"created_at"`
 }
 
 // ToLine serve caller to print a string slice
@@ -31,6 +31,6 @@ func (t *Task) ToLine() []string {
 		t.ResultID,
 		t.Title,
 		t.Status.String(),
-		timex.Unix(t.CreateAt).Format(timeFormat),
+		timex.Unix(t.CreatedAt).Format(timeFormat),
 	}
 }

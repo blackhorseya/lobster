@@ -84,7 +84,7 @@ func (i *impl) Create(ctx contextx.Contextx, task *task.Task) (*task.Task, error
 	}
 
 	task.ID = uuid.New().String()
-	task.CreateAt = time.Now().UnixNano()
+	task.CreatedAt = time.Now().UnixNano()
 
 	ret, err := i.repo.Create(ctx, task)
 	if err != nil {

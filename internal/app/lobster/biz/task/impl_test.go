@@ -24,14 +24,14 @@ var (
 		Title:     "task1",
 		Status:    task.Status_BACKLOG,
 		Completed: false,
-		CreateAt:  time1,
+		CreatedAt: time1,
 	}
 
 	updated1 = &task.Task{
 		ID:        uuid1,
 		Title:     "updated task1",
 		Completed: false,
-		CreateAt:  time1,
+		CreatedAt: time1,
 	}
 
 	updateStatus = &task.Task{
@@ -39,7 +39,7 @@ var (
 		Title:     "updated task1",
 		Status:    task.Status_INPROGRESS,
 		Completed: false,
-		CreateAt:  time1,
+		CreatedAt: time1,
 	}
 )
 

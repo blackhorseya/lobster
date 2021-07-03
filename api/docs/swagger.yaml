@@ -62,11 +62,8 @@ definitions:
     type: object
   task.Task:
     properties:
-      completed:
-        description: Completed describe the completed of task
-        type: boolean
-      create_at:
-        description: CreateAt describe the task create milliseconds
+      created_at:
+        description: CreatedAt describe the task create milliseconds
         type: integer
       id:
         description: ID describe the unique identify code of task

@@ -1073,12 +1073,8 @@
         "task.Task": {
             "type": "object",
             "properties": {
-                "completed": {
-                    "description": "Completed describe the completed of task",
-                    "type": "boolean"
-                },
-                "create_at": {
-                    "description": "CreateAt describe the task create milliseconds",
+                "created_at": {
+                    "description": "CreatedAt describe the task create milliseconds",
                     "type": "integer"
                 },
                 "id": {

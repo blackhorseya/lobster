@@ -23,14 +23,14 @@ var (
 		ResultID:  resultID,
 		Title:     "task1",
 		Completed: false,
-		CreateAt:  time1,
+		CreatedAt: time1,
 	}
 
 	updated1 = &task.Task{
 		ID:        uuid1,
 		Title:     "updated1 task1",
 		Completed: false,
-		CreateAt:  time1,
+		CreatedAt: time1,
 	}
 )
 

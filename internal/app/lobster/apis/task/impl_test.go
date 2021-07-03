@@ -31,7 +31,7 @@ var (
 		ID:        uuid1,
 		Title:     "task1",
 		Completed: false,
-		CreateAt:  time1,
+		CreatedAt: time1,
 	}
 
 	created1 = &task.Task{
@@ -43,7 +43,7 @@ var (
 		ID:        uuid1,
 		Title:     "updated task1",
 		Completed: false,
-		CreateAt:  time1,
+		CreatedAt: time1,
 	}
 
 	updated2 = &task.Task{
@@ -51,7 +51,7 @@ var (
 		Status:    task.Status_INPROGRESS,
 		Title:     "task1",
 		Completed: false,
-		CreateAt:  time1,
+		CreatedAt: time1,
 	}
 )
 
