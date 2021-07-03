@@ -1,8 +1,6 @@
 package task
 
-import (
-	timex2 "github.com/blackhorseya/lobster/internal/pkg/base/timex"
-)
+import "github.com/blackhorseya/lobster/internal/pkg/base/timex"
 
 const (
 	timeFormat = "2006-01-02 15:04:05"
@@ -22,9 +20,6 @@ type Task struct {
 	// Status describe the status of task
 	Status Status `json:"status" db:"status"`
 
-	// Completed describe the completed of task
-	Completed bool `json:"completed" db:"completed"`
-
 	// CreateAt describe the task create milliseconds
 	CreateAt int64 `json:"create_at" db:"create_at"`
 }
@@ -36,6 +31,6 @@ func (t *Task) ToLine() []string {
 		t.ResultID,
 		t.Title,
 		t.Status.String(),
-		timex2.Unix(t.CreateAt).Format(timeFormat),
+		timex.Unix(t.CreateAt).Format(timeFormat),
 	}
 }
