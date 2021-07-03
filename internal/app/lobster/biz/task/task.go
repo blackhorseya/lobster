@@ -10,7 +10,7 @@ import (
 // IBiz declare todo biz service function
 type IBiz interface {
 	// GetByID serve user to get a task by id
-	GetByID(ctx contextx.Contextx, id string) (*task.Task, error)
+	GetByID(ctx contextx.Contextx, id int64) (*task.Task, error)
 
 	// List serve user to list all tasks
 	List(ctx contextx.Contextx, page, size int) ([]*task.Task, error)
@@ -22,13 +22,13 @@ type IBiz interface {
 	Create(ctx contextx.Contextx, title string) (*task.Task, error)
 
 	// ModifyTitle serve user to modify title of task
-	ModifyTitle(ctx contextx.Contextx, id, title string) (t *task.Task, err error)
+	ModifyTitle(ctx contextx.Contextx, id int64, title string) (t *task.Task, err error)
 
 	// UpdateStatus serve user to update status of task
-	UpdateStatus(ctx contextx.Contextx, id string, status task.Status) (t *task.Task, err error)
+	UpdateStatus(ctx contextx.Contextx, id int64, status task.Status) (t *task.Task, err error)
 
 	// Delete serve user to delete a task by id
-	Delete(ctx contextx.Contextx, id string) error
+	Delete(ctx contextx.Contextx, id int64) error
 }
 
 // ProviderSet is a provider set for wire

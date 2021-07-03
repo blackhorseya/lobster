@@ -9,7 +9,7 @@ import (
 // IRepo declare todo repo service function
 type IRepo interface {
 	// QueryByID serve caller to query a task by id from database
-	QueryByID(ctx contextx.Contextx, id string) (*task.Task, error)
+	QueryByID(ctx contextx.Contextx, id int64) (*task.Task, error)
 
 	// Create serve caller to create a task to database
 	Create(ctx contextx.Contextx, task *task.Task) (*task.Task, error)
@@ -24,7 +24,7 @@ type IRepo interface {
 	Update(ctx contextx.Contextx, updated *task.Task) (*task.Task, error)
 
 	// Delete serve caller to delete a task by id from database
-	Delete(ctx contextx.Contextx, id string) (int, error)
+	Delete(ctx contextx.Contextx, id int64) (int, error)
 }
 
 // ProviderSet is a provider set for wire

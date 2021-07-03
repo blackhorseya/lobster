@@ -17,12 +17,12 @@ func NewImpl(rw *sqlx.DB) IRepo {
 	return &impl{rw: rw}
 }
 
-func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*task.Task, error) {
+func (i *impl) QueryByID(ctx contextx.Contextx, id int64) (*task.Task, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
 	ret := task.Task{}
-	cmd := "SELECT id, result_id, title, completed, create_at FROM tasks WHERE id = ?"
+	cmd := "SELECT id, title, status, created_at FROM tasks WHERE id = ?"
 	err := i.rw.GetContext(timeout, &ret, cmd, id)
 	if err != nil {
 		return nil, err
@@ -35,7 +35,7 @@ func (i *impl) Create(ctx contextx.Contextx, task *task.Task) (*task.Task, error
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	cmd := "INSERT INTO tasks (id, result_id, title, completed, create_at) VALUES (:id, :result_id, :title, :completed, :create_at)"
+	cmd := "INSERT INTO tasks (id, title, status, created_at) VALUES (:id, :title, :status, :created_at)"
 	_, err := i.rw.NamedExecContext(timeout, cmd, task)
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func (i *impl) List(ctx contextx.Contextx, offset, limit int) ([]*task.Task, err
 	defer cancel()
 
 	var ret []*task.Task
-	cmd := "SELECT id, result_id, title, completed, create_at FROM tasks LIMIT ? OFFSET ?"
+	cmd := "SELECT id, title, status, created_at FROM tasks LIMIT ? OFFSET ?"
 	if err := i.rw.SelectContext(timeout, &ret, cmd, limit, offset); err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (i *impl) Update(ctx contextx.Contextx, updated *task.Task) (*task.Task, er
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	cmd := "UPDATE tasks SET title=:title, completed=:completed WHERE id = :id"
+	cmd := "UPDATE tasks SET title=:title, status=:status WHERE id = :id"
 	_, err := i.rw.NamedExecContext(timeout, cmd, updated)
 	if err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func (i *impl) Update(ctx contextx.Contextx, updated *task.Task) (*task.Task, er
 	return updated, nil
 }
 
-func (i *impl) Delete(ctx contextx.Contextx, id string) (int, error) {
+func (i *impl) Delete(ctx contextx.Contextx, id int64) (int, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 

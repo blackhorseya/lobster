@@ -7,6 +7,7 @@ package task
 
 import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task/repo"
+	"github.com/bwmarrin/snowflake"
 	"github.com/google/wire"
 	"go.uber.org/zap"
 )
@@ -14,8 +15,8 @@ import (
 // Injectors from wire.go:
 
 // CreateIBiz serve caller to create an IBiz
-func CreateIBiz(logger *zap.Logger, repo2 repo.IRepo) (IBiz, error) {
-	iBiz := NewImpl(logger, repo2)
+func CreateIBiz(logger *zap.Logger, repo2 repo.IRepo, node *snowflake.Node) (IBiz, error) {
+	iBiz := NewImpl(logger, repo2, node)
 	return iBiz, nil
 }
 

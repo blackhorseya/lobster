@@ -9,13 +9,14 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task/repo/mocks"
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/task"
+	"github.com/bwmarrin/snowflake"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 	"go.uber.org/zap"
 )
 
 var (
-	uuid1 = "d76f4f51-f141-41ba-ba57-c4749319586b"
+	uuid1 = int64(1)
 
 	time1 = time.Now().UnixNano()
 
@@ -48,9 +49,10 @@ type bizSuite struct {
 
 func (s *bizSuite) SetupTest() {
 	logger, _ := zap.NewDevelopment()
+	node, _ := snowflake.NewNode(1)
 
 	s.mock = new(mocks.IRepo)
-	if biz, err := CreateIBiz(logger, s.mock); err != nil {
+	if biz, err := CreateIBiz(logger, s.mock, node); err != nil {
 		panic(err)
 	} else {
 		s.biz = biz
@@ -67,7 +69,7 @@ func TestBizSuite(t *testing.T) {
 
 func (s *bizSuite) Test_impl_GetByID() {
 	type args struct {
-		id   string
+		id   int64
 		mock func()
 	}
 	tests := []struct {
@@ -76,12 +78,6 @@ func (s *bizSuite) Test_impl_GetByID() {
 		want    *task.Task
 		wantErr bool
 	}{
-		{
-			name:    "id then nil error",
-			args:    args{id: "id"},
-			want:    nil,
-			wantErr: true,
-		},
 		{
 			name: "uuid then nil error",
 			args: args{id: uuid1, mock: func() {
@@ -307,7 +303,7 @@ func (s *bizSuite) Test_impl_Create() {
 
 func (s *bizSuite) Test_impl_Delete() {
 	type args struct {
-		id   string
+		id   int64
 		mock func()
 	}
 	tests := []struct {
@@ -315,11 +311,6 @@ func (s *bizSuite) Test_impl_Delete() {
 		args    args
 		wantErr bool
 	}{
-		{
-			name:    "id then nil error",
-			args:    args{id: "id"},
-			wantErr: true,
-		},
 		{
 			name: "uuid then nil error",
 			args: args{id: uuid1, mock: func() {
@@ -359,7 +350,7 @@ func (s *bizSuite) Test_impl_Delete() {
 
 func (s *bizSuite) Test_impl_UpdateStatus() {
 	type args struct {
-		id     string
+		id     int64
 		status task.Status
 		mock   func()
 	}
@@ -369,12 +360,6 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 		wantT   *task.Task
 		wantErr bool
 	}{
-		{
-			name:    "id then nil error",
-			args:    args{id: "id"},
-			wantT:   nil,
-			wantErr: true,
-		},
 		{
 			name: "uuid then query id error",
 			args: args{id: uuid1, mock: func() {
@@ -432,7 +417,7 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 
 func (s *bizSuite) Test_impl_ModifyTitle() {
 	type args struct {
-		id    string
+		id    int64
 		title string
 		mock  func()
 	}
@@ -442,12 +427,6 @@ func (s *bizSuite) Test_impl_ModifyTitle() {
 		wantT   *task.Task
 		wantErr bool
 	}{
-		{
-			name:    "id then parse id error",
-			args:    args{id: "id", title: "title"},
-			wantT:   nil,
-			wantErr: true,
-		},
 		{
 			name:    "uuid missing title then error",
 			args:    args{id: uuid1, title: ""},

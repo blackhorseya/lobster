@@ -70,7 +70,11 @@ func CreateApp(path2 string, nodeID int64) (*app.Application, error) {
 	iBiz := health.NewImpl(logger, iRepo)
 	iHandler := health2.NewImpl(logger, iBiz)
 	repoIRepo := repo2.NewImpl(db)
-	taskIBiz := task.NewImpl(logger, repoIRepo)
+	node, err := idgen.New(nodeID)
+	if err != nil {
+		return nil, err
+	}
+	taskIBiz := task.NewImpl(logger, repoIRepo, node)
 	taskIHandler := task2.NewImpl(logger, taskIBiz)
 	iRepo2 := repo3.NewImpl(db)
 	goalIBiz := goal.NewImpl(logger, iRepo2)

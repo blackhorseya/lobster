@@ -27,7 +27,7 @@ func NewImpl(logger *zap.Logger, biz task.IBiz) IHandler {
 }
 
 type reqID struct {
-	ID string `uri:"id" binding:"required,uuid"`
+	ID int64 `uri:"id" binding:"required"`
 }
 
 // GetByID @Summary Get a task by id
@@ -241,7 +241,7 @@ func (i *impl) Delete(c *gin.Context) {
 	}
 
 	if err := i.biz.Delete(ctx, req.ID); err != nil {
-		i.logger.Error(er.ErrDeleteTask.Error(), zap.Error(err), zap.String("id", req.ID))
+		i.logger.Error(er.ErrDeleteTask.Error(), zap.Error(err), zap.Int64("id", req.ID))
 		c.Error(er.ErrDeleteTask)
 		return
 	}
