@@ -12,9 +12,9 @@ import (
 )
 
 var (
-	uuid1 = "d76f4f51-f141-41ba-ba57-c4749319586b"
+	uuid1 = int64(0)
 
-	resultID = "f45b1a55-15cd-4b49-89f1-3e9781cc7e06"
+	resultID = int64(0)
 
 	time1 = int64(1610548520788105000)
 
@@ -22,14 +22,12 @@ var (
 		ID:        uuid1,
 		ResultID:  resultID,
 		Title:     "task1",
-		Completed: false,
 		CreatedAt: time1,
 	}
 
 	updated1 = &todo.Task{
 		ID:        uuid1,
 		Title:     "updated1 task1",
-		Completed: false,
 		CreatedAt: time1,
 	}
 )
@@ -53,7 +51,7 @@ func TestRepoSuite(t *testing.T) {
 
 func (s *repoSuite) Test_impl_QueryByID() {
 	type args struct {
-		id string
+		id int64
 	}
 	tests := []struct {
 		name    string
@@ -208,7 +206,7 @@ func (s *repoSuite) Test_impl_Update() {
 
 func (s *repoSuite) Test_impl_Delete() {
 	type args struct {
-		id string
+		id int64
 	}
 	tests := []struct {
 		name    string

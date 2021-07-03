@@ -6,7 +6,7 @@ type Task struct {
 	ID int64 `json:"id" db:"id"`
 
 	// ResultID describe the parent key result's id
-	ResultID string `json:"result_id" db:"result_id"`
+	ResultID int64 `json:"result_id" db:"result_id"`
 
 	// Title describe the title of task
 	Title string `json:"title" db:"title"`
