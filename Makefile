@@ -4,6 +4,8 @@ PROJECT_ID = sean-side
 NS = side
 DEPLOY_TO = uat
 
+DB_URI = "mysql://lobster:changeme@tcp(localhost:3306)/lobster?charset=utf8mb4&parseTime=True&loc=Local"
+
 .PHONY: clean
 clean:
 	@rm -rf bin coverage.txt profile.out
