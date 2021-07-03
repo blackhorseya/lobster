@@ -1,11 +1,5 @@
 package task
 
-import "github.com/blackhorseya/lobster/internal/pkg/base/timex"
-
-const (
-	timeFormat = "2006-01-02 15:04:05"
-)
-
 // Task declare a task basic information
 type Task struct {
 	// ID describe the unique identify code of task
@@ -22,15 +16,4 @@ type Task struct {
 
 	// CreatedAt describe the task create milliseconds
 	CreatedAt int64 `json:"created_at" db:"created_at"`
-}
-
-// ToLine serve caller to print a string slice
-func (t *Task) ToLine() []string {
-	return []string{
-		t.ID,
-		t.ResultID,
-		t.Title,
-		t.Status.String(),
-		timex.Unix(t.CreatedAt).Format(timeFormat),
-	}
 }
