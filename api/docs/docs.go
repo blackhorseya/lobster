@@ -784,7 +784,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/task.Task"
+                            "$ref": "#/definitions/task.reqTitle"
                         }
                     }
                 ],
@@ -824,7 +824,7 @@ var doc = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID of task",
                         "name": "id",
                         "in": "path",
@@ -865,7 +865,7 @@ var doc = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID of task",
                         "name": "id",
                         "in": "path",
@@ -906,9 +906,10 @@ var doc = `{
                 "tags": [
                     "Tasks"
                 ],
+                "summary": "Update a status of task by id",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID of task",
                         "name": "id",
                         "in": "path",
@@ -920,7 +921,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/task.Task"
+                            "$ref": "#/definitions/task.reqStatus"
                         }
                     }
                 ],
@@ -960,7 +961,7 @@ var doc = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID of task",
                         "name": "id",
                         "in": "path",
@@ -972,7 +973,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/task.Task"
+                            "$ref": "#/definitions/task.reqTitle"
                         }
                     }
                 ],
@@ -1086,27 +1087,24 @@ var doc = `{
                 }
             }
         },
-        "task.Task": {
+        "task.reqStatus": {
             "type": "object",
+            "required": [
+                "status"
+            ],
             "properties": {
-                "created_at": {
-                    "description": "CreatedAt describe the task create milliseconds",
-                    "type": "integer"
-                },
-                "id": {
-                    "description": "ID describe the unique identify code of task",
-                    "type": "string"
-                },
-                "result_id": {
-                    "description": "ResultID describe the parent key result's id",
-                    "type": "string"
-                },
                 "status": {
-                    "description": "Status describe the status of task",
                     "type": "integer"
-                },
+                }
+            }
+        },
+        "task.reqTitle": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
                 "title": {
-                    "description": "Title describe the title of task",
                     "type": "string"
                 }
             }

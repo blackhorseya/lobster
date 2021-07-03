@@ -60,23 +60,19 @@ definitions:
       msg:
         type: string
     type: object
-  task.Task:
+  task.reqStatus:
     properties:
-      created_at:
-        description: CreatedAt describe the task create milliseconds
-        type: integer
-      id:
-        description: ID describe the unique identify code of task
-        type: string
-      result_id:
-        description: ResultID describe the parent key result's id
-        type: string
       status:
-        description: Status describe the status of task
         type: integer
+    required:
+    - status
+    type: object
+  task.reqTitle:
+    properties:
       title:
-        description: Title describe the title of task
         type: string
+    required:
+    - title
     type: object
   user.Profile:
     properties:
@@ -590,7 +586,7 @@ paths:
         name: created
         required: true
         schema:
-          $ref: '#/definitions/task.Task'
+          $ref: '#/definitions/task.reqTitle'
       produces:
       - application/json
       responses:
@@ -618,7 +614,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -645,7 +641,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -673,13 +669,13 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       - description: updated task
         in: body
         name: updated
         required: true
         schema:
-          $ref: '#/definitions/task.Task'
+          $ref: '#/definitions/task.reqStatus'
       produces:
       - application/json
       responses:
@@ -695,6 +691,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/er.APPError'
+      summary: Update a status of task by id
       tags:
       - Tasks
   /v1/tasks/{id}/title:
@@ -707,13 +704,13 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       - description: updated task
         in: body
         name: updated
         required: true
         schema:
-          $ref: '#/definitions/task.Task'
+          $ref: '#/definitions/task.reqTitle'
       produces:
       - application/json
       responses:

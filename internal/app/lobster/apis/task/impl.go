@@ -35,7 +35,7 @@ type reqID struct {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
-// @Param id path string true "ID of task"
+// @Param id path integer true "ID of task"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} er.APPError
 // @Failure 500 {object} er.APPError
@@ -103,12 +103,16 @@ func (i *impl) List(c *gin.Context) {
 	c.JSON(http.StatusOK, ret)
 }
 
+type reqTitle struct {
+	Title string `json:"title" binding:"required"`
+}
+
 // Create @Summary Create a task
 // @Description Create a task
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
-// @Param created body task.Task true "created task"
+// @Param created body reqTitle true "created task"
 // @Success 201 {object} response.Response
 // @Failure 400 {object} er.APPError
 // @Failure 500 {object} er.APPError
@@ -116,7 +120,7 @@ func (i *impl) List(c *gin.Context) {
 func (i *impl) Create(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
-	var data *taskE.Task
+	var data *reqTitle
 	if err := c.ShouldBindJSON(&data); err != nil {
 		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err))
 		c.Error(er.ErrCreateTask)
@@ -139,13 +143,18 @@ func (i *impl) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, response.OK.WithData(ret))
 }
 
-// UpdateStatus @Summary UpdateStatus a status of task by id
+type reqStatus struct {
+	Status taskE.Status `json:"status" binding:"required"`
+}
+
+// UpdateStatus
+// @Summary Update a status of task by id
 // @Description UpdateStatus a status of task by id
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
-// @Param id path string true "ID of task"
-// @Param updated body task.Task true "updated task"
+// @Param id path integer true "ID of task"
+// @Param updated body reqStatus true "updated task"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} er.APPError
 // @Failure 500 {object} er.APPError
@@ -160,7 +169,7 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 		return
 	}
 
-	var data *taskE.Task
+	var data *reqStatus
 	if err := c.ShouldBindJSON(&data); err != nil {
 		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err))
 		c.Error(er.ErrUpdateTask)
@@ -182,8 +191,8 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
-// @Param id path string true "ID of task"
-// @Param updated body task.Task true "updated task"
+// @Param id path integer true "ID of task"
+// @Param updated body reqTitle true "updated task"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} er.APPError
 // @Failure 500 {object} er.APPError
@@ -198,7 +207,7 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 		return
 	}
 
-	var data *taskE.Task
+	var data *reqTitle
 	if err := c.ShouldBindJSON(&data); err != nil {
 		i.logger.Error(er.ErrCreateTask.Error(), zap.Error(err))
 		c.Error(er.ErrUpdateTask)
@@ -225,7 +234,7 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
-// @Param id path string true "ID of task"
+// @Param id path integer true "ID of task"
 // @Success 204 {object} string
 // @Failure 400 {object} er.APPError
 // @Failure 500 {object} er.APPError
