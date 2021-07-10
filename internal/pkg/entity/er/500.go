@@ -3,6 +3,9 @@ package er
 import "net/http"
 
 var (
+	// ErrGetUserByID means get user by id is failure
+	ErrGetUserByID = newAPPError(http.StatusInternalServerError, 50000, "get user by id is failure")
+
 	// ErrGetUserByEmail means get user by email is failure
 	ErrGetUserByEmail = newAPPError(http.StatusInternalServerError, 50001, "get user by email is failure")
 

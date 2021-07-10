@@ -5,17 +5,6 @@ type APPError struct {
 	Status int    `json:"-"`
 	Code   int    `json:"code"`
 	Msg    string `json:"msg"`
-	Err    error  `json:"-"`
-}
-
-// WithError append error into APPError
-func (e *APPError) WithError(err error) *APPError {
-	return &APPError{
-		Status: e.Status,
-		Code:   e.Code,
-		Msg:    e.Msg,
-		Err:    err,
-	}
 }
 
 func (e *APPError) Error() string {
