@@ -15,9 +15,6 @@ type IBiz interface {
 	// List serve user to list all tasks
 	List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error)
 
-	// Count serve user to count all tasks
-	Count(ctx contextx.Contextx) (int, error)
-
 	// Create serve user to create a task
 	Create(ctx contextx.Contextx, title string) (*todo.Task, error)
 

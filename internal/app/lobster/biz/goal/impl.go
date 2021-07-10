@@ -77,16 +77,6 @@ func (i *impl) GetByID(ctx contextx.Contextx, id string) (*okr.Goal, error) {
 	return ret, nil
 }
 
-func (i *impl) Count(ctx contextx.Contextx) (int, error) {
-	ret, err := i.repo.Count(ctx)
-	if err != nil {
-		i.logger.Error(er.ErrCountObj.Error(), zap.Error(err))
-		return 0, er.ErrCountObj
-	}
-
-	return ret, nil
-}
-
 func (i *impl) ModifyTitle(ctx contextx.Contextx, id, title string) (obj *okr.Goal, err error) {
 	_, err = uuid.Parse(id)
 	if err != nil {

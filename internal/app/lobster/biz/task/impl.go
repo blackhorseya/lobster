@@ -60,20 +60,6 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error)
 	return ret, nil
 }
 
-func (i *impl) Count(ctx contextx.Contextx) (int, error) {
-	ret, err := i.repo.Count(ctx)
-	if err != nil {
-		i.logger.Error(er.ErrCountObj.Error(), zap.Error(err))
-		return 0, er.ErrTaskNotExists
-	}
-	if ret == 0 {
-		i.logger.Error("count all tasks is not found")
-		return 0, er.ErrTaskNotExists
-	}
-
-	return ret, nil
-}
-
 func (i *impl) Create(ctx contextx.Contextx, title string) (*todo.Task, error) {
 	if len(title) == 0 {
 		i.logger.Error(er.ErrEmptyTitle.Error(), zap.String("title", title))

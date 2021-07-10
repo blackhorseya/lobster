@@ -18,9 +18,6 @@ type IBiz interface {
 	// List serve user to list all objectives
 	List(ctx contextx.Contextx, page, size int) ([]*okr.Goal, error)
 
-	// Count serve user to count all objectives
-	Count(ctx contextx.Contextx) (int, error)
-
 	// ModifyTitle serve user to modify title of task
 	ModifyTitle(ctx contextx.Contextx, id, title string) (obj *okr.Goal, err error)
 
