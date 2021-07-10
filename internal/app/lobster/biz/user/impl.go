@@ -39,8 +39,22 @@ func (i *impl) GetByID(ctx contextx.Contextx, id int64) (info *user.Profile, err
 }
 
 func (i *impl) GetByToken(ctx contextx.Contextx, token string) (info *user.Profile, err error) {
-	// todo: 2021-07-11|07:03|Sean|implement me
-	panic("implement me")
+	if len(token) == 0 {
+		i.logger.Error(er.ErrMissingToken.Error())
+		return nil, er.ErrMissingToken
+	}
+
+	ret, err := i.repo.GetByToken(ctx, token)
+	if err != nil {
+		i.logger.Error(er.ErrGetUserByToken.Error(), zap.String("token", token))
+		return nil, er.ErrGetUserByToken
+	}
+	if ret == nil {
+		i.logger.Error(er.ErrUserNotExists.Error(), zap.String("token", token))
+		return nil, er.ErrUserNotExists
+	}
+
+	return ret, nil
 }
 
 func (i *impl) Signup(ctx contextx.Contextx, email, password string) (info *user.Profile, err error) {

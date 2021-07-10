@@ -17,7 +17,9 @@ import (
 var (
 	id1 = int64(0)
 
-	info1 = &user.Profile{ID: id1}
+	token1 = "token"
+
+	info1 = &user.Profile{ID: id1, Token: token1}
 )
 
 type bizSuite struct {
@@ -96,6 +98,70 @@ func (s *bizSuite) Test_impl_GetByID() {
 			}
 			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
 				t.Errorf("GetByID() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizSuite) Test_impl_GetByToken() {
+	type args struct {
+		ctx   contextx.Contextx
+		token string
+		mock  func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantInfo *user.Profile
+		wantErr  bool
+	}{
+		{
+			name:     "missing token then error",
+			args:     args{token: ""},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "get by token then error",
+			args: args{token: token1, mock: func() {
+				s.mock.On("GetByToken", mock.Anything, token1).Return(nil, errors.New("error")).Once()
+			}},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "get by token then not exists",
+			args: args{token: token1, mock: func() {
+				s.mock.On("GetByToken", mock.Anything, token1).Return(nil, nil).Once()
+
+			}},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "get by token then user",
+			args: args{token: token1, mock: func() {
+				s.mock.On("GetByToken", mock.Anything, token1).Return(info1, nil).Once()
+			}},
+			wantInfo: info1,
+			wantErr:  false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotInfo, err := s.biz.GetByToken(tt.args.ctx, tt.args.token)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetByToken() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
+				t.Errorf("GetByToken() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
 			}
 
 			s.TearDownTest()
