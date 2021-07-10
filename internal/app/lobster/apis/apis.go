@@ -3,9 +3,7 @@ package apis
 import (
 	// import swagger docs
 	_ "github.com/blackhorseya/lobster/api/docs"
-	"github.com/blackhorseya/lobster/internal/app/lobster/apis/goal"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/health"
-	"github.com/blackhorseya/lobster/internal/app/lobster/apis/result"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/task"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http"
 	"github.com/gin-gonic/gin"
@@ -17,9 +15,7 @@ import (
 // CreateInitHandlerFn serve caller to create init handler
 func CreateInitHandlerFn(
 	health health.IHandler,
-	taskH task.IHandler,
-	goalH goal.IHandler,
-	resultH result.IHandler) http.InitHandlers {
+	taskH task.IHandler) http.InitHandlers {
 	return func(r *gin.Engine) {
 		api := r.Group("api")
 		{
@@ -40,24 +36,6 @@ func CreateInitHandlerFn(
 					tasks.PATCH(":id/status", taskH.UpdateStatus)
 					tasks.PATCH(":id/title", taskH.ModifyTitle)
 				}
-
-				goals := v1.Group("goals")
-				{
-					goals.GET("", goalH.List)
-					goals.GET(":id", goalH.GetByID)
-					goals.POST("", goalH.Create)
-					goals.DELETE(":id", goalH.Delete)
-					goals.GET(":id/results", resultH.GetByGoalID)
-				}
-
-				results := v1.Group("results")
-				{
-					results.GET("", resultH.List)
-					results.GET(":id", resultH.GetByID)
-					results.POST("", resultH.Create)
-					results.PATCH(":id/title", resultH.ModifyTitle)
-					results.DELETE(":id", resultH.Delete)
-				}
 			}
 		}
 	}
@@ -67,7 +45,5 @@ func CreateInitHandlerFn(
 var ProviderSet = wire.NewSet(
 	health.ProviderSet,
 	task.ProviderSet,
-	goal.ProviderSet,
-	result.ProviderSet,
 	CreateInitHandlerFn,
 )

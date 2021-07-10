@@ -3,18 +3,15 @@ package er
 import "net/http"
 
 var (
-	// ErrMissingEmail means email is empty
-	ErrMissingEmail = newAPPError(http.StatusBadRequest, 40001, "email is empty")
+	// ErrInvalidID means given id is invalid
+	ErrInvalidID = newAPPError(http.StatusBadRequest, 40001, "invalid id")
 
-	// ErrMissingPassword means password is empty
-	ErrMissingPassword = newAPPError(http.StatusBadRequest, 40002, "password is empty")
+	// ErrInvalidPage means given page is invalid which MUST be greater than 0
+	ErrInvalidPage = newAPPError(http.StatusBadRequest, 40002, "page MUST be greater than 0")
 
-	// ErrMissingPath means missing path
-	ErrMissingPath = newAPPError(http.StatusBadRequest, 40003, "missing path")
+	// ErrInvalidSize means given size is invalid which MUST be greater than 0
+	ErrInvalidSize = newAPPError(http.StatusBadRequest, 40003, "size MUST be greater than 0")
 
-	// ErrMissingDate means missing date
-	ErrMissingDate = newAPPError(http.StatusBadRequest, 40004, "missing date")
-
-	// ErrEmailExists means email is exists
-	ErrEmailExists = newAPPError(http.StatusBadRequest, 40005, "email is exists")
+	// ErrEmptyTitle means give title of task is empty value
+	ErrEmptyTitle = newAPPError(http.StatusBadRequest, 40004, "title must be NOT empty")
 )

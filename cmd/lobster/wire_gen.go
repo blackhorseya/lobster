@@ -8,17 +8,11 @@ package main
 import (
 	"github.com/blackhorseya/lobster/internal/app/lobster"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis"
-	goal2 "github.com/blackhorseya/lobster/internal/app/lobster/apis/goal"
 	health2 "github.com/blackhorseya/lobster/internal/app/lobster/apis/health"
-	result2 "github.com/blackhorseya/lobster/internal/app/lobster/apis/result"
 	task2 "github.com/blackhorseya/lobster/internal/app/lobster/apis/task"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz"
-	"github.com/blackhorseya/lobster/internal/app/lobster/biz/goal"
-	repo3 "github.com/blackhorseya/lobster/internal/app/lobster/biz/goal/repo"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health/repo"
-	"github.com/blackhorseya/lobster/internal/app/lobster/biz/result"
-	repo4 "github.com/blackhorseya/lobster/internal/app/lobster/biz/result/repo"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task"
 	repo2 "github.com/blackhorseya/lobster/internal/app/lobster/biz/task/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/app"
@@ -73,13 +67,7 @@ func CreateApp(path2 string, nodeID int64) (*app.Application, error) {
 	}
 	taskIBiz := task.NewImpl(logger, repoIRepo, node)
 	taskIHandler := task2.NewImpl(logger, taskIBiz)
-	iRepo2 := repo3.NewImpl(db)
-	goalIBiz := goal.NewImpl(logger, iRepo2)
-	goalIHandler := goal2.NewImpl(logger, goalIBiz)
-	iRepo3 := repo4.NewImpl(db)
-	resultIBiz := result.NewImpl(logger, iRepo3)
-	resultIHandler := result2.NewImpl(logger, resultIBiz)
-	initHandlers := apis.CreateInitHandlerFn(iHandler, taskIHandler, goalIHandler, resultIHandler)
+	initHandlers := apis.CreateInitHandlerFn(iHandler, taskIHandler)
 	engine := http.NewRouter(httpOptions, logger, initHandlers)
 	server, err := http.New(httpOptions, logger, engine)
 	if err != nil {
