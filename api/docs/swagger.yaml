@@ -7,6 +7,34 @@ definitions:
       msg:
         type: string
     type: object
+  github.com_blackhorseya_lobster_internal_app_lobster_apis_task.reqStatus:
+    properties:
+      status:
+        type: integer
+    required:
+    - status
+    type: object
+  github.com_blackhorseya_lobster_internal_app_lobster_apis_task.reqTitle:
+    properties:
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  internal_app_lobster_apis_task.reqStatus:
+    properties:
+      status:
+        type: integer
+    required:
+    - status
+    type: object
+  internal_app_lobster_apis_task.reqTitle:
+    properties:
+      title:
+        type: string
+    required:
+    - title
+    type: object
   okr.Goal:
     properties:
       create_at:
@@ -60,29 +88,6 @@ definitions:
       msg:
         type: string
     type: object
-  task.reqStatus:
-    properties:
-      status:
-        type: integer
-    required:
-    - status
-    type: object
-  task.reqTitle:
-    properties:
-      title:
-        type: string
-    required:
-    - title
-    type: object
-  user.Profile:
-    properties:
-      access_token:
-        description: AccessToken describe this user's accessToken
-        type: string
-      email:
-        description: Email describe user's email to login system
-        type: string
-    type: object
 info:
   contact:
     email: blackhorseya@gmail.com
@@ -131,66 +136,6 @@ paths:
             $ref: '#/definitions/er.APPError'
       tags:
       - Health
-  /v1/auth/login:
-    post:
-      consumes:
-      - application/json
-      description: Login
-      parameters:
-      - description: user profile
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/user.Profile'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      summary: Login
-      tags:
-      - Auth
-  /v1/auth/signup:
-    post:
-      consumes:
-      - application/json
-      description: Signup
-      parameters:
-      - description: new user profile
-        in: body
-        name: newUser
-        required: true
-        schema:
-          $ref: '#/definitions/user.Profile'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      summary: Signup
-      tags:
-      - Auth
   /v1/goals:
     get:
       consumes:
@@ -586,7 +531,7 @@ paths:
         name: created
         required: true
         schema:
-          $ref: '#/definitions/task.reqTitle'
+          $ref: '#/definitions/internal_app_lobster_apis_task.reqTitle'
       produces:
       - application/json
       responses:
@@ -675,7 +620,7 @@ paths:
         name: updated
         required: true
         schema:
-          $ref: '#/definitions/task.reqStatus'
+          $ref: '#/definitions/internal_app_lobster_apis_task.reqStatus'
       produces:
       - application/json
       responses:
@@ -710,7 +655,7 @@ paths:
         name: updated
         required: true
         schema:
-          $ref: '#/definitions/task.reqTitle'
+          $ref: '#/definitions/internal_app_lobster_apis_task.reqTitle'
       produces:
       - application/json
       responses:

@@ -5,7 +5,6 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/result"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task"
-	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user"
 	"github.com/google/wire"
 )
 
@@ -15,5 +14,4 @@ var ProviderSet = wire.NewSet(
 	task.ProviderSet,
 	goal.ProviderSet,
 	result.ProviderSet,
-	user.ProviderSet,
 )

@@ -7,7 +7,6 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/health"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/result"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/task"
-	"github.com/blackhorseya/lobster/internal/app/lobster/apis/user"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -20,8 +19,7 @@ func CreateInitHandlerFn(
 	health health.IHandler,
 	taskH task.IHandler,
 	goalH goal.IHandler,
-	resultH result.IHandler,
-	userH user.IHandler) http.InitHandlers {
+	resultH result.IHandler) http.InitHandlers {
 	return func(r *gin.Engine) {
 		api := r.Group("api")
 		{
@@ -60,12 +58,6 @@ func CreateInitHandlerFn(
 					results.PATCH(":id/title", resultH.ModifyTitle)
 					results.DELETE(":id", resultH.Delete)
 				}
-
-				authG := v1.Group("auth")
-				{
-					authG.POST("signup", userH.Signup)
-					authG.POST("login", userH.Login)
-				}
 			}
 		}
 	}
@@ -77,6 +69,5 @@ var ProviderSet = wire.NewSet(
 	task.ProviderSet,
 	goal.ProviderSet,
 	result.ProviderSet,
-	user.ProviderSet,
 	CreateInitHandlerFn,
 )

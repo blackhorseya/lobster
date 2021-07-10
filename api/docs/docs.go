@@ -88,98 +88,6 @@ var doc = `{
                 }
             }
         },
-        "/v1/auth/login": {
-            "post": {
-                "description": "Login",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Login",
-                "parameters": [
-                    {
-                        "description": "user profile",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user.Profile"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/er.APPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/er.APPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/signup": {
-            "post": {
-                "description": "Signup",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Signup",
-                "parameters": [
-                    {
-                        "description": "new user profile",
-                        "name": "newUser",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user.Profile"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/er.APPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/er.APPError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/goals": {
             "get": {
                 "description": "List all objectives",
@@ -784,7 +692,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/task.reqTitle"
+                            "$ref": "#/definitions/internal_app_lobster_apis_task.reqTitle"
                         }
                     }
                 ],
@@ -921,7 +829,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/task.reqStatus"
+                            "$ref": "#/definitions/internal_app_lobster_apis_task.reqStatus"
                         }
                     }
                 ],
@@ -973,7 +881,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/task.reqTitle"
+                            "$ref": "#/definitions/internal_app_lobster_apis_task.reqTitle"
                         }
                     }
                 ],
@@ -1008,6 +916,50 @@ var doc = `{
                     "type": "integer"
                 },
                 "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "github.com_blackhorseya_lobster_internal_app_lobster_apis_task.reqStatus": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github.com_blackhorseya_lobster_internal_app_lobster_apis_task.reqTitle": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_app_lobster_apis_task.reqStatus": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "internal_app_lobster_apis_task.reqTitle": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "title": {
                     "type": "string"
                 }
             }
@@ -1083,41 +1035,6 @@ var doc = `{
                     "type": "object"
                 },
                 "msg": {
-                    "type": "string"
-                }
-            }
-        },
-        "task.reqStatus": {
-            "type": "object",
-            "required": [
-                "status"
-            ],
-            "properties": {
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "task.reqTitle": {
-            "type": "object",
-            "required": [
-                "title"
-            ],
-            "properties": {
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "user.Profile": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "description": "AccessToken describe this user's accessToken",
-                    "type": "string"
-                },
-                "email": {
-                    "description": "Email describe user's email to login system",
                     "type": "string"
                 }
             }
