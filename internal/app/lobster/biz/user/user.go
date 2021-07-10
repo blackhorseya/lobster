@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
 	"github.com/google/wire"
@@ -22,4 +23,4 @@ type IBiz interface {
 }
 
 // ProviderSet is a provider set for wire
-var ProviderSet = wire.NewSet()
+var ProviderSet = wire.NewSet(NewImpl, repo.ProviderSet)

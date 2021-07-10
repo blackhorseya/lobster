@@ -22,4 +22,4 @@ type IRepo interface {
 }
 
 // ProviderSet is a provider set for wire
-var ProviderSet = wire.NewSet()
+var ProviderSet = wire.NewSet(NewImpl)
