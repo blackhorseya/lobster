@@ -19,6 +19,10 @@ var (
 
 	token1 = "token"
 
+	email1 = "email"
+
+	pass1 = "password"
+
 	info1 = &user.Profile{ID: id1, Token: token1}
 )
 
@@ -162,6 +166,86 @@ func (s *bizSuite) Test_impl_GetByToken() {
 			}
 			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
 				t.Errorf("GetByToken() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
+			}
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizSuite) Test_impl_Signup() {
+	type args struct {
+		ctx      contextx.Contextx
+		email    string
+		password string
+		mock     func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantInfo *user.Profile
+		wantErr  bool
+	}{
+		{
+			name:     "missing email then error",
+			args:     args{email: "", password: pass1},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name:     "missing password then error",
+			args:     args{email: email1, password: ""},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "get by email then error",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("GetByEmail", mock.Anything, email1).Return(nil, errors.New("error")).Once()
+			}},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "get by email then exists",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("GetByEmail", mock.Anything, email1).Return(info1, nil).Once()
+			}},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "register then error",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("GetByEmail", mock.Anything, email1).Return(nil, nil).Once()
+				s.mock.On("Register", mock.Anything, email1, mock.Anything).Return(nil, errors.New("error")).Once()
+			}},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
+			name: "register then user",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("GetByEmail", mock.Anything, email1).Return(nil, nil).Once()
+				s.mock.On("Register", mock.Anything, email1, mock.Anything).Return(info1, nil).Once()
+			}},
+			wantInfo: info1,
+			wantErr:  false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			gotInfo, err := s.biz.Signup(tt.args.ctx, tt.args.email, tt.args.password)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Signup() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
+				t.Errorf("Signup() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
 			}
 
 			s.TearDownTest()
