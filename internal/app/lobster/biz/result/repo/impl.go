@@ -22,7 +22,7 @@ func (i *impl) QueryByID(ctx contextx.Contextx, id string) (*okr.Result, error) 
 	defer cancel()
 
 	var kr okr.Result
-	stmt := `select id, goal_id, title, target, actual, create_at from keyresults where id = ?`
+	stmt := `select id, goal_id, title, target, actual, created_at from results where id = ?`
 	err := i.rw.GetContext(timeout, &kr, stmt, id)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (i *impl) QueryByGoalID(ctx contextx.Contextx, id string) (krs []*okr.Resul
 	defer cancel()
 
 	var ret []*okr.Result
-	stmt := `select id, goal_id, title, target, actual, create_at from keyresults where goal_id = ? order by create_at desc`
+	stmt := `select id, goal_id, title, target, actual, created_at from results where goal_id = ? order by create_at desc`
 	err = i.rw.SelectContext(timeout, &ret, stmt, id)
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func (i *impl) Create(ctx contextx.Contextx, created *okr.Result) (kr *okr.Resul
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	stmt := `insert into keyresults (id, goal_id, title, target, actual, create_at)
+	stmt := `insert into results (id, goal_id, title, target, actual, created_at)
 values (:id, :goal_id, :title, :target, :actual, :create_at)`
 	_, err = i.rw.NamedExecContext(timeout, stmt, created)
 	if err != nil {
@@ -63,7 +63,7 @@ func (i *impl) Update(ctx contextx.Contextx, updated *okr.Result) (kr *okr.Resul
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	stmt := `update keyresults set goal_id=:goal_id, title=:title, target=:target, actual=:actual where id = :id`
+	stmt := `update results set goal_id=:goal_id, title=:title, target=:target, actual=:actual where id = :id`
 	_, err = i.rw.NamedExecContext(timeout, stmt, updated)
 	if err != nil {
 		return nil, err
@@ -77,7 +77,7 @@ func (i *impl) QueryList(ctx contextx.Contextx, offset, limit int) (krs []*okr.R
 	defer cancel()
 
 	var ret []*okr.Result
-	stmt := `select id, goal_id, title, target, actual, create_at from keyresults limit ? offset ?`
+	stmt := `select id, goal_id, title, target, actual, created_at from results limit ? offset ?`
 	err = i.rw.SelectContext(timeout, &ret, stmt, limit, offset)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func (i *impl) Delete(ctx contextx.Contextx, id string) (err error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	stmt := `delete from keyresults where id = ?`
+	stmt := `delete from results where id = ?`
 	_ = i.rw.QueryRowxContext(timeout, stmt, id)
 
 	return nil
