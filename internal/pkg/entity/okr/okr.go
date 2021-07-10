@@ -28,7 +28,7 @@ type Goal struct {
 	EndAt int64 `json:"end_at" db:"end_at"`
 
 	// CreateAt describe the objective create milliseconds
-	CreateAt int64 `json:"create_at" db:"create_at"`
+	CreateAt int64 `json:"create_at" db:"created_at"`
 }
 
 // ToLine serve caller to print a string slice
@@ -63,7 +63,7 @@ type Result struct {
 	Progress int `json:"-"`
 
 	// CreateAt describe the key result create milliseconds
-	CreateAt int64 `json:"create_at" db:"create_at"`
+	CreateAt int64 `json:"create_at" db:"created_at"`
 }
 
 // ToLine serve caller to print a string slice

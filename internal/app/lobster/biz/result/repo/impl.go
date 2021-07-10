@@ -36,7 +36,7 @@ func (i *impl) QueryByGoalID(ctx contextx.Contextx, id string) (krs []*okr.Resul
 	defer cancel()
 
 	var ret []*okr.Result
-	stmt := `select id, goal_id, title, target, actual, created_at from results where goal_id = ? order by create_at desc`
+	stmt := `select id, goal_id, title, target, actual, created_at from results where goal_id = ? order by created_at desc`
 	err = i.rw.SelectContext(timeout, &ret, stmt, id)
 	if err != nil {
 		return nil, err
