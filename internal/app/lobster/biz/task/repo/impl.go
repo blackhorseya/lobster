@@ -49,13 +49,13 @@ func (i *impl) Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error
 	return task, nil
 }
 
-func (i *impl) List(ctx contextx.Contextx, offset, limit int) ([]*todo.Task, error) {
+func (i *impl) List(ctx contextx.Contextx, userID int64, offset, limit int) ([]*todo.Task, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
 	var ret []*todo.Task
-	cmd := "SELECT id, result_id, title, status, created_at FROM tasks LIMIT ? OFFSET ?"
-	if err := i.rw.SelectContext(timeout, &ret, cmd, limit, offset); err != nil {
+	cmd := "SELECT id, result_id, title, status, created_at FROM tasks where user_id = ? LIMIT ? OFFSET ?"
+	if err := i.rw.SelectContext(timeout, &ret, cmd, userID, limit, offset); err != nil {
 		return nil, err
 	}
 

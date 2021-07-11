@@ -143,6 +143,7 @@ func (s *bizSuite) Test_impl_GetByID() {
 
 func (s *bizSuite) Test_impl_List() {
 	type args struct {
+		ctx  contextx.Contextx
 		page int
 		size int
 		mock func()
@@ -155,20 +156,20 @@ func (s *bizSuite) Test_impl_List() {
 	}{
 		{
 			name:    "-1 10 then nil error",
-			args:    args{page: -1, size: 10},
+			args:    args{page: -1, size: 10, ctx: ctx1},
 			want:    nil,
 			wantErr: true,
 		},
 		{
 			name:    "10 -1 then nil error",
-			args:    args{page: 10, size: -1},
+			args:    args{page: 10, size: -1, ctx: ctx1},
 			want:    nil,
 			wantErr: true,
 		},
 		{
 			name: "1 1 then nil error",
-			args: args{page: 1, size: 1, mock: func() {
-				s.mock.On("List", mock.Anything, 0, 1).Return(
+			args: args{page: 1, size: 1, ctx: ctx1, mock: func() {
+				s.mock.On("List", mock.Anything, info1.ID, 0, 1).Return(
 					nil, errors.New("err")).Once()
 			}},
 			want:    nil,
@@ -176,8 +177,8 @@ func (s *bizSuite) Test_impl_List() {
 		},
 		{
 			name: "1 1 then tasks nil",
-			args: args{page: 1, size: 1, mock: func() {
-				s.mock.On("List", mock.Anything, 0, 1).Return(
+			args: args{page: 1, size: 1, ctx: ctx1, mock: func() {
+				s.mock.On("List", mock.Anything, info1.ID, 0, 1).Return(
 					[]*todo.Task{task1}, nil).Once()
 			}},
 			want: []*todo.Task{
@@ -192,7 +193,7 @@ func (s *bizSuite) Test_impl_List() {
 				tt.args.mock()
 			}
 
-			got, err := s.biz.List(contextx.Background(), tt.args.page, tt.args.size)
+			got, err := s.biz.List(tt.args.ctx, tt.args.page, tt.args.size)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("List() error = %v, wantErr %v", err, tt.wantErr)
 				return

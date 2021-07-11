@@ -48,6 +48,12 @@ func (i *impl) GetByID(ctx contextx.Contextx, id int64) (*todo.Task, error) {
 }
 
 func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error) {
+	profile, ok := ctx.Value("user").(*user.Profile)
+	if !ok {
+		i.logger.Error(er.ErrUserNotExists.Error())
+		return nil, er.ErrUserNotExists
+	}
+
 	if page <= 0 {
 		i.logger.Error(er.ErrInvalidPage.Error(), zap.Int("page", page))
 		return nil, er.ErrInvalidPage
@@ -58,7 +64,7 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error)
 		return nil, er.ErrInvalidSize
 	}
 
-	ret, err := i.repo.List(ctx, (page-1)*size, size)
+	ret, err := i.repo.List(ctx, profile.ID, (page-1)*size, size)
 	if err != nil {
 		i.logger.Error(er.ErrListTasks.Error(), zap.Error(err))
 		return nil, er.ErrTaskNotExists

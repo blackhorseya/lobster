@@ -15,7 +15,7 @@ type IRepo interface {
 	Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error)
 
 	// List serve caller to list all tasks from database
-	List(ctx contextx.Contextx, offset, limit int) ([]*todo.Task, error)
+	List(ctx contextx.Contextx, userID int64, offset, limit int) ([]*todo.Task, error)
 
 	// Count serve caller to count all tasks from database
 	Count(ctx contextx.Contextx) (int, error)

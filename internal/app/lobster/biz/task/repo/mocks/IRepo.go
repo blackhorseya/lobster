@@ -79,13 +79,13 @@ func (_m *IRepo) Delete(ctx contextx.Contextx, id int64) (int, error) {
 	return r0, r1
 }
 
-// List provides a mock function with given fields: ctx, offset, limit
-func (_m *IRepo) List(ctx contextx.Contextx, offset int, limit int) ([]*todo.Task, error) {
-	ret := _m.Called(ctx, offset, limit)
+// List provides a mock function with given fields: ctx, userID, offset, limit
+func (_m *IRepo) List(ctx contextx.Contextx, userID int64, offset int, limit int) ([]*todo.Task, error) {
+	ret := _m.Called(ctx, userID, offset, limit)
 
 	var r0 []*todo.Task
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, int, int) []*todo.Task); ok {
-		r0 = rf(ctx, offset, limit)
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, int64, int, int) []*todo.Task); ok {
+		r0 = rf(ctx, userID, offset, limit)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*todo.Task)
@@ -93,8 +93,8 @@ func (_m *IRepo) List(ctx contextx.Contextx, offset int, limit int) ([]*todo.Tas
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, int, int) error); ok {
-		r1 = rf(ctx, offset, limit)
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, int64, int, int) error); ok {
+		r1 = rf(ctx, userID, offset, limit)
 	} else {
 		r1 = ret.Error(1)
 	}
