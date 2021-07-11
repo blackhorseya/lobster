@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import {push} from 'connected-react-router';
 import {routeConstants} from '../_constants';
 import {AccountCircle} from '@material-ui/icons';
-import {Login} from '../components/user';
+import {Login, Signup} from '../components/user';
 
 class Routes extends React.Component {
   render() {
@@ -30,6 +30,10 @@ class Routes extends React.Component {
               {user.logged === false && (
                   <Button color="inherit" onClick={() => this.props.push(
                       routeConstants.Login)}>Login</Button>
+              )}
+              {user.logged === false && (
+                  <Button color="inherit" onClick={() => this.props.push(
+                      routeConstants.Signup)}>Signup</Button>
               )}
               {user.logged && (
                   <div>
@@ -50,6 +54,7 @@ class Routes extends React.Component {
             <Route exact path={routeConstants.Root}
                    render={() => (<div>Root Page</div>)}/>
             <Route path={routeConstants.Login} component={Login}/>
+            <Route path={routeConstants.Signup} component={Signup}/>
             <Route render={() => (<div>No Match</div>)}/>
           </Switch>
         </React.Fragment>

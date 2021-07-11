@@ -10,6 +10,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http/middlewares"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http/middlewares/rate"
 	ginzap "github.com/gin-contrib/zap"
+	"github.com/gin-gonic/contrib/cors"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -60,6 +61,11 @@ func NewRouter(o *Options, logger *zap.Logger, init InitHandlers) *gin.Engine {
 
 	r := gin.New()
 
+	defaultCORS := cors.DefaultConfig()
+	defaultCORS.AllowAllOrigins = true
+	defaultCORS.AddAllowedHeaders("Authorization")
+
+	r.Use(cors.New(defaultCORS))
 	r.Use(middlewares.ContextMiddleware())
 	r.Use(gin.Recovery())
 	r.Use(ginzap.Ginzap(logger, time.RFC3339, true))

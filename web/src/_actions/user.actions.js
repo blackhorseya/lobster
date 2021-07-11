@@ -1,5 +1,6 @@
 import {userService} from '../_services';
-import {userConstants} from '../_constants';
+import {routeConstants, userConstants} from '../_constants';
+import {push} from 'connected-react-router';
 
 export const userActions = {
   login,
@@ -15,6 +16,7 @@ function login(id, password) {
           dispatch(success(resp.data));
           localStorage.removeItem('token');
           localStorage.setItem('token', resp.data.accessToken);
+          dispatch(push(routeConstants.Root));
         },
         error => {
           dispatch(failure(error.toString()));
@@ -42,6 +44,7 @@ function signup(id, password) {
     userService.signup(id, password).then(
         resp => {
           dispatch(success(resp.data));
+          dispatch(push(routeConstants.Root));
         },
         error => {
           dispatch(failure(error.toString()));
