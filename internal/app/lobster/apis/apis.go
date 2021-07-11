@@ -5,6 +5,7 @@ import (
 	_ "github.com/blackhorseya/lobster/api/docs"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/health"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/task"
+	"github.com/blackhorseya/lobster/internal/app/lobster/apis/user"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -45,5 +46,6 @@ func CreateInitHandlerFn(
 var ProviderSet = wire.NewSet(
 	health.ProviderSet,
 	task.ProviderSet,
+	user.ProviderSet,
 	CreateInitHandlerFn,
 )
