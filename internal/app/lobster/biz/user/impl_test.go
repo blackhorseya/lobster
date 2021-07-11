@@ -19,7 +19,7 @@ import (
 var (
 	id1 = int64(0)
 
-	token1 = "token"
+	token1 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2JzdGVyIiwiaWQiOjAsImVtYWlsIjoiZW1haWwiLCJleHAiOjE5MDk5NTU2NDJ9.I2tByuRnyMtTEOWihGX3_RcKFS-3AwjdRxsW_YzZ-0c"
 
 	email1 = "email"
 
@@ -133,9 +133,9 @@ func (s *bizSuite) Test_impl_GetByToken() {
 			wantErr:  true,
 		},
 		{
-			name: "get by token then error",
+			name: "get by id then error",
 			args: args{token: token1, mock: func() {
-				s.mock.On("GetByToken", mock.Anything, token1).Return(nil, errors.New("error")).Once()
+				s.mock.On("GetByID", mock.Anything, id1).Return(nil, errors.New("error")).Once()
 			}},
 			wantInfo: nil,
 			wantErr:  true,
@@ -143,7 +143,7 @@ func (s *bizSuite) Test_impl_GetByToken() {
 		{
 			name: "get by token then not exists",
 			args: args{token: token1, mock: func() {
-				s.mock.On("GetByToken", mock.Anything, token1).Return(nil, nil).Once()
+				s.mock.On("GetByID", mock.Anything, id1).Return(nil, nil).Once()
 
 			}},
 			wantInfo: nil,
@@ -152,7 +152,7 @@ func (s *bizSuite) Test_impl_GetByToken() {
 		{
 			name: "get by token then user",
 			args: args{token: token1, mock: func() {
-				s.mock.On("GetByToken", mock.Anything, token1).Return(info1, nil).Once()
+				s.mock.On("GetByID", mock.Anything, id1).Return(info1, nil).Once()
 			}},
 			wantInfo: info1,
 			wantErr:  false,

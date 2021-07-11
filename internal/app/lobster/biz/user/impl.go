@@ -51,17 +51,23 @@ func (i *impl) GetByToken(ctx contextx.Contextx, token string) (info *user.Profi
 		return nil, er.ErrMissingToken
 	}
 
-	ret, err := i.repo.GetByToken(ctx, token)
+	claims, err := i.token.ValidateToken(token)
 	if err != nil {
-		i.logger.Error(er.ErrGetUserByToken.Error(), zap.String("token", token))
-		return nil, er.ErrGetUserByToken
+		i.logger.Error(er.ErrValidateToken.Error(), zap.Error(err))
+		return nil, er.ErrValidateToken
 	}
-	if ret == nil {
-		i.logger.Error(er.ErrUserNotExists.Error(), zap.String("token", token))
+
+	exists, err := i.repo.GetByID(ctx, claims.ID)
+	if err != nil {
+		i.logger.Error(er.ErrGetUserByID.Error(), zap.Error(err))
+		return nil, er.ErrGetUserByID
+	}
+	if exists == nil {
+		i.logger.Error(er.ErrUserNotExists.Error(), zap.Int64("id", claims.ID))
 		return nil, er.ErrUserNotExists
 	}
 
-	return ret, nil
+	return exists, nil
 }
 
 func (i *impl) Signup(ctx contextx.Contextx, email, password string) (info *user.Profile, err error) {
