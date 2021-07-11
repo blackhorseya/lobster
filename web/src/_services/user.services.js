@@ -1,4 +1,4 @@
-const endpoint = `${process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8080'}`;
+const endpoint = `${process.env.REACT_APP_API_ENDPOINT || ''}`;
 
 export const userService = {
   login,
