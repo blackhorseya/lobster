@@ -31,7 +31,7 @@ type reqID struct {
 // GetByID
 // @Summary Get an user by id
 // @Description Get an user by id
-// @Tags UsersD
+// @Tags Users
 // @Accept application/json
 // @Produce application/json
 // @Param id path integer true "ID of user"

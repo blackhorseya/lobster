@@ -385,7 +385,7 @@ paths:
             $ref: '#/definitions/er.APPError'
       summary: Get an user by id
       tags:
-      - Tasks
+      - Users
 securityDefinitions:
   ApiKeyAuth:
     in: header

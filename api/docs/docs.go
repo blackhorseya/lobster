@@ -506,7 +506,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Tasks"
+                    "Users"
                 ],
                 "summary": "Get an user by id",
                 "parameters": [
