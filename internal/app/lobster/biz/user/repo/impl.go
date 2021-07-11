@@ -89,3 +89,16 @@ func (i *impl) Register(ctx contextx.Contextx, newUser *user.Profile) (info *use
 
 	return newUser, nil
 }
+
+func (i *impl) UpdateToken(ctx contextx.Contextx, updated *user.Profile) (info *user.Profile, err error) {
+	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	stmt := `update users set token=:token where id=:id`
+	_, err = i.rw.NamedExecContext(timeout, stmt, updated)
+	if err != nil {
+		return nil, err
+	}
+
+	return updated, nil
+}

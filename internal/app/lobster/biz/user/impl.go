@@ -138,5 +138,7 @@ func (i *impl) Login(ctx contextx.Contextx, email, password string) (info *user.
 	}
 	exists.Token = newToken
 
+	// todo: 2021-07-11|14:54|Sean|update token into database
+
 	return exists, nil
 }

@@ -19,6 +19,9 @@ type IRepo interface {
 
 	// Register serve caller to create an account by email and password
 	Register(ctx contextx.Contextx, newUser *user.Profile) (info *user.Profile, err error)
+
+	// UpdateToken serve caller to update token by id
+	UpdateToken(ctx contextx.Contextx, updated *user.Profile) (info *user.Profile, err error)
 }
 
 // ProviderSet is a provider set for wire

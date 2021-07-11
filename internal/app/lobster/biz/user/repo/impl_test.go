@@ -164,3 +164,34 @@ func (s *repoSuite) Test_impl_GetByEmail() {
 		})
 	}
 }
+
+func (s *repoSuite) Test_impl_UpdateToken() {
+	type args struct {
+		updated *user.Profile
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantInfo *user.Profile
+		wantErr  bool
+	}{
+		{
+			name:     "update token then user",
+			args:     args{info1},
+			wantInfo: info1,
+			wantErr:  false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			gotInfo, err := s.repo.UpdateToken(contextx.Background(), tt.args.updated)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UpdateToken() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
+				t.Errorf("UpdateToken() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
+			}
+		})
+	}
+}
