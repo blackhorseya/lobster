@@ -223,7 +223,7 @@ func (s *bizSuite) Test_impl_Signup() {
 			name: "register then error",
 			args: args{email: email1, password: pass1, mock: func() {
 				s.mock.On("GetByEmail", mock.Anything, email1).Return(nil, nil).Once()
-				s.mock.On("Register", mock.Anything, email1, mock.Anything).Return(nil, errors.New("error")).Once()
+				s.mock.On("Register", mock.Anything, mock.Anything).Return(nil, errors.New("error")).Once()
 			}},
 			wantInfo: nil,
 			wantErr:  true,
@@ -232,7 +232,7 @@ func (s *bizSuite) Test_impl_Signup() {
 			name: "register then user",
 			args: args{email: email1, password: pass1, mock: func() {
 				s.mock.On("GetByEmail", mock.Anything, email1).Return(nil, nil).Once()
-				s.mock.On("Register", mock.Anything, email1, mock.Anything).Return(info1, nil).Once()
+				s.mock.On("Register", mock.Anything, mock.Anything).Return(info1, nil).Once()
 			}},
 			wantInfo: info1,
 			wantErr:  false,

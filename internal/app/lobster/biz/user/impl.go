@@ -1,6 +1,8 @@
 package user
 
 import (
+	"time"
+
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/base/encrypt"
@@ -87,7 +89,13 @@ func (i *impl) Signup(ctx contextx.Contextx, email, password string) (info *user
 	if err != nil {
 		return nil, er.ErrEncryptPassword
 	}
-	ret, err := i.repo.Register(ctx, email, salt)
+
+	ret, err := i.repo.Register(ctx, &user.Profile{
+		ID:        i.node.Generate().Int64(),
+		Email:     email,
+		Password:  salt,
+		CreatedAt: time.Now().UnixNano(),
+	})
 	if err != nil {
 		i.logger.Error(er.ErrSignup.Error(), zap.String("email", email))
 		return nil, er.ErrSignup

@@ -18,7 +18,7 @@ type IRepo interface {
 	GetByEmail(ctx contextx.Contextx, email string) (info *user.Profile, err error)
 
 	// Register serve caller to create an account by email and password
-	Register(ctx contextx.Contextx, email, password string) (info *user.Profile, err error)
+	Register(ctx contextx.Contextx, newUser *user.Profile) (info *user.Profile, err error)
 }
 
 // ProviderSet is a provider set for wire

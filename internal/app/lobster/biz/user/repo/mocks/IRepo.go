@@ -83,13 +83,13 @@ func (_m *IRepo) GetByToken(ctx contextx.Contextx, token string) (*user.Profile,
 	return r0, r1
 }
 
-// Register provides a mock function with given fields: ctx, email, password
-func (_m *IRepo) Register(ctx contextx.Contextx, email string, password string) (*user.Profile, error) {
-	ret := _m.Called(ctx, email, password)
+// Register provides a mock function with given fields: ctx, newUser
+func (_m *IRepo) Register(ctx contextx.Contextx, newUser *user.Profile) (*user.Profile, error) {
+	ret := _m.Called(ctx, newUser)
 
 	var r0 *user.Profile
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, string, string) *user.Profile); ok {
-		r0 = rf(ctx, email, password)
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, *user.Profile) *user.Profile); ok {
+		r0 = rf(ctx, newUser)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*user.Profile)
@@ -97,8 +97,8 @@ func (_m *IRepo) Register(ctx contextx.Contextx, email string, password string) 
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, string, string) error); ok {
-		r1 = rf(ctx, email, password)
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, *user.Profile) error); ok {
+		r1 = rf(ctx, newUser)
 	} else {
 		r1 = ret.Error(1)
 	}
