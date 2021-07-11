@@ -15,7 +15,7 @@ function login(id, password) {
         resp => {
           dispatch(success(resp.data));
           localStorage.removeItem('token');
-          localStorage.setItem('token', resp.data.accessToken);
+          localStorage.setItem('token', resp.data.token);
           dispatch(push(routeConstants.Root));
         },
         error => {
