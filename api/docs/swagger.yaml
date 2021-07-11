@@ -352,17 +352,11 @@ paths:
             $ref: '#/definitions/er.APPError'
       tags:
       - Tasks
-  /v1/users/{id}:
+  /v1/users/me:
     get:
       consumes:
       - application/json
-      description: Get an user by id
-      parameters:
-      - description: ID of user
-        in: path
-        name: id
-        required: true
-        type: integer
+      description: Get myself
       produces:
       - application/json
       responses:
@@ -379,11 +373,17 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/er.APPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/er.APPError'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/er.APPError'
-      summary: Get an user by id
+      security:
+      - ApiKeyAuth: []
+      summary: Get myself
       tags:
       - Users
 securityDefinitions:

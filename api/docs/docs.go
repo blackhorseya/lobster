@@ -496,9 +496,14 @@ var doc = `{
                 }
             }
         },
-        "/v1/users/{id}": {
+        "/v1/users/me": {
             "get": {
-                "description": "Get an user by id",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get myself",
                 "consumes": [
                     "application/json"
                 ],
@@ -508,16 +513,7 @@ var doc = `{
                 "tags": [
                     "Users"
                 ],
-                "summary": "Get an user by id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID of user",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
+                "summary": "Get myself",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -539,6 +535,12 @@ var doc = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/er.APPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/er.APPError"
                         }

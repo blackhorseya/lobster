@@ -22,7 +22,7 @@ import (
 var (
 	id1 = int64(200)
 
-	token1 = "token"
+	token1 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2JzdGVyIiwiaWQiOjAsImVtYWlsIjoiZW1haWwiLCJleHAiOjE5MDk5NTU2NDJ9.I2tByuRnyMtTEOWihGX3_RcKFS-3AwjdRxsW_YzZ-0c"
 
 	email1 = "email"
 
@@ -30,7 +30,7 @@ var (
 
 	salt1, _ = encrypt.HashAndSalt(pass1)
 
-	info1 = &user.Profile{ID: id1, Token: token1, Password: salt1}
+	info1 = &user.Profile{ID: id1, Email: email1, Token: token1, Password: salt1}
 )
 
 type handlerSuite struct {
@@ -170,12 +170,12 @@ func (s *handlerSuite) Test_impl_Login() {
 	}
 }
 
-func (s *handlerSuite) Test_impl_GetByID() {
-	s.r.GET("/api/v1/users/:id", s.handler.GetByID)
+func (s *handlerSuite) Test_impl_Me() {
+	s.r.GET("/api/v1/users/me", middlewares.AuthMiddleware(s.mock), s.handler.Me)
 
 	type args struct {
-		id   int64
-		mock func()
+		token string
+		mock  func()
 	}
 	tests := []struct {
 		name     string
@@ -183,16 +183,9 @@ func (s *handlerSuite) Test_impl_GetByID() {
 		wantCode int
 	}{
 		{
-			name: "get by id then error",
-			args: args{id: id1, mock: func() {
-				s.mock.On("GetByID", mock.Anything, id1).Return(nil, er.ErrGetUserByID).Once()
-			}},
-			wantCode: 500,
-		},
-		{
-			name: "get by id then user",
-			args: args{id: id1, mock: func() {
-				s.mock.On("GetByID", mock.Anything, id1).Return(info1, nil).Once()
+			name: "get myself then user",
+			args: args{token: token1, mock: func() {
+				s.mock.On("GetByToken", mock.Anything, token1).Return(info1, nil).Once()
 			}},
 			wantCode: 200,
 		},
@@ -203,15 +196,16 @@ func (s *handlerSuite) Test_impl_GetByID() {
 				tt.args.mock()
 			}
 
-			uri := fmt.Sprintf("/api/v1/users/%v", tt.args.id)
+			uri := fmt.Sprintf("/api/v1/users/me")
 			req := httptest.NewRequest(http.MethodGet, uri, nil)
+			req.Header.Add("Authorization", "Bearer "+token1)
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
 
 			got := w.Result()
 			defer got.Body.Close()
 
-			s.EqualValuesf(tt.wantCode, got.StatusCode, "GetByID() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Me() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 
 			s.TearDownTest()
 		})

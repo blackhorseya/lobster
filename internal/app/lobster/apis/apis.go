@@ -6,7 +6,9 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/health"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/task"
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis/user"
+	userB "github.com/blackhorseya/lobster/internal/app/lobster/biz/user"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	swaggerFiles "github.com/swaggo/files"
@@ -15,6 +17,7 @@ import (
 
 // CreateInitHandlerFn serve caller to create init handler
 func CreateInitHandlerFn(
+	userBiz userB.IBiz,
 	health health.IHandler,
 	userH user.IHandler,
 	taskH task.IHandler) http.InitHandlers {
@@ -47,7 +50,7 @@ func CreateInitHandlerFn(
 
 				userG := v1.Group("users")
 				{
-					userG.GET(":id", userH.GetByID)
+					userG.GET("me", middlewares.AuthMiddleware(userBiz), userH.Me)
 				}
 			}
 		}

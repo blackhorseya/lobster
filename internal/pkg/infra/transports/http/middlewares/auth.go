@@ -40,7 +40,7 @@ func AuthMiddleware(userB user.IBiz) gin.HandlerFunc {
 			return
 		}
 
-		contextx.WithValue(ctx, "user", info)
+		c.Set("ctx", contextx.WithValue(ctx, "user", info))
 
 		c.Next()
 	}

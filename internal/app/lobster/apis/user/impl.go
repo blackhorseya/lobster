@@ -5,7 +5,6 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user"
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/response"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -24,38 +23,24 @@ func NewImpl(logger *zap.Logger, biz user.IBiz) IHandler {
 	}
 }
 
-type reqID struct {
-	ID int64 `uri:"id" binding:"required"`
-}
-
-// GetByID
-// @Summary Get an user by id
-// @Description Get an user by id
+// Me
+// @Summary Get myself
+// @Description Get myself
 // @Tags Users
 // @Accept application/json
 // @Produce application/json
-// @Param id path integer true "ID of user"
+// @Security ApiKeyAuth
 // @Success 200 {object} response.Response{data=user.Profile}
 // @Failure 400 {object} er.APPError
+// @Failure 404 {object} er.APPError
 // @Failure 500 {object} er.APPError
-// @Router /v1/users/{id} [get]
-func (i *impl) GetByID(c *gin.Context) {
+// @Router /v1/users/me [get]
+func (i *impl) Me(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
-	var req reqID
-	if err := c.ShouldBindUri(&req); err != nil {
-		i.logger.Error(er.ErrInvalidID.Error(), zap.Error(err))
-		c.Error(er.ErrInvalidID)
-		return
-	}
+	info := ctx.Value("user")
 
-	ret, err := i.biz.GetByID(ctx, req.ID)
-	if err != nil {
-		c.Error(err)
-		return
-	}
-
-	c.JSON(http.StatusOK, response.OK.WithData(ret))
+	c.JSON(http.StatusOK, response.OK.WithData(info))
 }
 
 // Signup

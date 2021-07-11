@@ -6,8 +6,8 @@ import (
 )
 
 type IHandler interface {
-	// GetByID serve caller to get user information by id
-	GetByID(c *gin.Context)
+	// Me serve caller to get myself information by token
+	Me(c *gin.Context)
 
 	// Signup serve caller to create an user by email and password
 	Signup(c *gin.Context)
