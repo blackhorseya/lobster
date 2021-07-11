@@ -116,3 +116,56 @@ func (s *handlerSuite) Test_impl_Signup() {
 		})
 	}
 }
+
+func (s *handlerSuite) Test_impl_Login() {
+	s.r.POST("/api/v1/auth/login", s.handler.Login)
+
+	type args struct {
+		email    string
+		password string
+		mock     func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+	}{
+		{
+			name: "login then error",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("Login", mock.Anything, email1, pass1).Return(nil, er.ErrLogin).Once()
+			}},
+			wantCode: 500,
+		},
+		{
+			name: "login then user",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("Login", mock.Anything, email1, pass1).Return(info1, nil).Once()
+			}},
+			wantCode: 201,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
+			}
+
+			uri := fmt.Sprintf("/api/v1/auth/login")
+			val := url.Values{}
+			val.Add("email", tt.args.email)
+			val.Add("password", tt.args.password)
+			req := httptest.NewRequest(http.MethodPost, uri, strings.NewReader(val.Encode()))
+			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Login() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
+
+			s.TearDownTest()
+		})
+	}
+}

@@ -79,6 +79,16 @@ func (i *impl) Signup(c *gin.Context) {
 // @Failure 500 {object} er.APPError
 // @Router /v1/auth/login [post]
 func (i *impl) Login(c *gin.Context) {
-	// todo: 2021-07-11|08:53|Sean|implement me
-	panic("implement me")
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+
+	email := c.PostForm("email")
+	password := c.PostForm("password")
+
+	ret, err := i.biz.Login(ctx, email, password)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.OK.WithData(ret))
 }
