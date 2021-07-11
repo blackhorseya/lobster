@@ -10,11 +10,14 @@ import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/apis"
 	health2 "github.com/blackhorseya/lobster/internal/app/lobster/apis/health"
 	task2 "github.com/blackhorseya/lobster/internal/app/lobster/apis/task"
+	user2 "github.com/blackhorseya/lobster/internal/app/lobster/apis/user"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/health/repo"
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/task"
-	repo2 "github.com/blackhorseya/lobster/internal/app/lobster/biz/task/repo"
+	repo3 "github.com/blackhorseya/lobster/internal/app/lobster/biz/task/repo"
+	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user"
+	repo2 "github.com/blackhorseya/lobster/internal/app/lobster/biz/user/repo"
 	"github.com/blackhorseya/lobster/internal/pkg/app"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/config"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/databases"
@@ -60,14 +63,25 @@ func CreateApp(path2 string, nodeID int64) (*app.Application, error) {
 	iRepo := repo.NewImpl(db)
 	iBiz := health.NewImpl(logger, iRepo)
 	iHandler := health2.NewImpl(logger, iBiz)
-	repoIRepo := repo2.NewImpl(db)
+	repoIRepo := repo2.NewImpl(logger, db)
 	node, err := idgen.New(nodeID)
 	if err != nil {
 		return nil, err
 	}
-	taskIBiz := task.NewImpl(logger, repoIRepo, node)
+	tokenOptions, err := token.NewOptions(viper)
+	if err != nil {
+		return nil, err
+	}
+	factory, err := token.New(tokenOptions, logger)
+	if err != nil {
+		return nil, err
+	}
+	userIBiz := user.NewImpl(logger, repoIRepo, node, factory)
+	userIHandler := user2.NewImpl(logger, userIBiz)
+	iRepo2 := repo3.NewImpl(db)
+	taskIBiz := task.NewImpl(logger, iRepo2, node)
 	taskIHandler := task2.NewImpl(logger, taskIBiz)
-	initHandlers := apis.CreateInitHandlerFn(iHandler, taskIHandler)
+	initHandlers := apis.CreateInitHandlerFn(iHandler, userIHandler, taskIHandler)
 	engine := http.NewRouter(httpOptions, logger, initHandlers)
 	server, err := http.New(httpOptions, logger, engine)
 	if err != nil {

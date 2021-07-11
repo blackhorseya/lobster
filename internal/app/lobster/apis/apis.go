@@ -16,6 +16,7 @@ import (
 // CreateInitHandlerFn serve caller to create init handler
 func CreateInitHandlerFn(
 	health health.IHandler,
+	userH user.IHandler,
 	taskH task.IHandler) http.InitHandlers {
 	return func(r *gin.Engine) {
 		api := r.Group("api")
@@ -36,6 +37,17 @@ func CreateInitHandlerFn(
 					tasks.DELETE(":id", taskH.Delete)
 					tasks.PATCH(":id/status", taskH.UpdateStatus)
 					tasks.PATCH(":id/title", taskH.ModifyTitle)
+				}
+
+				authG := v1.Group("auth")
+				{
+					authG.POST("signup", userH.Signup)
+					authG.POST("login", userH.Login)
+				}
+
+				userG := v1.Group("users")
+				{
+					userG.GET(":id", userH.GetByID)
 				}
 			}
 		}

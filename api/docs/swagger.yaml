@@ -30,6 +30,17 @@ definitions:
     required:
     - title
     type: object
+  user.Profile:
+    properties:
+      created_at:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      token:
+        type: string
+    type: object
 info:
   contact:
     email: blackhorseya@gmail.com
@@ -78,6 +89,84 @@ paths:
             $ref: '#/definitions/er.APPError'
       tags:
       - Health
+  /v1/auth/login:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Login
+      parameters:
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/user.Profile'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/er.APPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/er.APPError'
+      summary: Login
+      tags:
+      - Auth
+  /v1/auth/signup:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Signup
+      parameters:
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/user.Profile'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/er.APPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/er.APPError'
+      summary: Signup
+      tags:
+      - Auth
   /v1/tasks:
     get:
       consumes:
@@ -261,6 +350,40 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/er.APPError'
+      tags:
+      - Tasks
+  /v1/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get an user by id
+      parameters:
+      - description: ID of user
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/user.Profile'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/er.APPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/er.APPError'
+      summary: Get an user by id
       tags:
       - Tasks
 securityDefinitions:

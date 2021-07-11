@@ -75,7 +75,7 @@ gen-pb:
 
 .PHONY: gen-swagger
 gen-swagger:
-	@swag init -g cmd/$(APP_NAME)/main.go --parseDependency --parseInternal -o api/docs
+	@swag init -g cmd/$(APP_NAME)/main.go --parseInternal -o api/docs
 
 .PHONY: migrate-up
 migrate-up:
