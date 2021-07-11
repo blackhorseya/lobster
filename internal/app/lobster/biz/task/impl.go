@@ -28,13 +28,13 @@ func NewImpl(logger *zap.Logger, repo repo.IRepo, node *snowflake.Node) IBiz {
 }
 
 func (i *impl) GetByID(ctx contextx.Contextx, id int64) (*todo.Task, error) {
-	info, ok := ctx.Value("user").(*user.Profile)
+	profile, ok := ctx.Value("user").(*user.Profile)
 	if !ok {
 		i.logger.Error(er.ErrUserNotExists.Error())
 		return nil, er.ErrUserNotExists
 	}
 
-	ret, err := i.repo.QueryByID(ctx, info.ID, id)
+	ret, err := i.repo.QueryByID(ctx, profile.ID, id)
 	if err != nil {
 		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err), zap.Int64("id", id))
 		return nil, er.ErrGetTaskByID
@@ -103,13 +103,13 @@ func (i *impl) Create(ctx contextx.Contextx, title string) (*todo.Task, error) {
 }
 
 func (i *impl) UpdateStatus(ctx contextx.Contextx, id int64, status todo.Status) (t *todo.Task, err error) {
-	info, ok := ctx.Value("user").(*user.Profile)
+	profile, ok := ctx.Value("user").(*user.Profile)
 	if !ok {
 		i.logger.Error(er.ErrUserNotExists.Error())
 		return nil, er.ErrUserNotExists
 	}
 
-	exist, err := i.repo.QueryByID(ctx, info.ID, id)
+	exist, err := i.repo.QueryByID(ctx, profile.ID, id)
 	if err != nil {
 		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err), zap.Int64("id", id))
 		return nil, err
@@ -130,7 +130,7 @@ func (i *impl) UpdateStatus(ctx contextx.Contextx, id int64, status todo.Status)
 }
 
 func (i *impl) ModifyTitle(ctx contextx.Contextx, id int64, title string) (t *todo.Task, err error) {
-	info, ok := ctx.Value("user").(*user.Profile)
+	profile, ok := ctx.Value("user").(*user.Profile)
 	if !ok {
 		i.logger.Error(er.ErrUserNotExists.Error())
 		return nil, er.ErrUserNotExists
@@ -141,7 +141,7 @@ func (i *impl) ModifyTitle(ctx contextx.Contextx, id int64, title string) (t *to
 		return nil, er.ErrEmptyTitle
 	}
 
-	exist, err := i.repo.QueryByID(ctx, info.ID, id)
+	exist, err := i.repo.QueryByID(ctx, profile.ID, id)
 	if err != nil {
 		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err), zap.Int64("id", id), zap.String("title", title))
 		return nil, err
