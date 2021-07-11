@@ -21,6 +21,9 @@ var (
 	// ErrNewToken means new a jwt is failure
 	ErrNewToken = newAPPError(http.StatusInternalServerError, 50004, "new a jwt is failure")
 
+	// ErrUpdateToken means update token by user id is failure
+	ErrUpdateToken = newAPPError(http.StatusInternalServerError, 50005, "update token by user id is failure")
+
 	// ErrLogin means login is failure
 	ErrLogin = newAPPError(http.StatusInternalServerError, 50005, "login is failure")
 

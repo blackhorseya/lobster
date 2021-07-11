@@ -308,9 +308,19 @@ func (s *bizSuite) Test_impl_Login() {
 			wantErr:  true,
 		},
 		{
+			name: "update token then error",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("GetByEmail", mock.Anything, email1).Return(info1, nil).Once()
+				s.mock.On("UpdateToken", mock.Anything, info1).Return(nil, errors.New("error")).Once()
+			}},
+			wantInfo: nil,
+			wantErr:  true,
+		},
+		{
 			name: "login then user",
 			args: args{email: email1, password: pass1, mock: func() {
 				s.mock.On("GetByEmail", mock.Anything, email1).Return(info1, nil).Once()
+				s.mock.On("UpdateToken", mock.Anything, info1).Return(info1, nil).Once()
 			}},
 			wantInfo: info1,
 			wantErr:  false,

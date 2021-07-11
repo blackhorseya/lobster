@@ -138,7 +138,11 @@ func (i *impl) Login(ctx contextx.Contextx, email, password string) (info *user.
 	}
 	exists.Token = newToken
 
-	// todo: 2021-07-11|14:54|Sean|update token into database
+	ret, err := i.repo.UpdateToken(ctx, exists)
+	if err != nil {
+		i.logger.Error(er.ErrUpdateToken.Error(), zap.Int64("id", exists.ID), zap.String("email", email), zap.String("token", newToken))
+		return nil, er.ErrUpdateToken
+	}
 
-	return exists, nil
+	return ret, nil
 }
