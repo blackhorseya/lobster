@@ -1,6 +1,7 @@
 create table if not exists goals
 (
     id         bigint not null,
+    user_id    bigint not null,
     title      text   not null,
     start_at   bigint not null,
     end_at     bigint not null,
@@ -12,6 +13,7 @@ create table if not exists goals
 create table if not exists results
 (
     id         bigint not null,
+    user_id    bigint not null,
     goal_id    bigint not null,
     title      text   not null,
     target     int    not null,
