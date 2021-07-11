@@ -30,6 +30,28 @@ export function users(state = initState, action) {
         data: null,
         error: action.error,
       };
+
+    case userConstants.SIGNUP_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case userConstants.SIGNUP_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        logged: false,
+        data: action.profile,
+        error: '',
+      };
+    case userConstants.SIGNUP_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        logged: false,
+        data: null,
+        error: action.error,
+      };
     default:
       return state;
   }
