@@ -62,13 +62,13 @@ func (i *impl) List(ctx contextx.Contextx, userID int64, offset, limit int) ([]*
 	return ret, nil
 }
 
-func (i *impl) Count(ctx contextx.Contextx) (int, error) {
+func (i *impl) Count(ctx contextx.Contextx, userID int64) (int, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
 	var ret int
-	cmd := "SELECT COUNT(*) FROM tasks"
-	row := i.rw.QueryRowxContext(timeout, cmd)
+	cmd := "SELECT COUNT(*) FROM tasks where user_id = ?"
+	row := i.rw.QueryRowxContext(timeout, cmd, userID)
 	if err := row.Scan(&ret); err != nil {
 		return 0, err
 	}

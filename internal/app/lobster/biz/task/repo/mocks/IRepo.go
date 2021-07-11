@@ -14,20 +14,20 @@ type IRepo struct {
 	mock.Mock
 }
 
-// Count provides a mock function with given fields: ctx
-func (_m *IRepo) Count(ctx contextx.Contextx) (int, error) {
-	ret := _m.Called(ctx)
+// Count provides a mock function with given fields: ctx, userID
+func (_m *IRepo) Count(ctx contextx.Contextx, userID int64) (int, error) {
+	ret := _m.Called(ctx, userID)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(contextx.Contextx) int); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, int64) int); ok {
+		r0 = rf(ctx, userID)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, int64) error); ok {
+		r1 = rf(ctx, userID)
 	} else {
 		r1 = ret.Error(1)
 	}
