@@ -32,7 +32,7 @@ func CreateInitHandlerFn(
 
 			v1 := api.Group("v1")
 			{
-				tasks := v1.Group("tasks")
+				tasks := v1.Group("tasks", middlewares.AuthMiddleware(userBiz))
 				{
 					tasks.GET("", taskH.List)
 					tasks.GET(":id", taskH.GetByID)

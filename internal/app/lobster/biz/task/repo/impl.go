@@ -23,7 +23,7 @@ func (i *impl) QueryByID(ctx contextx.Contextx, userID, id int64) (*todo.Task, e
 	defer cancel()
 
 	ret := todo.Task{}
-	cmd := "SELECT id, result_id, title, status, created_at FROM tasks WHERE id = ? and user_id = ?"
+	cmd := "SELECT id, user_id, result_id, title, status, created_at FROM tasks WHERE id = ? and user_id = ?"
 	err := i.rw.GetContext(timeout, &ret, cmd, id, userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -40,7 +40,7 @@ func (i *impl) Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, error
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	cmd := "INSERT INTO tasks (id, result_id, title, status, created_at) VALUES (:id, :result_id, :title, :status, :created_at)"
+	cmd := "INSERT INTO tasks (id, user_id, result_id, title, status, created_at) VALUES (:id, :user_id, :result_id, :title, :status, :created_at)"
 	_, err := i.rw.NamedExecContext(timeout, cmd, task)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (i *impl) List(ctx contextx.Contextx, userID int64, offset, limit int) ([]*
 	defer cancel()
 
 	var ret []*todo.Task
-	cmd := "SELECT id, result_id, title, status, created_at FROM tasks where user_id = ? LIMIT ? OFFSET ?"
+	cmd := "SELECT id, user_id, result_id, title, status, created_at FROM tasks where user_id = ? LIMIT ? OFFSET ?"
 	if err := i.rw.SelectContext(timeout, &ret, cmd, userID, limit, offset); err != nil {
 		return nil, err
 	}
