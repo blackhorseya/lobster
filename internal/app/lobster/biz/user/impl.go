@@ -6,22 +6,26 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/base/encrypt"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/token"
 	"github.com/bwmarrin/snowflake"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type impl struct {
 	logger *zap.Logger
 	repo   repo.IRepo
 	node   *snowflake.Node
+	token  *token.Factory
 }
 
 // NewImpl serve caller to create an IBiz
-func NewImpl(logger *zap.Logger, repo repo.IRepo, node *snowflake.Node) IBiz {
+func NewImpl(logger *zap.Logger, repo repo.IRepo, node *snowflake.Node, token *token.Factory) IBiz {
 	return &impl{
 		logger: logger.With(zap.String("type", "UserBiz")),
 		repo:   repo,
 		node:   node,
+		token:  token,
 	}
 }
 
@@ -93,6 +97,38 @@ func (i *impl) Signup(ctx contextx.Contextx, email, password string) (info *user
 }
 
 func (i *impl) Login(ctx contextx.Contextx, email, password string) (info *user.Profile, err error) {
-	// todo: 2021-07-11|07:03|Sean|implement me
-	panic("implement me")
+	if len(email) == 0 {
+		i.logger.Error(er.ErrEmptyEmail.Error())
+		return nil, er.ErrEmptyEmail
+	}
+
+	if len(password) == 0 {
+		i.logger.Error(er.ErrEmptyPassword.Error())
+		return nil, er.ErrEmptyPassword
+	}
+
+	exists, err := i.repo.GetByEmail(ctx, email)
+	if err != nil {
+		i.logger.Error(er.ErrGetUserByEmail.Error(), zap.String("email", email))
+		return nil, er.ErrGetUserByEmail
+	}
+	if exists == nil {
+		i.logger.Error(er.ErrUserNotExists.Error(), zap.String("email", email))
+		return nil, er.ErrUserNotExists
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(exists.Password), []byte(password))
+	if err != nil {
+		i.logger.Error(er.ErrIncorrectPassword.Error(), zap.String("email", email))
+		return nil, er.ErrIncorrectPassword
+	}
+
+	newToken, err := i.token.NewToken(exists.ID, exists.Email)
+	if err != nil {
+		i.logger.Error(er.ErrNewToken.Error(), zap.Int64("id", exists.ID), zap.String("email", email))
+		return nil, er.ErrNewToken
+	}
+	exists.Token = newToken
+
+	return exists, nil
 }

@@ -7,6 +7,7 @@ package user
 
 import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/repo"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/token"
 	"github.com/bwmarrin/snowflake"
 	"github.com/google/wire"
 	"go.uber.org/zap"
@@ -15,8 +16,8 @@ import (
 // Injectors from wire.go:
 
 // CreateIBiz serve caller to create an IBiz
-func CreateIBiz(logger *zap.Logger, repo2 repo.IRepo, node *snowflake.Node) (IBiz, error) {
-	iBiz := NewImpl(logger, repo2, node)
+func CreateIBiz(logger *zap.Logger, repo2 repo.IRepo, node *snowflake.Node, token2 *token.Factory) (IBiz, error) {
+	iBiz := NewImpl(logger, repo2, node, token2)
 	return iBiz, nil
 }
 
