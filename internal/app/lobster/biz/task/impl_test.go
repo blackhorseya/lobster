@@ -29,6 +29,7 @@ var (
 
 	task1 = &todo.Task{
 		ID:        id1,
+		UserID:    userID1,
 		Title:     "task1",
 		Status:    todo.Status_BACKLOG,
 		CreatedAt: time1,
@@ -36,12 +37,14 @@ var (
 
 	updated1 = &todo.Task{
 		ID:        id1,
+		UserID:    userID1,
 		Title:     "updated task1",
 		CreatedAt: time1,
 	}
 
 	updateStatus = &todo.Task{
 		ID:        id1,
+		UserID:    userID1,
 		Title:     "task1",
 		Status:    todo.Status_INPROGRESS,
 		CreatedAt: time1,
@@ -205,6 +208,7 @@ func (s *bizSuite) Test_impl_List() {
 
 func (s *bizSuite) Test_impl_Create() {
 	type args struct {
+		ctx   contextx.Contextx
 		title string
 		mock  func()
 	}
@@ -215,23 +219,28 @@ func (s *bizSuite) Test_impl_Create() {
 		wantErr bool
 	}{
 		{
+			name:    "missing user info in ctx then error",
+			args:    args{ctx: contextx.Background(), title: "title"},
+			want:    nil,
+			wantErr: true,
+		},
+		{
 			name:    "missing title then nil error",
-			args:    args{title: ""},
+			args:    args{title: "", ctx: ctx1},
 			want:    nil,
 			wantErr: true,
 		},
 		{
 			name: "task then nil error",
-			args: args{title: "task1", mock: func() {
-				s.mock.On("Create", mock.Anything, mock.Anything).Return(
-					nil, errors.New("err")).Once()
+			args: args{title: "task1", ctx: ctx1, mock: func() {
+				s.mock.On("Create", mock.Anything, mock.Anything).Return(nil, errors.New("err")).Once()
 			}},
 			want:    nil,
 			wantErr: true,
 		},
 		{
 			name: "task then task nil",
-			args: args{title: "task1", mock: func() {
+			args: args{title: "task1", ctx: ctx1, mock: func() {
 				s.mock.On("Create", mock.Anything, mock.Anything).Return(
 					task1, nil).Once()
 			}},
@@ -245,7 +254,7 @@ func (s *bizSuite) Test_impl_Create() {
 				tt.args.mock()
 			}
 
-			got, err := s.biz.Create(contextx.Background(), tt.args.title)
+			got, err := s.biz.Create(tt.args.ctx, tt.args.title)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -308,7 +317,7 @@ func (s *bizSuite) Test_impl_Delete() {
 
 func (s *bizSuite) Test_impl_UpdateStatus() {
 	type args struct {
-		ctx contextx.Contextx
+		ctx    contextx.Contextx
 		id     int64
 		status todo.Status
 		mock   func()
@@ -382,7 +391,7 @@ func (s *bizSuite) Test_impl_UpdateStatus() {
 
 func (s *bizSuite) Test_impl_ModifyTitle() {
 	type args struct {
-		ctx contextx.Contextx
+		ctx   contextx.Contextx
 		id    int64
 		title string
 		mock  func()

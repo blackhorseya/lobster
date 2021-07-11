@@ -68,6 +68,12 @@ func (i *impl) List(ctx contextx.Contextx, page, size int) ([]*todo.Task, error)
 }
 
 func (i *impl) Create(ctx contextx.Contextx, title string) (*todo.Task, error) {
+	profile, ok := ctx.Value("user").(*user.Profile)
+	if !ok {
+		i.logger.Error(er.ErrUserNotExists.Error())
+		return nil, er.ErrUserNotExists
+	}
+
 	if len(title) == 0 {
 		i.logger.Error(er.ErrEmptyTitle.Error(), zap.String("title", title))
 		return nil, er.ErrEmptyTitle
@@ -75,6 +81,7 @@ func (i *impl) Create(ctx contextx.Contextx, title string) (*todo.Task, error) {
 
 	created := &todo.Task{
 		ID:        i.node.Generate().Int64(),
+		UserID:    profile.ID,
 		Title:     title,
 		Status:    0,
 		CreatedAt: time.Now().UnixNano(),

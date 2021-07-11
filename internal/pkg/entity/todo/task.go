@@ -5,6 +5,9 @@ type Task struct {
 	// ID describe the unique identify code of task
 	ID int64 `json:"id" db:"id"`
 
+	// UserID describe the user id
+	UserID int64 `json:"user_id" db:"user_id"`
+
 	// ResultID describe the parent key result's id
 	ResultID int64 `json:"result_id" db:"result_id"`
 
