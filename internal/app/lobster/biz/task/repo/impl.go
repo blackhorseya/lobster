@@ -18,13 +18,13 @@ func NewImpl(rw *sqlx.DB) IRepo {
 	return &impl{rw: rw}
 }
 
-func (i *impl) QueryByID(ctx contextx.Contextx, id int64) (*todo.Task, error) {
+func (i *impl) QueryByID(ctx contextx.Contextx, userID, id int64) (*todo.Task, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
 	ret := todo.Task{}
-	cmd := "SELECT id, result_id, title, status, created_at FROM tasks WHERE id = ?"
-	err := i.rw.GetContext(timeout, &ret, cmd, id)
+	cmd := "SELECT id, result_id, title, status, created_at FROM tasks WHERE id = ? and user_id = ?"
+	err := i.rw.GetContext(timeout, &ret, cmd, id, userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil

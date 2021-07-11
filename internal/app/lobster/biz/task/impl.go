@@ -7,6 +7,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/todo"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
 	"github.com/bwmarrin/snowflake"
 	"go.uber.org/zap"
 )
@@ -27,7 +28,13 @@ func NewImpl(logger *zap.Logger, repo repo.IRepo, node *snowflake.Node) IBiz {
 }
 
 func (i *impl) GetByID(ctx contextx.Contextx, id int64) (*todo.Task, error) {
-	ret, err := i.repo.QueryByID(ctx, id)
+	info, ok := ctx.Value("user").(*user.Profile)
+	if !ok {
+		i.logger.Error(er.ErrUserNotExists.Error())
+		return nil, er.ErrUserNotExists
+	}
+
+	ret, err := i.repo.QueryByID(ctx, info.ID, id)
 	if err != nil {
 		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err), zap.Int64("id", id))
 		return nil, er.ErrGetTaskByID
@@ -83,7 +90,13 @@ func (i *impl) Create(ctx contextx.Contextx, title string) (*todo.Task, error) {
 }
 
 func (i *impl) UpdateStatus(ctx contextx.Contextx, id int64, status todo.Status) (t *todo.Task, err error) {
-	exist, err := i.repo.QueryByID(ctx, id)
+	info, ok := ctx.Value("user").(*user.Profile)
+	if !ok {
+		i.logger.Error(er.ErrUserNotExists.Error())
+		return nil, er.ErrUserNotExists
+	}
+
+	exist, err := i.repo.QueryByID(ctx, info.ID, id)
 	if err != nil {
 		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err), zap.Int64("id", id))
 		return nil, err
@@ -104,12 +117,18 @@ func (i *impl) UpdateStatus(ctx contextx.Contextx, id int64, status todo.Status)
 }
 
 func (i *impl) ModifyTitle(ctx contextx.Contextx, id int64, title string) (t *todo.Task, err error) {
+	info, ok := ctx.Value("user").(*user.Profile)
+	if !ok {
+		i.logger.Error(er.ErrUserNotExists.Error())
+		return nil, er.ErrUserNotExists
+	}
+
 	if len(title) == 0 {
 		i.logger.Error(er.ErrEmptyTitle.Error(), zap.Int64("id", id), zap.String("title", title))
 		return nil, er.ErrEmptyTitle
 	}
 
-	exist, err := i.repo.QueryByID(ctx, id)
+	exist, err := i.repo.QueryByID(ctx, info.ID, id)
 	if err != nil {
 		i.logger.Error(er.ErrGetTaskByID.Error(), zap.Error(err), zap.Int64("id", id), zap.String("title", title))
 		return nil, err

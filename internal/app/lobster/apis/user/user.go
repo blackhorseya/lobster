@@ -5,6 +5,7 @@ import (
 	"github.com/google/wire"
 )
 
+// IHandler declare user api function
 type IHandler interface {
 	// Me serve caller to get myself information by token
 	Me(c *gin.Context)
