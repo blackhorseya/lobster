@@ -5,12 +5,14 @@ import (
 	"github.com/google/wire"
 )
 
-// IHandler declare todo api handler
 type IHandler interface {
-	// Signup serve caller to register a user
+	// Me serve caller to get myself information by token
+	Me(c *gin.Context)
+
+	// Signup serve caller to create an user by email and password
 	Signup(c *gin.Context)
 
-	// Login serve caller to login system
+	// Login serve caller to login system by email and password
 	Login(c *gin.Context)
 }
 

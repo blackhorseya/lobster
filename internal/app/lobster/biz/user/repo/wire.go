@@ -11,12 +11,12 @@ import (
 
 var testProviderSet = wire.NewSet(
 	log.ProviderSet,
-	databases.ProviderSet,
 	config.ProviderSet,
+	databases.ProviderSet,
 	NewImpl,
 )
 
-// CreateIRepo serve caller to create an IRepo
-func CreateIRepo(path string) (IRepo, error) {
+// CreateRepo serve caller to create an IRepo
+func CreateRepo(path string) (IRepo, error) {
 	panic(wire.Build(testProviderSet))
 }

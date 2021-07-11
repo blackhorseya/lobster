@@ -7,30 +7,28 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entity/task"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/todo"
 	"github.com/stretchr/testify/suite"
 )
 
 var (
-	uuid1 = "d76f4f51-f141-41ba-ba57-c4749319586b"
+	uuid1 = int64(0)
 
-	resultID = "f45b1a55-15cd-4b49-89f1-3e9781cc7e06"
+	resultID = int64(0)
 
 	time1 = int64(1610548520788105000)
 
-	task1 = &task.Task{
+	task1 = &todo.Task{
 		ID:        uuid1,
 		ResultID:  resultID,
 		Title:     "task1",
-		Completed: false,
-		CreateAt:  time1,
+		CreatedAt: time1,
 	}
 
-	updated1 = &task.Task{
+	updated1 = &todo.Task{
 		ID:        uuid1,
 		Title:     "updated1 task1",
-		Completed: false,
-		CreateAt:  time1,
+		CreatedAt: time1,
 	}
 )
 
@@ -53,12 +51,12 @@ func TestRepoSuite(t *testing.T) {
 
 func (s *repoSuite) Test_impl_QueryByID() {
 	type args struct {
-		id string
+		id int64
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *todo.Task
 		wantErr bool
 	}{
 		{
@@ -84,12 +82,12 @@ func (s *repoSuite) Test_impl_QueryByID() {
 
 func (s *repoSuite) Test_impl_Create() {
 	type args struct {
-		task *task.Task
+		task *todo.Task
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *todo.Task
 		wantErr bool
 	}{
 		{
@@ -121,13 +119,13 @@ func (s *repoSuite) Test_impl_List() {
 	tests := []struct {
 		name    string
 		args    args
-		want    []*task.Task
+		want    []*todo.Task
 		wantErr bool
 	}{
 		{
 			name:    "0 1 then tasks nil",
 			args:    args{offset: 0, limit: 1},
-			want:    []*task.Task{task1},
+			want:    []*todo.Task{task1},
 			wantErr: false,
 		},
 	}
@@ -177,12 +175,12 @@ func (s *repoSuite) Test_impl_Count() {
 
 func (s *repoSuite) Test_impl_Update() {
 	type args struct {
-		updated *task.Task
+		updated *todo.Task
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *task.Task
+		want    *todo.Task
 		wantErr bool
 	}{
 		{
@@ -208,7 +206,7 @@ func (s *repoSuite) Test_impl_Update() {
 
 func (s *repoSuite) Test_impl_Delete() {
 	type args struct {
-		id string
+		id int64
 	}
 	tests := []struct {
 		name    string

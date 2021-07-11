@@ -7,50 +7,6 @@ definitions:
       msg:
         type: string
     type: object
-  okr.Goal:
-    properties:
-      create_at:
-        description: CreateAt describe the objective create milliseconds
-        type: integer
-      end_at:
-        description: EndAt describe the objective end timex milliseconds
-        type: integer
-      id:
-        description: ID describe the unique identify code of objective
-        type: string
-      key_results:
-        description: KeyResults describe key results of objective
-        items:
-          $ref: '#/definitions/okr.Result'
-        type: array
-      start_at:
-        description: StartAt describe the objective start timex milliseconds
-        type: integer
-      title:
-        description: Title describe the title of objective
-        type: string
-    type: object
-  okr.Result:
-    properties:
-      actual:
-        description: Actual describe the actual of key result
-        type: integer
-      create_at:
-        description: CreateAt describe the key result create milliseconds
-        type: integer
-      goal_id:
-        description: GoalID describe the parent goal's id
-        type: string
-      id:
-        description: ID describe the unique identify code of key result
-        type: string
-      target:
-        description: Target describe the target of key result
-        type: integer
-      title:
-        description: Title describe the title of key result
-        type: string
-    type: object
   response.Response:
     properties:
       code:
@@ -60,34 +16,29 @@ definitions:
       msg:
         type: string
     type: object
-  task.Task:
+  task.reqStatus:
     properties:
-      completed:
-        description: Completed describe the completed of task
-        type: boolean
-      create_at:
-        description: CreateAt describe the task create milliseconds
-        type: integer
-      id:
-        description: ID describe the unique identify code of task
-        type: string
-      result_id:
-        description: ResultID describe the parent key result's id
-        type: string
       status:
-        description: Status describe the status of task
         type: integer
+    required:
+    - status
+    type: object
+  task.reqTitle:
+    properties:
       title:
-        description: Title describe the title of task
         type: string
+    required:
+    - title
     type: object
   user.Profile:
     properties:
-      access_token:
-        description: AccessToken describe this user's accessToken
-        type: string
+      created_at:
+        type: integer
       email:
-        description: Email describe user's email to login system
+        type: string
+      id:
+        type: integer
+      token:
         type: string
     type: object
 info:
@@ -141,22 +92,31 @@ paths:
   /v1/auth/login:
     post:
       consumes:
-      - application/json
+      - application/x-www-form-urlencoded
       description: Login
       parameters:
-      - description: user profile
-        in: body
-        name: user
+      - description: email
+        in: formData
+        name: email
         required: true
-        schema:
-          $ref: '#/definitions/user.Profile'
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/response.Response'
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/user.Profile'
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -171,22 +131,31 @@ paths:
   /v1/auth/signup:
     post:
       consumes:
-      - application/json
+      - application/x-www-form-urlencoded
       description: Signup
       parameters:
-      - description: new user profile
-        in: body
-        name: newUser
+      - description: email
+        in: formData
+        name: email
         required: true
-        schema:
-          $ref: '#/definitions/user.Profile'
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/response.Response'
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/user.Profile'
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -198,358 +167,6 @@ paths:
       summary: Signup
       tags:
       - Auth
-  /v1/goals:
-    get:
-      consumes:
-      - application/json
-      description: List all objectives
-      parameters:
-      - default: 1
-        description: page
-        in: query
-        name: page
-        type: integer
-      - default: 10
-        description: size of page
-        in: query
-        name: size
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Goals
-    post:
-      consumes:
-      - application/json
-      description: Create a objective
-      parameters:
-      - description: created goal
-        in: body
-        name: created
-        required: true
-        schema:
-          $ref: '#/definitions/okr.Goal'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Goals
-  /v1/goals/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Get a objective by id
-      parameters:
-      - description: ID of objective
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Goals
-    get:
-      consumes:
-      - application/json
-      description: Get a objective by id
-      parameters:
-      - description: ID of objective
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Goals
-  /v1/goals/{id}/results:
-    get:
-      consumes:
-      - application/json
-      description: Get key result by goal id
-      parameters:
-      - description: ID of goal
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Results
-  /v1/goals/{id}/title:
-    patch:
-      consumes:
-      - application/json
-      description: Modify title of goal
-      parameters:
-      - description: ID of goal
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: updated goal
-        in: body
-        name: updated
-        required: true
-        schema:
-          $ref: '#/definitions/okr.Goal'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Goals
-  /v1/results:
-    get:
-      consumes:
-      - application/json
-      description: List all key results
-      parameters:
-      - default: 1
-        description: page
-        in: query
-        name: page
-        type: integer
-      - default: 10
-        description: size of page
-        in: query
-        name: size
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Results
-    post:
-      consumes:
-      - application/json
-      description: Create a key result
-      parameters:
-      - description: created key result
-        in: body
-        name: created
-        required: true
-        schema:
-          $ref: '#/definitions/okr.Result'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Results
-  /v1/results/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a key result by id
-      parameters:
-      - description: ID of key result
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Results
-    get:
-      consumes:
-      - application/json
-      description: Get a key result by id
-      parameters:
-      - description: ID of key result
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Results
-  /v1/results/{id}/title:
-    patch:
-      consumes:
-      - application/json
-      description: Modify title of result
-      parameters:
-      - description: ID of result
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: updated result
-        in: body
-        name: updated
-        required: true
-        schema:
-          $ref: '#/definitions/okr.Result'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/er.APPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/er.APPError'
-      tags:
-      - Results
   /v1/tasks:
     get:
       consumes:
@@ -593,7 +210,7 @@ paths:
         name: created
         required: true
         schema:
-          $ref: '#/definitions/task.Task'
+          $ref: '#/definitions/task.reqTitle'
       produces:
       - application/json
       responses:
@@ -621,7 +238,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -648,7 +265,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -676,13 +293,13 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       - description: updated task
         in: body
         name: updated
         required: true
         schema:
-          $ref: '#/definitions/task.Task'
+          $ref: '#/definitions/task.reqStatus'
       produces:
       - application/json
       responses:
@@ -698,6 +315,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/er.APPError'
+      summary: Update a status of task by id
       tags:
       - Tasks
   /v1/tasks/{id}/title:
@@ -710,13 +328,13 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       - description: updated task
         in: body
         name: updated
         required: true
         schema:
-          $ref: '#/definitions/task.Task'
+          $ref: '#/definitions/task.reqTitle'
       produces:
       - application/json
       responses:
@@ -734,6 +352,40 @@ paths:
             $ref: '#/definitions/er.APPError'
       tags:
       - Tasks
+  /v1/users/me:
+    get:
+      consumes:
+      - application/json
+      description: Get myself
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/user.Profile'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/er.APPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/er.APPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/er.APPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get myself
+      tags:
+      - Users
 securityDefinitions:
   ApiKeyAuth:
     in: header

@@ -5,9 +5,7 @@ import (
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user"
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/response"
-	userE "github.com/blackhorseya/lobster/internal/pkg/entity/user"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -25,31 +23,47 @@ func NewImpl(logger *zap.Logger, biz user.IBiz) IHandler {
 	}
 }
 
+// Me
+// @Summary Get myself
+// @Description Get myself
+// @Tags Users
+// @Accept application/json
+// @Produce application/json
+// @Security ApiKeyAuth
+// @Success 200 {object} response.Response{data=user.Profile}
+// @Failure 400 {object} er.APPError
+// @Failure 404 {object} er.APPError
+// @Failure 500 {object} er.APPError
+// @Router /v1/users/me [get]
+func (i *impl) Me(c *gin.Context) {
+	ctx := c.MustGet("ctx").(contextx.Contextx)
+
+	info := ctx.Value("user")
+
+	c.JSON(http.StatusOK, response.OK.WithData(info))
+}
+
 // Signup
 // @Summary Signup
 // @Description Signup
 // @Tags Auth
-// @Accept application/json
+// @Accept application/x-www-form-urlencoded
 // @Produce application/json
-// @Param newUser body user.Profile true "new user profile"
-// @Success 201 {object} response.Response
+// @Param email formData string true "email"
+// @Param password formData string true "password"
+// @Success 201 {object} response.Response{data=user.Profile}
 // @Failure 400 {object} er.APPError
 // @Failure 500 {object} er.APPError
 // @Router /v1/auth/signup [post]
 func (i *impl) Signup(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
-	var newUser *userE.Profile
-	if err := c.ShouldBindJSON(&newUser); err != nil {
-		i.logger.Error(er.ErrSignup.Error())
-		c.Error(er.ErrSignup)
-		return
-	}
+	email := c.PostForm("email")
+	password := c.PostForm("password")
 
-	ret, err := i.biz.Signup(ctx, newUser.Email, newUser.AccessToken)
+	ret, err := i.biz.Signup(ctx, email, password)
 	if err != nil {
-		i.logger.Error(er.ErrSignup.Error())
-		c.Error(er.ErrSignup)
+		c.Error(err)
 		return
 	}
 
@@ -60,27 +74,23 @@ func (i *impl) Signup(c *gin.Context) {
 // @Summary Login
 // @Description Login
 // @Tags Auth
-// @Accept application/json
+// @Accept application/x-www-form-urlencoded
 // @Produce application/json
-// @Param user body user.Profile true "user profile"
-// @Success 201 {object} response.Response
+// @Param email formData string true "email"
+// @Param password formData string true "password"
+// @Success 201 {object} response.Response{data=user.Profile}
 // @Failure 400 {object} er.APPError
 // @Failure 500 {object} er.APPError
 // @Router /v1/auth/login [post]
 func (i *impl) Login(c *gin.Context) {
 	ctx := c.MustGet("ctx").(contextx.Contextx)
 
-	var data *userE.Profile
-	if err := c.ShouldBindJSON(&data); err != nil {
-		i.logger.Error(er.ErrLogin.Error())
-		c.Error(er.ErrLogin)
-		return
-	}
+	email := c.PostForm("email")
+	password := c.PostForm("password")
 
-	ret, err := i.biz.Login(ctx, data.Email, data.AccessToken)
+	ret, err := i.biz.Login(ctx, email, password)
 	if err != nil {
-		i.logger.Error(er.ErrLogin.Error())
-		c.Error(er.ErrLogin)
+		c.Error(err)
 		return
 	}
 

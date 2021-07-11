@@ -1,5 +1,3 @@
-// +build integration
-
 package repo
 
 import (
@@ -7,19 +5,23 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/base/encrypt"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
 	"github.com/stretchr/testify/suite"
 )
 
 var (
-	email1 = "test@gmail.com"
+	email1 = "email"
 
-	password1 = "password"
+	pass1 = "$2a$04$W7XkHbwTrBUistouvflijuB2JOnYW4iEZEHVGgTX1bSERjRPZgZR."
 
-	encPWD, _ = encrypt.HashAndSalt(password1)
+	token1 = "token"
 
-	user1 = &user.Profile{ID: 1, Email: email1, Password: encPWD, AccessToken: ""}
+	info1 = &user.Profile{
+		ID:       0,
+		Email:    email1,
+		Password: pass1,
+		Token:    token1,
+	}
 )
 
 type repoSuite struct {
@@ -28,12 +30,11 @@ type repoSuite struct {
 }
 
 func (s *repoSuite) SetupTest() {
-	repo, err := CreateIRepo("../../../../../../configs/app.yaml")
-	if err != nil {
+	if repo, err := CreateRepo("../../../../../../configs/app.yaml"); err != nil {
 		panic(err)
+	} else {
+		s.repo = repo
 	}
-
-	s.repo = repo
 }
 
 func TestRepoSuite(t *testing.T) {
@@ -42,8 +43,7 @@ func TestRepoSuite(t *testing.T) {
 
 func (s *repoSuite) Test_impl_Register() {
 	type args struct {
-		email    string
-		password string
+		newUser *user.Profile
 	}
 	tests := []struct {
 		name     string
@@ -52,21 +52,83 @@ func (s *repoSuite) Test_impl_Register() {
 		wantErr  bool
 	}{
 		{
-			name:     "register then success",
-			args:     args{email: email1, password: encPWD},
-			wantInfo: user1,
+			name:     "register then user",
+			args:     args{newUser: info1},
+			wantInfo: info1,
 			wantErr:  false,
 		},
 	}
 	for _, tt := range tests {
 		s.T().Run(tt.name, func(t *testing.T) {
-			gotInfo, err := s.repo.Register(contextx.Background(), tt.args.email, tt.args.password)
+			gotInfo, err := s.repo.Register(contextx.Background(), tt.args.newUser)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Register() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
 				t.Errorf("Register() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
+			}
+		})
+	}
+}
+
+func (s *repoSuite) Test_impl_GetByID() {
+	type args struct {
+		id int64
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantInfo *user.Profile
+		wantErr  bool
+	}{
+		{
+			name:     "get by id then user",
+			args:     args{id: 0},
+			wantInfo: info1,
+			wantErr:  false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			gotInfo, err := s.repo.GetByID(contextx.Background(), tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
+				t.Errorf("GetByID() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
+			}
+		})
+	}
+}
+
+func (s *repoSuite) Test_impl_GetByToken() {
+	type args struct {
+		token string
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantInfo *user.Profile
+		wantErr  bool
+	}{
+		{
+			name:     "get by token then user",
+			args:     args{token: token1},
+			wantInfo: info1,
+			wantErr:  false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			gotInfo, err := s.repo.GetByToken(contextx.Background(), tt.args.token)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetByToken() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
+				t.Errorf("GetByToken() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
 			}
 		})
 	}
@@ -83,9 +145,9 @@ func (s *repoSuite) Test_impl_GetByEmail() {
 		wantErr  bool
 	}{
 		{
-			name:     "get by email then success",
+			name:     "get by email then user",
 			args:     args{email: email1},
-			wantInfo: user1,
+			wantInfo: info1,
 			wantErr:  false,
 		},
 	}
@@ -114,9 +176,9 @@ func (s *repoSuite) Test_impl_UpdateToken() {
 		wantErr  bool
 	}{
 		{
-			name:     "update token then success",
-			args:     args{updated: user1},
-			wantInfo: user1,
+			name:     "update token then user",
+			args:     args{info1},
+			wantInfo: info1,
 			wantErr:  false,
 		},
 	}

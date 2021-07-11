@@ -9,6 +9,7 @@ import (
 	"github.com/blackhorseya/lobster/internal/pkg/app"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/config"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/databases"
+	"github.com/blackhorseya/lobster/internal/pkg/infra/idgen"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/log"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/token"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http"
@@ -18,6 +19,7 @@ import (
 var providerSet = wire.NewSet(
 	lobster.ProviderSet,
 	log.ProviderSet,
+	idgen.ProviderSet,
 	config.ProviderSet,
 	http.ProviderSet,
 	databases.ProviderSet,
@@ -27,6 +29,6 @@ var providerSet = wire.NewSet(
 )
 
 // CreateApp serve caller to create an injector
-func CreateApp(path string) (*app.Application, error) {
+func CreateApp(path string, nodeID int64) (*app.Application, error) {
 	panic(wire.Build(providerSet))
 }

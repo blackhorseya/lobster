@@ -1,18 +1,16 @@
 package user
 
 import (
-	"bytes"
-	"encoding/json"
-	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
+	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/mocks"
-	"github.com/blackhorseya/lobster/internal/pkg/entity/response"
+	"github.com/blackhorseya/lobster/internal/pkg/base/encrypt"
+	"github.com/blackhorseya/lobster/internal/pkg/entity/er"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/transports/http/middlewares"
 	"github.com/gin-gonic/gin"
@@ -22,17 +20,17 @@ import (
 )
 
 var (
-	time1 = int64(1610548520788105000)
+	id1 = int64(200)
 
-	token1 = "b54c851b9d9e030f2afd6f6119b9c84e59f02590"
+	token1 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2JzdGVyIiwiaWQiOjAsImVtYWlsIjoiZW1haWwiLCJleHAiOjE5MDk5NTU2NDJ9.I2tByuRnyMtTEOWihGX3_RcKFS-3AwjdRxsW_YzZ-0c"
 
-	email1 = "test@gmail.com"
+	email1 = "email"
 
-	user1 = user.Profile{
-		ID:          1,
-		AccessToken: token1,
-		Email:       email1,
-	}
+	pass1 = "password"
+
+	salt1, _ = encrypt.HashAndSalt(pass1)
+
+	info1 = &user.Profile{ID: id1, Email: email1, Token: token1, Password: salt1}
 )
 
 type handlerSuite struct {
@@ -43,22 +41,19 @@ type handlerSuite struct {
 }
 
 func (s *handlerSuite) SetupTest() {
-	logger, _ := zap.NewDevelopment()
+	logger := zap.NewNop()
 
 	gin.SetMode(gin.TestMode)
-
 	s.r = gin.New()
 	s.r.Use(middlewares.ContextMiddleware())
 	s.r.Use(middlewares.ResponseMiddleware())
 
 	s.mock = new(mocks.IBiz)
-	handler, err := CreateIHandler(logger, s.mock)
-	if err != nil {
+	if handler, err := CreateIHandler(logger, s.mock); err != nil {
 		panic(err)
-		return
+	} else {
+		s.handler = handler
 	}
-
-	s.handler = handler
 }
 
 func (s *handlerSuite) TearDownTest() {
@@ -70,34 +65,31 @@ func TestHandlerSuite(t *testing.T) {
 }
 
 func (s *handlerSuite) Test_impl_Signup() {
-	s.r.POST("/api/v1/users/signup", s.handler.Signup)
+	s.r.POST("/api/v1/auth/signup", s.handler.Signup)
 
 	type args struct {
-		email string
-		token string
-		mock  func()
+		email    string
+		password string
+		mock     func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *response.Response
 	}{
 		{
-			name: "profile then 500 error",
-			args: args{email: email1, token: token1, mock: func() {
-				s.mock.On("Signup", mock.Anything, email1, token1).Return(nil, errors.New("error")).Once()
+			name: "signup then error",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("Signup", mock.Anything, email1, pass1).Return(nil, er.ErrSignup).Once()
 			}},
 			wantCode: 500,
-			wantBody: nil,
 		},
 		{
-			name: "profile then 201",
-			args: args{email: email1, token: token1, mock: func() {
-				s.mock.On("Signup", mock.Anything, email1, token1).Return(&user1, nil).Once()
+			name: "signup then user",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("Signup", mock.Anything, email1, pass1).Return(info1, nil).Once()
 			}},
 			wantCode: 201,
-			wantBody: response.OK.WithData(&user1),
 		},
 	}
 	for _, tt := range tests {
@@ -106,23 +98,19 @@ func (s *handlerSuite) Test_impl_Signup() {
 				tt.args.mock()
 			}
 
-			uri := fmt.Sprintf("/api/v1/users/signup")
-			data, _ := json.Marshal(&user.Profile{Email: tt.args.email, AccessToken: tt.args.token})
-			req := httptest.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
+			uri := fmt.Sprintf("/api/v1/auth/signup")
+			val := url.Values{}
+			val.Add("email", tt.args.email)
+			val.Add("password", tt.args.password)
+			req := httptest.NewRequest(http.MethodPost, uri, strings.NewReader(val.Encode()))
+			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
 
 			got := w.Result()
 			defer got.Body.Close()
 
-			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *response.Response
-			_ = json.Unmarshal(body, &gotBody)
-
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Signup() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
-			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.Errorf(fmt.Errorf("Signup() got = %v, wantBody = %v", gotBody, tt.wantBody), "Signup")
-			}
 
 			s.TearDownTest()
 		})
@@ -130,34 +118,31 @@ func (s *handlerSuite) Test_impl_Signup() {
 }
 
 func (s *handlerSuite) Test_impl_Login() {
-	s.r.POST("/api/v1/users/login", s.handler.Login)
+	s.r.POST("/api/v1/auth/login", s.handler.Login)
 
 	type args struct {
-		email string
-		token string
-		mock  func()
+		email    string
+		password string
+		mock     func()
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
-		wantBody *response.Response
 	}{
 		{
-			name: "profile then 500 error",
-			args: args{email: email1, token: token1, mock: func() {
-				s.mock.On("Login", mock.Anything, email1, token1).Return(nil, errors.New("error")).Once()
+			name: "login then error",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("Login", mock.Anything, email1, pass1).Return(nil, er.ErrLogin).Once()
 			}},
 			wantCode: 500,
-			wantBody: nil,
 		},
 		{
-			name: "profile then 201",
-			args: args{email: email1, token: token1, mock: func() {
-				s.mock.On("Login", mock.Anything, email1, token1).Return(&user1, nil).Once()
+			name: "login then user",
+			args: args{email: email1, password: pass1, mock: func() {
+				s.mock.On("Login", mock.Anything, email1, pass1).Return(info1, nil).Once()
 			}},
 			wantCode: 201,
-			wantBody: response.OK.WithData(&user1),
 		},
 	}
 	for _, tt := range tests {
@@ -166,23 +151,61 @@ func (s *handlerSuite) Test_impl_Login() {
 				tt.args.mock()
 			}
 
-			uri := fmt.Sprintf("/api/v1/users/login")
-			data, _ := json.Marshal(&user.Profile{Email: tt.args.email, AccessToken: tt.args.token})
-			req := httptest.NewRequest(http.MethodPost, uri, bytes.NewBuffer(data))
+			uri := fmt.Sprintf("/api/v1/auth/login")
+			val := url.Values{}
+			val.Add("email", tt.args.email)
+			val.Add("password", tt.args.password)
+			req := httptest.NewRequest(http.MethodPost, uri, strings.NewReader(val.Encode()))
+			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 			w := httptest.NewRecorder()
 			s.r.ServeHTTP(w, req)
 
 			got := w.Result()
 			defer got.Body.Close()
 
-			body, _ := ioutil.ReadAll(got.Body)
-			var gotBody *response.Response
-			_ = json.Unmarshal(body, &gotBody)
-
 			s.EqualValuesf(tt.wantCode, got.StatusCode, "Login() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
-			if tt.wantBody != nil && !reflect.DeepEqual(gotBody, tt.wantBody) {
-				s.Errorf(fmt.Errorf("Login() got = %v, wantBody = %v", gotBody, tt.wantBody), "Login")
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *handlerSuite) Test_impl_Me() {
+	s.r.GET("/api/v1/users/me", middlewares.AuthMiddleware(s.mock), s.handler.Me)
+
+	type args struct {
+		token string
+		mock  func()
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+	}{
+		{
+			name: "get myself then user",
+			args: args{token: token1, mock: func() {
+				s.mock.On("GetByToken", mock.Anything, token1).Return(info1, nil).Once()
+			}},
+			wantCode: 200,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			if tt.args.mock != nil {
+				tt.args.mock()
 			}
+
+			uri := fmt.Sprintf("/api/v1/users/me")
+			req := httptest.NewRequest(http.MethodGet, uri, nil)
+			req.Header.Add("Authorization", "Bearer "+token1)
+			w := httptest.NewRecorder()
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Me() code = %v, wantCode = %v", got.StatusCode, tt.wantCode)
 
 			s.TearDownTest()
 		})

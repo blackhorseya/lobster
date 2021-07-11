@@ -8,7 +8,7 @@ http:
 
 db:
   debug: true
-  url: "lobster:changeme@tcp(localhost:3306)/lobster?charset=utf8"
+  url: "lobster:changeme@tcp(localhost:3306)/lobster?charset=utf8mb4&parseTime=True&loc=Local"
 
 log:
   format: text

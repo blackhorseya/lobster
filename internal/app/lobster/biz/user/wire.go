@@ -4,20 +4,15 @@ package user
 
 import (
 	"github.com/blackhorseya/lobster/internal/app/lobster/biz/user/repo"
-	"github.com/blackhorseya/lobster/internal/pkg/entity/config"
-	"github.com/blackhorseya/lobster/internal/pkg/infra/log"
 	"github.com/blackhorseya/lobster/internal/pkg/infra/token"
+	"github.com/bwmarrin/snowflake"
 	"github.com/google/wire"
+	"go.uber.org/zap"
 )
 
-var testProviderSet = wire.NewSet(
-	log.ProviderSet,
-	config.ProviderSet,
-	token.ProviderSet,
-	NewImpl,
-)
+var testProviderSet = wire.NewSet(NewImpl)
 
 // CreateIBiz serve caller to create an IBiz
-func CreateIBiz(path string, repo repo.IRepo) (IBiz, error) {
+func CreateIBiz(logger *zap.Logger, repo repo.IRepo, node *snowflake.Node, token *token.Factory) (IBiz, error) {
 	panic(wire.Build(testProviderSet))
 }

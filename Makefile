@@ -4,6 +4,8 @@ PROJECT_ID = sean-side
 NS = side
 DEPLOY_TO = uat
 
+DB_URI = "mysql://lobster:changeme@tcp(localhost:3306)/lobster?charset=utf8mb4&parseTime=True&loc=Local"
+
 .PHONY: clean
 clean:
 	@rm -rf bin coverage.txt profile.out
@@ -69,8 +71,16 @@ gen-wire:
 
 .PHONY: gen-pb
 gen-pb:
-	@protoc --go_out=plugins=grpc:./internal/pkg/entity ./internal/pkg/entity/**/*.proto
+	@protoc --go_out=plugins=grpc,paths=source_relative:. ./internal/pkg/entity/**/*.proto
 
 .PHONY: gen-swagger
 gen-swagger:
 	@swag init -g cmd/$(APP_NAME)/main.go --parseInternal -o api/docs
+
+.PHONY: migrate-up
+migrate-up:
+	@migrate -database $(DB_URI) -path $(shell pwd)/scripts/migrations up
+
+.PHONY: migrate-down
+migrate-down:
+	@migrate -database $(DB_URI) -path $(shell pwd)/scripts/migrations down

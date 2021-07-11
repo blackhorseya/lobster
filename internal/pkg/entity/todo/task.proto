@@ -1,0 +1,10 @@
+syntax = "proto3";
+package todo;
+option go_package = "./todo;todo";
+
+enum Status {
+  BACKLOG = 0;
+  TODO = 1;
+  INPROGRESS = 2;
+  DONE = 3;
+}
