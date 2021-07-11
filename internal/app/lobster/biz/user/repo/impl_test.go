@@ -30,7 +30,7 @@ type repoSuite struct {
 }
 
 func (s *repoSuite) SetupTest() {
-	if repo, err := CreateRepo("../../../../configs/app.yaml"); err != nil {
+	if repo, err := CreateRepo("../../../../../../configs/app.yaml"); err != nil {
 		panic(err)
 	} else {
 		s.repo = repo
@@ -68,6 +68,37 @@ func (s *repoSuite) Test_impl_GetByID() {
 			}
 			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
 				t.Errorf("GetByID() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
+			}
+		})
+	}
+}
+
+func (s *repoSuite) Test_impl_Register() {
+	type args struct {
+		newUser *user.Profile
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantInfo *user.Profile
+		wantErr  bool
+	}{
+		{
+			name:     "register then user",
+			args:     args{newUser: info1},
+			wantInfo: info1,
+			wantErr:  false,
+		},
+	}
+	for _, tt := range tests {
+		s.T().Run(tt.name, func(t *testing.T) {
+			gotInfo, err := s.repo.Register(contextx.Background(), tt.args.newUser)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Register() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotInfo, tt.wantInfo) {
+				t.Errorf("Register() gotInfo = %v, want %v", gotInfo, tt.wantInfo)
 			}
 		})
 	}

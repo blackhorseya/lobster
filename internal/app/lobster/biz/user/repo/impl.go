@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"time"
+
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
 	"github.com/jmoiron/sqlx"
@@ -38,11 +40,14 @@ func (i *impl) GetByEmail(ctx contextx.Contextx, email string) (info *user.Profi
 }
 
 func (i *impl) Register(ctx contextx.Contextx, newUser *user.Profile) (info *user.Profile, err error) {
-	// timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
-	// defer cancel()
-	//
-	// stmt := `insert into users values ()`
+	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 
-	// todo: 2021-07-11|08:18|Sean|implement me
-	panic("implement me")
+	stmt := `insert into users (id, email, password, token, created_at) values (:id, :email, :password, :token, :created_at)`
+	_, err = i.rw.NamedExecContext(timeout, stmt, newUser)
+	if err != nil {
+		return nil, err
+	}
+
+	return newUser, nil
 }
