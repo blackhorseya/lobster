@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
-	"github.com/blackhorseya/lobster/internal/pkg/base/encrypt"
 	"github.com/blackhorseya/lobster/internal/pkg/entity/user"
 	"github.com/stretchr/testify/suite"
 )
@@ -13,14 +12,12 @@ import (
 var (
 	email1 = "email"
 
-	pass1 = "password"
-
-	salt1, _ = encrypt.HashAndSalt(pass1)
+	pass1 = "$2a$04$W7XkHbwTrBUistouvflijuB2JOnYW4iEZEHVGgTX1bSERjRPZgZR."
 
 	info1 = &user.Profile{
 		ID:       0,
 		Email:    email1,
-		Password: salt1,
+		Password: pass1,
 	}
 )
 
@@ -43,8 +40,7 @@ func TestRepoSuite(t *testing.T) {
 
 func (s *repoSuite) Test_impl_GetByID() {
 	type args struct {
-		ctx contextx.Contextx
-		id  int64
+		id int64
 	}
 	tests := []struct {
 		name     string
@@ -54,14 +50,14 @@ func (s *repoSuite) Test_impl_GetByID() {
 	}{
 		{
 			name:     "id then user",
-			args:     args{},
-			wantInfo: nil,
+			args:     args{id: 0},
+			wantInfo: info1,
 			wantErr:  false,
 		},
 	}
 	for _, tt := range tests {
 		s.T().Run(tt.name, func(t *testing.T) {
-			gotInfo, err := s.repo.GetByID(tt.args.ctx, tt.args.id)
+			gotInfo, err := s.repo.GetByID(contextx.Background(), tt.args.id)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetByID() error = %v, wantErr %v", err, tt.wantErr)
 				return

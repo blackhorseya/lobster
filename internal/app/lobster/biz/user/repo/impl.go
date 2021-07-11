@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/blackhorseya/lobster/internal/pkg/base/contextx"
@@ -23,10 +24,21 @@ func NewImpl(logger *zap.Logger, rw *sqlx.DB) IRepo {
 }
 
 func (i *impl) GetByID(ctx contextx.Contextx, id int64) (info *user.Profile, err error) {
+	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 
+	ret := user.Profile{}
+	stmt := `select id, email, password, token, created_at from users where id = ?`
+	err = i.rw.GetContext(timeout, &ret, stmt, id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 
-	// todo: 2021-07-11|08:18|Sean|implement me
-	panic("implement me")
+		return nil, err
+	}
+
+	return &ret, nil
 }
 
 func (i *impl) GetByToken(ctx contextx.Contextx, token string) (info *user.Profile, err error) {
