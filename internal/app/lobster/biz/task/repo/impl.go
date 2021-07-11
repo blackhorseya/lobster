@@ -89,12 +89,12 @@ func (i *impl) Update(ctx contextx.Contextx, updated *todo.Task) (*todo.Task, er
 	return updated, nil
 }
 
-func (i *impl) Delete(ctx contextx.Contextx, id int64) (int, error) {
+func (i *impl) Delete(ctx contextx.Contextx, userID, id int64) (int, error) {
 	timeout, cancel := contextx.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	cmd := "DELETE FROM tasks WHERE id = ?"
-	_ = i.rw.QueryRowxContext(timeout, cmd, id)
+	cmd := "DELETE FROM tasks WHERE id = ? and user_id = ?"
+	_ = i.rw.QueryRowxContext(timeout, cmd, id, userID)
 
 	return 1, nil
 }

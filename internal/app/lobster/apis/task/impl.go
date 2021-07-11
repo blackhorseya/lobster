@@ -30,11 +30,13 @@ type reqID struct {
 	ID int64 `uri:"id" binding:"required"`
 }
 
-// GetByID @Summary Get a task by id
+// GetByID
+// @Summary Get a task by id
 // @Description Get a task by id
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
+// @Security ApiKeyAuth
 // @Param id path integer true "ID of task"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} er.APPError
@@ -65,6 +67,7 @@ func (i *impl) GetByID(c *gin.Context) {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
+// @Security ApiKeyAuth
 // @Param page query integer false "page" default(1)
 // @Param size query integer false "size of page" default(10)
 // @Success 200 {object} response.Response
@@ -112,6 +115,7 @@ type reqTitle struct {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
+// @Security ApiKeyAuth
 // @Param created body reqTitle true "created task"
 // @Success 201 {object} response.Response
 // @Failure 400 {object} er.APPError
@@ -153,6 +157,7 @@ type reqStatus struct {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
+// @Security ApiKeyAuth
 // @Param id path integer true "ID of task"
 // @Param updated body reqStatus true "updated task"
 // @Success 200 {object} response.Response
@@ -191,6 +196,7 @@ func (i *impl) UpdateStatus(c *gin.Context) {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
+// @Security ApiKeyAuth
 // @Param id path integer true "ID of task"
 // @Param updated body reqTitle true "updated task"
 // @Success 200 {object} response.Response
@@ -234,6 +240,7 @@ func (i *impl) ModifyTitle(c *gin.Context) {
 // @Tags Tasks
 // @Accept application/json
 // @Produce application/json
+// @Security ApiKeyAuth
 // @Param id path integer true "ID of task"
 // @Success 204 {object} string
 // @Failure 400 {object} er.APPError

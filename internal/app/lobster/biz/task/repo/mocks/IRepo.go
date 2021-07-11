@@ -58,20 +58,20 @@ func (_m *IRepo) Create(ctx contextx.Contextx, task *todo.Task) (*todo.Task, err
 	return r0, r1
 }
 
-// Delete provides a mock function with given fields: ctx, id
-func (_m *IRepo) Delete(ctx contextx.Contextx, id int64) (int, error) {
-	ret := _m.Called(ctx, id)
+// Delete provides a mock function with given fields: ctx, userID, id
+func (_m *IRepo) Delete(ctx contextx.Contextx, userID int64, id int64) (int, error) {
+	ret := _m.Called(ctx, userID, id)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(contextx.Contextx, int64) int); ok {
-		r0 = rf(ctx, id)
+	if rf, ok := ret.Get(0).(func(contextx.Contextx, int64, int64) int); ok {
+		r0 = rf(ctx, userID, id)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(contextx.Contextx, int64) error); ok {
-		r1 = rf(ctx, id)
+	if rf, ok := ret.Get(1).(func(contextx.Contextx, int64, int64) error); ok {
+		r1 = rf(ctx, userID, id)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -198,6 +198,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/er.APPError'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Tasks
     post:
@@ -226,6 +228,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/er.APPError'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Tasks
   /v1/tasks/{id}:
@@ -254,6 +258,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/er.APPError'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Tasks
     get:
@@ -281,6 +287,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/er.APPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a task by id
       tags:
       - Tasks
   /v1/tasks/{id}/status:
@@ -315,6 +324,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/er.APPError'
+      security:
+      - ApiKeyAuth: []
       summary: Update a status of task by id
       tags:
       - Tasks
@@ -350,6 +361,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/er.APPError'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Tasks
   /v1/users/me:

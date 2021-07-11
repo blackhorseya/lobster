@@ -200,6 +200,11 @@
         },
         "/v1/tasks": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "List all tasks",
                 "consumes": [
                     "application/json"
@@ -248,6 +253,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create a task",
                 "consumes": [
                     "application/json"
@@ -293,6 +303,11 @@
         },
         "/v1/tasks/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get a task by id",
                 "consumes": [
                     "application/json"
@@ -303,6 +318,7 @@
                 "tags": [
                     "Tasks"
                 ],
+                "summary": "Get a task by id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -334,6 +350,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete a task by id",
                 "consumes": [
                     "application/json"
@@ -377,6 +398,11 @@
         },
         "/v1/tasks/{id}/status": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "UpdateStatus a status of task by id",
                 "consumes": [
                     "application/json"
@@ -430,6 +456,11 @@
         },
         "/v1/tasks/{id}/title": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "ModifyTitle a status of task by id",
                 "consumes": [
                     "application/json"

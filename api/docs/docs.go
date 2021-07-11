@@ -216,6 +216,11 @@ var doc = `{
         },
         "/v1/tasks": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "List all tasks",
                 "consumes": [
                     "application/json"
@@ -264,6 +269,11 @@ var doc = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create a task",
                 "consumes": [
                     "application/json"
@@ -309,6 +319,11 @@ var doc = `{
         },
         "/v1/tasks/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get a task by id",
                 "consumes": [
                     "application/json"
@@ -319,6 +334,7 @@ var doc = `{
                 "tags": [
                     "Tasks"
                 ],
+                "summary": "Get a task by id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -350,6 +366,11 @@ var doc = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete a task by id",
                 "consumes": [
                     "application/json"
@@ -393,6 +414,11 @@ var doc = `{
         },
         "/v1/tasks/{id}/status": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "UpdateStatus a status of task by id",
                 "consumes": [
                     "application/json"
@@ -446,6 +472,11 @@ var doc = `{
         },
         "/v1/tasks/{id}/title": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "ModifyTitle a status of task by id",
                 "consumes": [
                     "application/json"

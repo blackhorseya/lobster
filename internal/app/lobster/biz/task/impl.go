@@ -162,7 +162,13 @@ func (i *impl) ModifyTitle(ctx contextx.Contextx, id int64, title string) (t *to
 }
 
 func (i *impl) Delete(ctx contextx.Contextx, id int64) error {
-	ret, err := i.repo.Delete(ctx, id)
+	profile, ok := ctx.Value("user").(*user.Profile)
+	if !ok {
+		i.logger.Error(er.ErrUserNotExists.Error())
+		return er.ErrUserNotExists
+	}
+
+	ret, err := i.repo.Delete(ctx, profile.ID, id)
 	if err != nil {
 		i.logger.Error(er.ErrTaskNotExists.Error(), zap.Error(err), zap.Int64("id", id))
 		return er.ErrTaskNotExists

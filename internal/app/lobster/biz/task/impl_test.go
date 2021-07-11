@@ -271,6 +271,7 @@ func (s *bizSuite) Test_impl_Create() {
 
 func (s *bizSuite) Test_impl_Delete() {
 	type args struct {
+		ctx  contextx.Contextx
 		id   int64
 		mock func()
 	}
@@ -280,23 +281,23 @@ func (s *bizSuite) Test_impl_Delete() {
 		wantErr bool
 	}{
 		{
-			name: "uuid then nil error",
-			args: args{id: id1, mock: func() {
-				s.mock.On("Delete", mock.Anything, id1).Return(0, errors.New("err")).Once()
+			name: "delete by id then error",
+			args: args{id: id1, ctx: ctx1, mock: func() {
+				s.mock.On("Delete", mock.Anything, info1.ID, id1).Return(0, errors.New("err")).Once()
 			}},
 			wantErr: true,
 		},
 		{
 			name: "uuid then not found",
-			args: args{id: id1, mock: func() {
-				s.mock.On("Delete", mock.Anything, id1).Return(0, nil).Once()
+			args: args{id: id1, ctx: ctx1, mock: func() {
+				s.mock.On("Delete", mock.Anything, info1.ID, id1).Return(0, nil).Once()
 			}},
 			wantErr: true,
 		},
 		{
 			name: "uuid then nil",
-			args: args{id: id1, mock: func() {
-				s.mock.On("Delete", mock.Anything, id1).Return(1, nil).Once()
+			args: args{id: id1, ctx: ctx1, mock: func() {
+				s.mock.On("Delete", mock.Anything, info1.ID, id1).Return(1, nil).Once()
 			}},
 			wantErr: false,
 		},
@@ -307,7 +308,7 @@ func (s *bizSuite) Test_impl_Delete() {
 				tt.args.mock()
 			}
 
-			if err := s.biz.Delete(contextx.Background(), tt.args.id); (err != nil) != tt.wantErr {
+			if err := s.biz.Delete(tt.args.ctx, tt.args.id); (err != nil) != tt.wantErr {
 				t.Errorf("Delete() error = %v, wantErr %v", err, tt.wantErr)
 			}
 

@@ -24,7 +24,7 @@ type IRepo interface {
 	Update(ctx contextx.Contextx, updated *todo.Task) (*todo.Task, error)
 
 	// Delete serve caller to delete a task by id from database
-	Delete(ctx contextx.Contextx, id int64) (int, error)
+	Delete(ctx contextx.Contextx, userID, id int64) (int, error)
 }
 
 // ProviderSet is a provider set for wire
