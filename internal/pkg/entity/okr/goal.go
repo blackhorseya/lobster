@@ -3,7 +3,10 @@ package okr
 // Goal declare an objective basic information
 type Goal struct {
 	// ID describe the unique identify code of objective
-	ID string `json:"id" db:"id"`
+	ID int64 `json:"id" db:"id"`
+
+	// UserID describe the user id
+	UserID int64 `json:"user_id" db:"user_id"`
 
 	// Title describe the title of objective
 	Title string `json:"title" db:"title"`
