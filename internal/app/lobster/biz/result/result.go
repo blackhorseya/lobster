@@ -17,6 +17,12 @@ type IBiz interface {
 	// ModifyTitle serve caller to modify result's title
 	ModifyTitle(ctx contextx.Contextx, id int64, title string) (result *okr.Result, err error)
 
+	// ChangeTarget serve caller to change the result's target
+	ChangeTarget(ctx contextx.Contextx, id int64, target int) (result *okr.Result, err error)
+
+	// ChangeActual serve caller to change the result's actual
+	ChangeActual(ctx contextx.Contextx, id int64, actual int) (result *okr.Result, err error)
+
 	// Delete serve caller to delete a result by id
 	Delete(ctx contextx.Contextx, id int64) error
 }
