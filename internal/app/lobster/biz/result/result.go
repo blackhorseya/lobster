@@ -14,6 +14,9 @@ type IBiz interface {
 	// List serve caller to list all results
 	List(ctx contextx.Contextx, page, size int) (results []*okr.Result, err error)
 
+	// Create serve caller to create a result
+	Create(ctx contextx.Contextx, title string, target int) (result *okr.Result, err error)
+
 	// ModifyTitle serve caller to modify result's title
 	ModifyTitle(ctx contextx.Contextx, id int64, title string) (result *okr.Result, err error)
 
